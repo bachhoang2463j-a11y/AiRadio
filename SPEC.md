@@ -1,6 +1,6 @@
 # 《音乐电台》项目规范与目标文档 (SPEC.md)
 
-> **版本**：v6.0.1  
+> **版本**：v6.1.0  
 > **定位**：SillyTavern（酒馆）专属的高性能、无感解耦、全源检索的赛博朋克深空沉浸电台。
 
 ---
@@ -60,7 +60,7 @@
 
 | 文件 | 作用 | 可否删除 |
 |---|---|---|
-| `酒馆助手脚本-电台直链版.json` | 唯一发布脚本（IIFE，自包含 HTML+CSS+JS，2489 行） | 否，核心交付物 |
+| `酒馆助手脚本-电台直链版.json` | 唯一发布脚本（IIFE，自包含 HTML+CSS+JS，2601 行） | 否，核心交付物 |
 | `SPEC.md` | 本文档，目标与契约 | 否 |
 | `README.md` | 现状与使用说明 | 否 |
 | `LOG.md` / `LOG-INDEX.md` | 施工历史与索引 | 否 |
@@ -77,13 +77,14 @@
 - [x] **Sidecar AI DJ 联动**：配置 API 后，点击 `✨ AI选歌` 或角色消息渲染完毕后，能自动异步向大模型请求推荐并切歌。
 - [x] **Debug 输出可观测**：开启 Debug 模式时，控制台能完整输出 System Prompt、User Payload 与原始模型输出。
 - [x] **0层正文必达**：`historyDepth=0` 时手动/自动触发均能稳定携带当前 0 层（AI 最新回复）全文进入 Sidecar Payload，空正文时阻断而非随机（v6.0.1 修复，见第五章）。
+- [x] **可选歌单提示词**：设置面板内每频段可勾选是否发送“前8首摘要 + 自定义提示词文本”，支持全选/全不选，默认全不选/空；导入导出天然携选（v6.1.0）。
 
 ---
 
 ## 五、脚本函数职责清单 (Function Reference) — v6.0.1 现状
 
 > 约定：`0 层 = AI 最新回复`，`1 层 = 上一条用户输入 + 当前 AI`，`N 层 = 最近 N*2 条`。
-> 注释密度：正文 IIFE 内约 2.1% 行注释（52/2489），以 `// === ... ===` 分区为主，函数体几乎无行内注释，命名即文档。
+> 注释密度：正文 IIFE 内约 2.1% 行注释（52/2601），以 `// === ... ===` 分区为主，函数体几乎无行内注释，命名即文档。
 > 文件统一位置：`酒馆助手脚本-电台直链版.json` 的 `content` 字段内 IIFE `(function(){...})()`。
 
 ### 5.1 常量与状态
@@ -93,7 +94,7 @@
 | `customUrlDb: {}` | `L25` | 运行时空表，占位供未来注入自定义直链，未序列化。 |
 | `directLinkDb: {title→网易云ID}` | `L27-70` | 本地高精直链库（泽野弘之/进击的巨人神曲、Evan Call、星际穿越等），`getTrackUrl` 最高优先级命中，0ms 秒播。含多别名键（如 `YouSeeBIGGIRL/T:T`/`youseebiggirl`）。 |
 | `initialDefaultPlaylists: Array<{category,songs}>` | `L77` | 出厂预置频段与曲目，`loadPlaylists` 失败/首次与 `[重置]` 恢复时深拷贝使用。 |
-| `bgmPlaylists: Array` | `L170` | 运行时歌单总表，`loadPlaylists/savePlaylists` 与 `celestial_all_playlists` 互转。 |
+| `bgmPlaylists: Array<{category,songs,prompt,promptEnabled}>` | `L170` | 运行时歌单总表，`loadPlaylists/savePlaylists` 与 `celestial_all_playlists` 互转。每元素新增 `prompt:string('')` 与 `promptEnabled:boolean(false)` 可选歌单提示词（v6.1.0，默认全不选/空，旧存档自动迁移）。 |
 | `openedPlaylistCategories: Set<string>` | `L23` | 记录展开态的频段名，驱动 `renderPlaylists` 的 `slideDown/Up`。 |
 | `state: {collapsed}` `dockSide/dockTop` | `L16-21` | 面板收纳与贴边位置，`localStorage cr_dock_side/top` 持久化，`applyDockPosition` 读写。 |
 | `T_CHARS / S_CHARS` | `L228-229` | 繁简对照表，`normalizeStr` 逐字繁转简。 |
@@ -107,7 +108,7 @@
 
 | 函数 | 签名与位置 | 职责 | 关键细节 |
 |---|---|---|---|
-| `loadPlaylists()` | `L172` `function loadPlaylists()` | 从 `localStorage.celestial_all_playlists` 恢复 `bgmPlaylists`，失败则深拷贝 `initialDefaultPlaylists`。 | 首屏在 CSS/HTML 注入后同步调用，决定首屏曲库。 |
+| `loadPlaylists()` | `L172` `function loadPlaylists()` | 从 `localStorage.celestial_all_playlists` 恢复 `bgmPlaylists`，失败则深拷贝 `initialDefaultPlaylists`。对每项补 `prompt=''/promptEnabled=false` 迁移（含出厂与旧存档）。 | 首屏在 CSS/HTML 注入后同步调用，决定首屏曲库。 |
 | `savePlaylists()` | `L190` `function savePlaylists()` | `JSON.stringify(bgmPlaylists)` 写回 `celestial_all_playlists`。 | 所有增删改拖拽导入路径的唯一写口。 |
 | `getDjSettings()` | `L206` `function getDjSettings(): {apiUrl,apiKey,model,historyDepth,autoTrigger,debugMode,systemPrompt}` | 汇总 6 项 DJ 配置，`historyDepth` 含 `Number.isFinite` 的 `NaN` 容错（v6.0.1 补）。 | `triggerAiDjDecision/onMessageChange/openSettingsModal` 的唯一读口。 |
 | `saveDjSettings(cfg)` | `L218` `function saveDjSettings(cfg)` | 逐项 `trim()` 后写 `localStorage cr_dj_*`。 | 由设置面板保存按钮触发，写后立即影响下一次 `triggerAiDjDecision`。 |
@@ -125,20 +126,22 @@
 | 函数 | 位置 | 职责 |
 |---|---|---|
 | `applyDockPosition(isDraggingNow, dragX, dragY)` | `L871` | 计算并应用贴边/展开两种布局：收纳态 18×54 胶囊（`dock-left/right` + 方向箭头），展开态 10px 边距面板；拖拽时跟手，落盘时 `clamp` 并持久化 `cr_dock_side/top`。 |
-| `openSettingsModal()` | `L994` | 以 `getDjSettings()` 回填 `cr-cfg-*` 表单并 `display:flex` 弹层；与保存/取消/显隐/重置提示词四组按钮闭环。 |
+| `openSettingsModal()` | `L994` | 以 `getDjSettings()` 回填 `cr-cfg-*` 表单并 `renderSettingsPlaylistPrompts()` 重绘歌单提示词选区，再 `display:flex` 弹层；与保存/取消/显隐/重置提示词四组按钮闭环。 |
 
 ### 5.5 核心上下文获取（v6.0.1 已修复）
 
 | 函数 | 签名与位置 | 职责 | 修复要点（对比 `D:\Project\RpgCombat\index.html:11441` 三段式） |
 |---|---|---|---|
-| `extractStoryContext(depth=0)` | `L1053` `async function extractStoryContext(depth): Promise<string>` | 按 `depth` 语义抽取剧情正文：`0=最后一条非空 AI`，`N>0=最近 N*2 条`。返回 `[AI 当前最新剧情]:\n...` 或 `[User/AI]:\n...` 拼接串，或占位符 `(未捕获到剧情正文…)`。 | 三段式：① 原生破窗 `while(window!==parent)` 探测 `tavernWin.SillyTavern.getContext().chat` 深拷贝；② `getChatMessages('0-'+curId,{hide_state:'all'})` + `await _awaitIfPromise` + `window.parent` 降级；③ `getCurrentMessage()+getCurrentMessageId()` 去重补生成楼。字段优先级 `raw_content??content??message??mes`，`trim()` 判空+`swipes[swipe_id]` 回退，`depth` `NaN` 容错。DOM 兜底 `document`→`window.parent.document`→`tavernWin.document` 并按 `.mes.user_mes` 过滤。 |
-| `getLibrarySummaryForPrompt()` | `L1213` `function getLibrarySummaryForPrompt(): string` | 聚合 `bgmPlaylists` 每频段前 8 首为 `- 【频段】: 歌1, 歌2…` 摘要，供 Sidecar 参考“已有曲库”。 | 纯同步，无外部依赖。 |
+| `extractStoryContext(depth=0)` | `L1118` `async function extractStoryContext(depth): Promise<string>` | 按 `depth` 语义抽取剧情正文：`0=最后一条非空 AI`，`N>0=最近 N*2 条`。返回 `[AI 当前最新剧情]:\n...` 或 `[User/AI]:\n...` 拼接串，或占位符 `(未捕获到剧情正文…)`。 | 三段式：① 原生破窗 `while(window!==parent)` 探测 `tavernWin.SillyTavern.getContext().chat` 深拷贝；② `getChatMessages('0-'+curId,{hide_state:'all'})` + `await _awaitIfPromise` + `window.parent` 降级；③ `getCurrentMessage()+getCurrentMessageId()` 去重补生成楼。字段优先级 `raw_content??content??message??mes`，`trim()` 判空+`swipes[swipe_id]` 回退，`depth` `NaN` 容错。DOM 兜底 `document`→`window.parent.document`→`tavernWin.document` 并按 `.mes.user_mes` 过滤。 |
+| `getLibrarySummaryForPrompt(opts?)` | `L1280` `function getLibrarySummaryForPrompt(opts?:{filterEnabled:boolean}): string` | 聚合每频段前 8 首为 `- 【频段】: 歌1, 歌2…` 摘要。`filterEnabled=true` 时仅聚合 `promptEnabled===true` 的频段（v6.1.0 供 Sidecar 过滤）。 | 供 `triggerAiDjDecision` 与设置预览复用。 |
+| `getPlaylistPromptBlocks()` | `L1292` `function getPlaylistPromptBlocks(): string` | 将勾选且 `prompt.trim()` 非空的频段拼为 `- 【分类】提示词：...` 块（每行一频段）。 | Sidecar 第二段“【歌单提示词（玩家勾选）】”的来源。 |
+| `renderSettingsPlaylistPrompts()` | `L1303` `function renderSettingsPlaylistPrompts(): void` | 在设置面板 `#cr-pl-prompt-list` 内渲染每频段的复选框 + `textarea` + 曲库预览（前8首只读）。 | 由 `openSettingsModal` 触发，全选/全不选与 `change/input` 实时写回 `bgmPlaylists`，落盘由保存按钮统一 `savePlaylists()`。 |
 
 ### 5.6 Sidecar AI DJ 引擎
 
 | 函数 | 位置 | 职责 | 关键细节 |
 |---|---|---|---|
-| `triggerAiDjDecision(isManual)` | `L1225` `async function triggerAiDjDecision(isManual=false)` | 唯一 Sidecar 入口：`getDjSettings`→ 校验 `apiKey`（手动时弹设置）→ `await extractStoryContext(cfg.historyDepth)` → `getLibrarySummaryForPrompt` → 空正文阻断（`toastr.warning`+恢复按钮，v6.0.1 新增）→ 组 `userPayload`（曲库+正文）→ 拼 `endpoint+/chat/completions` → `fetch`→ 解析 `choices[0].message.content` 的 `[点一首歌: 歌名 - 歌手]` → `lastIndexOf('-')` 切分 → `playDirect` → `debugMode` 下 `console.groupCollapsed` 分色打印 Endpoint/Model/Depth/SystemPayload/Raw/FinalCommand。 | `isManual=true` 走 `$('#cr-manual-dj-btn').on('click') L1345`；`isManual=false` 走 `onMessageChange` 自动雷达。`historyDepth` 直通 Payload 显式标注。 |
+| `triggerAiDjDecision(isManual)` | `L1290` `async function triggerAiDjDecision(isManual=false)` | 唯一 Sidecar 入口：`getDjSettings`→ 校验 `apiKey` → `await extractStoryContext` → `getLibrarySummaryForPrompt({filterEnabled:true})` + `getPlaylistPromptBlocks()` → 空正文阻断 → 以“[曲库摘要] + [歌单提示词]”（勾选段，无则省略）+ “[正文]”三段拼 `userPayload` → `endpoint+/chat/completions` → `fetch`→ 解析 `[点一首歌: 歌名 - 歌手]` → `playDirect` → `debug` 下分色打印并“📚 歌单提示词”单独日志（v6.1.0）。 | `isManual=true` 走 `#cr-manual-dj-btn L1412`；`isManual=false` 走 `onMessageChange L2471`。全选/全不选仅作用于此处的过滤。 |
 
 ### 5.7 收藏与播放器
 
@@ -178,14 +181,15 @@
 |---|---|---|
 | `fetchSearch(kw, source)` | `L2130` 内联于 `searchAndResolveBestTrack` | `music-api.gdstudio.xyz/types=search` + `corsproxy.io` 兜底，`count=5`。 |
 | `fetchDirectUrl(source, id)` | `L2142` 同上 | `types=url&br=320` 取直链并 `size/br` 前置时长过滤。 |
-| `openedPlaylistCategories` `draggedCatIndex/draggedSongData` 及 10 余 ` $ctn.on('drag…/click')` | `L1605-1804` | HTML5 拖拽：歌曲跨频段 `splice`、频段 `drag-over-top/bottom` 重排、`▲/▼` 按钮、分类折叠 `slideUp/Down`、刻录框 `+/ -` 解析与 `isHttpUrl` 分流至 `celestial_custom_urls`。 |
+| `openedPlaylistCategories` `draggedCatIndex/draggedSongData` 及 10 余 ` $ctn.on('drag…/click')` | `L1670-1880` | HTML5 拖拽：歌曲跨频段 `splice`、频段 `drag-over-top/bottom` 重排、`▲/▼` 按钮、分类折叠 `slideUp/Down`、刻录框 `+/ -` 解析与 `isHttpUrl` 分流至 `celestial_custom_urls`。 |
+| `歌单提示词交互` `#cr-pl-prompt-select-all/deselect-all` + `.cr-pl-prompt-enabled/input` | `L1098-1116` | 设置面板内全选/全不选一键切换 `promptEnabled` 并重绘；复选框 `change` 与输入框 `input` 实时写回 `bgmPlaylists[idx].prompt/promptEnabled`，保存按钮统一 `savePlaylists()` 落盘。 |
 
 ---
 
 ## 六、非功能与约束
 
 - **运行环境**：TavernHelper/油猴 IIFE，依赖 `jQuery`、`localStorage`、`fetch`、`HTMLAudioElement`，无需构建。
-- **数据契约**：`bgmPlaylists` 结构 `{category:string, songs:{title,artist}[]}`，导入时 `category+songs` 强校验（`L1844`）。
+- **数据契约**：`bgmPlaylists` 结构 `{category:string, songs:{title,artist}[], prompt?:string, promptEnabled?:boolean}`（`prompt=''`, `promptEnabled=false` 为默认，全不选/空；旧存档自动迁移，`L172`），导入时 `category+songs` 强校验（`L1844`），额外字段透传；增量合并时同名频段不覆盖既有 `prompt`。
 - **备份契约**：导出含 `{version:"6.0", playlists, urls}`（`L1808`），导入时 `urls` 以 `{...existing, ...imported}` 合并（`L1857`）。
 - **时长契约**：Layer 1 `<55s/>550s` 丢弃（`L2151`），Layer 2 `<60s/>540s` 熔断切歌（`L1998`）。
 
@@ -197,4 +201,5 @@
 |---|---|---|---|
 | v6.0 | 2026-08-24 | 基线发布 | 见 `LOG.md` HASH A1B2C3-S9T0U1 |
 | v6.0.1 | 2026-08-24 | 0层正文必达修复 | `extractStoryContext` 三段式 + `triggerAiDjDecision` 空阻断 + `getDjSettings` NaN 容错 |
+| v6.1.0 | 2026-08-24 | 可选歌单提示词（全选/全不选） | `bgmPlaylists` 新增 `prompt/promptEnabled`（默认全不选/空）+ 设置面板选区 + `getLibrarySummaryForPrompt({filterEnabled})` / `getPlaylistPromptBlocks` / `renderSettingsPlaylistPrompts` + 三段式 `userPayload`（曲库摘要+歌单提示词+正文）+ 导入/新建迁移 |
 

@@ -86,3 +86,15 @@
   3. `SPEC.md` 升级至 v6.0.1：新增第五章函数职责清单（28 函数 + 内联辅助全量备注）、补第四章“0层正文必达”验收项与第七章变更索引。
 - **决策原因**：原同步 `getChatMessages('all')` 在新版 TavernHelper 返回 Promise 时失手，且 DOM 兜底错查 `document` 而非 `window.parent.document`，导致 `historyDepth=0` 时 Sidecar 收空正文而随机选歌。
 - **提交**：`f92b8749f1cff0019ab295a94c13ac37d2dad823`
+---
+
+## [HASH: 96645d0] 可选歌单提示词（全选/全不选，默认全不选/空，v6.1.0）
+- **日期**：2026-08-24
+- **涉及文件**：`酒馆助手脚本-电台直链版.json`、`SPEC.md`
+- **变更行为**：
+  1. 数据模型：`bgmPlaylists` 新增 `prompt:string('')` + `promptEnabled:boolean(false)` 字段，`loadPlaylists` 自动迁移旧存档与出厂列表，默认全不选/空；
+  2. 设置面板：新增“歌单提示词”选区（每频段复选框 + 自定义 `textarea` + 前8首曲库预览），提供“全选”/“全不选”一键切换，`openSettingsModal` 渲染、保存时统一 `savePlaylists`；
+  3. 提示词拼装：`getLibrarySummaryForPrompt({filterEnabled:true})` 仅聚合勾选频段；新增 `getPlaylistPromptBlocks()` / `renderSettingsPlaylistPrompts()`；`triggerAiDjDecision` 改为三段式 `userPayload`（曲库摘要 + 歌单提示词 + 正文），`debug` 新增“📚 歌单提示词”日志；
+  4. 导入/新建：覆盖导入透传 `prompt` 字段并补缺省，增量合并时同名频段不覆盖既有提示词，新建频段补默认值。
+- **决策原因**：满足玩家自选发送范围的需求：既可仅发送已勾选频段的歌单摘要，又可为每频段附加自定义描述，避免全量歌单污染 Sidecar 上下文。
+- **提交**：`96645d0aab6957f932c0571907b9de58ac07e90c`

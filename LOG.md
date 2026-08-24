@@ -98,3 +98,17 @@
   4. 导入/新建：覆盖导入透传 `prompt` 字段并补缺省，增量合并时同名频段不覆盖既有提示词，新建频段补默认值。
 - **决策原因**：满足玩家自选发送范围的需求：既可仅发送已勾选频段的歌单摘要，又可为每频段附加自定义描述，避免全量歌单污染 Sidecar 上下文。
 - **提交**：`96645d0aab6957f932c0571907b9de58ac07e90c`
+---
+
+## [HASH: 07cfcb3] DJ 角色预设切换（prompt-only）+ 新鲜感预设（v6.2.0）
+- **日期**：2026-08-24
+- **涉及文件**：`酒馆助手脚本-电台直链版.json`、`SPEC.md`
+- **变更行为**：
+  1. 新增 `DEFAULT_FRESH_PROMPT`“✨ 新鲜感·参考风格选新曲”：严禁复用列表与歌单提示词中的任何曲目，须以其为风格锚点从知识库挑同风格新曲，保证新鲜感；
+  2. 新增 `DEFAULT_DJ_PRESETS` 两条出厂预设（🎬 经典优先在库 / ✨ 新鲜感），可重命名/删除，删光重建；持久化 `cr_dj_presets` + `cr_dj_active_preset_id`，辅助 `loadDjPresets/saveDjPresets/getActivePreset/ensurePresetsMigrated/getEffectiveSystemPrompt/renderPresetSelect`；
+  3. 设置面板 System Prompt 上方新增 DJ 角色预设下拉（`#cr-preset-select`）+ 新建/重命名/删除三按钮 + 样式，`openSettingsModal` 接入预设渲染与回填，下拉切换即时改 `activeId` 与文本域；
+  4. 预设交互：新建以当前文本为底、重命名改名、删除带确认（≤1 条阻断）；保存时同步写回当前预设并同步全局 `cr_dj_system_prompt`；
+  5. Sidecar 接入 `getEffectiveSystemPrompt()`：`triggerAiDjDecision` 侧 `system` 字段与 `debug` 日志均随选中预设实时变化；重置按钮按预设类型分别回退到经典/新鲜感原文。
+- **决策原因**：满足“储存切换多个预设”与“参考风格选新歌保新鲜感”的双需求，预设仅存提示词文本（prompt-only），不携带历史深度/勾选/API，避免切预设误改全局。
+- **提交**：`07cfcb3b9bd7e35003f6f32f6588b63a5a635734`
+

@@ -1,6 +1,6 @@
 # 《音乐电台》项目规范与目标文档 (SPEC.md)
 
-> **版本**：v6.1.0  
+> **版本**：v6.2.0  
 > **定位**：SillyTavern（酒馆）专属的高性能、无感解耦、全源检索的赛博朋克深空沉浸电台。
 
 ---
@@ -60,7 +60,7 @@
 
 | 文件 | 作用 | 可否删除 |
 |---|---|---|
-| `酒馆助手脚本-电台直链版.json` | 唯一发布脚本（IIFE，自包含 HTML+CSS+JS，2601 行） | 否，核心交付物 |
+| `酒馆助手脚本-电台直链版.json` | 唯一发布脚本（IIFE，自包含 HTML+CSS+JS，2721 行） | 否，核心交付物 |
 | `SPEC.md` | 本文档，目标与契约 | 否 |
 | `README.md` | 现状与使用说明 | 否 |
 | `LOG.md` / `LOG-INDEX.md` | 施工历史与索引 | 否 |
@@ -78,13 +78,14 @@
 - [x] **Debug 输出可观测**：开启 Debug 模式时，控制台能完整输出 System Prompt、User Payload 与原始模型输出。
 - [x] **0层正文必达**：`historyDepth=0` 时手动/自动触发均能稳定携带当前 0 层（AI 最新回复）全文进入 Sidecar Payload，空正文时阻断而非随机（v6.0.1 修复，见第五章）。
 - [x] **可选歌单提示词**：设置面板内每频段可勾选是否发送“前8首摘要 + 自定义提示词文本”，支持全选/全不选，默认全不选/空；导入导出天然携选（v6.1.0）。
+- [x] **DJ 角色预设切换**：设置内可保存/切换多条 DJ 系统提示词（prompt-only，只存提示词文本），内置“🎬 经典优先在库”与“✨ 新鲜感·参考风格选新曲”两条可编辑预设，支持新建/重命名/删除，下拉即时切换（v6.2.0）。
 
 ---
 
 ## 五、脚本函数职责清单 (Function Reference) — v6.0.1 现状
 
 > 约定：`0 层 = AI 最新回复`，`1 层 = 上一条用户输入 + 当前 AI`，`N 层 = 最近 N*2 条`。
-> 注释密度：正文 IIFE 内约 2.1% 行注释（52/2601），以 `// === ... ===` 分区为主，函数体几乎无行内注释，命名即文档。
+> 注释密度：正文 IIFE 内约 2.1% 行注释（52/2721），以 `// === ... ===` 分区为主，函数体几乎无行内注释，命名即文档。
 > 文件统一位置：`酒馆助手脚本-电台直链版.json` 的 `content` 字段内 IIFE `(function(){...})()`。
 
 ### 5.1 常量与状态
@@ -111,7 +112,12 @@
 | `loadPlaylists()` | `L172` `function loadPlaylists()` | 从 `localStorage.celestial_all_playlists` 恢复 `bgmPlaylists`，失败则深拷贝 `initialDefaultPlaylists`。对每项补 `prompt=''/promptEnabled=false` 迁移（含出厂与旧存档）。 | 首屏在 CSS/HTML 注入后同步调用，决定首屏曲库。 |
 | `savePlaylists()` | `L190` `function savePlaylists()` | `JSON.stringify(bgmPlaylists)` 写回 `celestial_all_playlists`。 | 所有增删改拖拽导入路径的唯一写口。 |
 | `getDjSettings()` | `L206` `function getDjSettings(): {apiUrl,apiKey,model,historyDepth,autoTrigger,debugMode,systemPrompt}` | 汇总 6 项 DJ 配置，`historyDepth` 含 `Number.isFinite` 的 `NaN` 容错（v6.0.1 补）。 | `triggerAiDjDecision/onMessageChange/openSettingsModal` 的唯一读口。 |
-| `saveDjSettings(cfg)` | `L218` `function saveDjSettings(cfg)` | 逐项 `trim()` 后写 `localStorage cr_dj_*`。 | 由设置面板保存按钮触发，写后立即影响下一次 `triggerAiDjDecision`。 |
+| `saveDjSettings(cfg)` | `L228` `function saveDjSettings(cfg)` | 逐项 `trim()` 后写 `localStorage cr_dj_*`。 | 由设置面板保存按钮触发，写后立即影响下一次 `triggerAiDjDecision`。 |
+| `loadDjPresets() / saveDjPresets(list)` | `L238` | 读写 `cr_dj_presets`；空时回填两条出厂并选中首条。 |
+| `getActivePresetId / setActivePresetId / getActivePreset()` | `L250` | 选中态读写；`getActivePreset` 在 `activeId` 失效时回退首条。 |
+| `ensurePresetsMigrated()` | `L260` | 首次从旧 `cr_dj_system_prompt` 导入为“我的预设”（若与两条出厂均不等），并保证 `activeId` 有效。 |
+| `getEffectiveSystemPrompt()` | `L275` | 返回当前预设 `prompt`，否则回退 `cr_dj_system_prompt / DEFAULT_DJ_PROMPT`。被 `openSettingsModal` 与 `triggerAiDjDecision` 使用。 |
+| `renderPresetSelect()` | `L285` | 渲染 `#cr-preset-select` 下拉选项并同步选中态。 |
 
 ### 5.3 文本清洗与查询构建
 
@@ -126,7 +132,7 @@
 | 函数 | 位置 | 职责 |
 |---|---|---|
 | `applyDockPosition(isDraggingNow, dragX, dragY)` | `L871` | 计算并应用贴边/展开两种布局：收纳态 18×54 胶囊（`dock-left/right` + 方向箭头），展开态 10px 边距面板；拖拽时跟手，落盘时 `clamp` 并持久化 `cr_dock_side/top`。 |
-| `openSettingsModal()` | `L994` | 以 `getDjSettings()` 回填 `cr-cfg-*` 表单并 `renderSettingsPlaylistPrompts()` 重绘歌单提示词选区，再 `display:flex` 弹层；与保存/取消/显隐/重置提示词四组按钮闭环。 |
+| `openSettingsModal()` | `L1025` | 以 `getDjSettings()` 回填基础表单，`ensurePresetsMigrated()+renderPresetSelect()+getEffectiveSystemPrompt()` 载入预设与提示词，再 `renderSettingsPlaylistPrompts()` 并弹层；下拉切换仅改 `activeId` 与文本域，未保存前为脏态。 |
 
 ### 5.5 核心上下文获取（v6.0.1 已修复）
 
@@ -141,7 +147,7 @@
 
 | 函数 | 位置 | 职责 | 关键细节 |
 |---|---|---|---|
-| `triggerAiDjDecision(isManual)` | `L1290` `async function triggerAiDjDecision(isManual=false)` | 唯一 Sidecar 入口：`getDjSettings`→ 校验 `apiKey` → `await extractStoryContext` → `getLibrarySummaryForPrompt({filterEnabled:true})` + `getPlaylistPromptBlocks()` → 空正文阻断 → 以“[曲库摘要] + [歌单提示词]”（勾选段，无则省略）+ “[正文]”三段拼 `userPayload` → `endpoint+/chat/completions` → `fetch`→ 解析 `[点一首歌: 歌名 - 歌手]` → `playDirect` → `debug` 下分色打印并“📚 歌单提示词”单独日志（v6.1.0）。 | `isManual=true` 走 `#cr-manual-dj-btn L1412`；`isManual=false` 走 `onMessageChange L2471`。全选/全不选仅作用于此处的过滤。 |
+| `triggerAiDjDecision(isManual)` | `L1400` `async function triggerAiDjDecision(isManual=false)` | 唯一 Sidecar 入口：`getDjSettings`→ 校验 `apiKey` → `await extractStoryContext` → `getLibrarySummaryForPrompt({filterEnabled:true})` + `getPlaylistPromptBlocks()` → 空正文阻断 → 以“[曲库摘要] + [歌单提示词]”（勾选段，无则省略）+ “[正文]”三段拼 `userPayload` → `endpoint+/chat/completions` → `fetch`→ 解析 `[点一首歌: 歌名 - 歌手]` → `playDirect`。`system` 侧使用 `getEffectiveSystemPrompt()`（选中预设，v6.2.0），`debug` 下“📚 歌单提示词”与“📜 System Prompt”均随预设实时变化。 | `isManual=true` 走 `#cr-manual-dj-btn`；`isManual=false` 走 `onMessageChange`。全选/全不选仅作用于曲库段过滤。 |
 
 ### 5.7 收藏与播放器
 
@@ -183,6 +189,7 @@
 | `fetchDirectUrl(source, id)` | `L2142` 同上 | `types=url&br=320` 取直链并 `size/br` 前置时长过滤。 |
 | `openedPlaylistCategories` `draggedCatIndex/draggedSongData` 及 10 余 ` $ctn.on('drag…/click')` | `L1670-1880` | HTML5 拖拽：歌曲跨频段 `splice`、频段 `drag-over-top/bottom` 重排、`▲/▼` 按钮、分类折叠 `slideUp/Down`、刻录框 `+/ -` 解析与 `isHttpUrl` 分流至 `celestial_custom_urls`。 |
 | `歌单提示词交互` `#cr-pl-prompt-select-all/deselect-all` + `.cr-pl-prompt-enabled/input` | `L1098-1116` | 设置面板内全选/全不选一键切换 `promptEnabled` 并重绘；复选框 `change` 与输入框 `input` 实时写回 `bgmPlaylists[idx].prompt/promptEnabled`，保存按钮统一 `savePlaylists()` 落盘。 |
+| `DJ 预设交互` `#cr-preset-select / #cr-preset-new/rename/del-btn` | `L1140` | 下拉 `change` 切 `activeId` 并回填文本域；“新建”以当前文本为底克隆、`prompt()` 命名；“重命名”改 `name`；“删除”需确认，删至空则重建两条出厂。均经 `saveDjPresets` 持久化。 | |
 
 ---
 
@@ -202,4 +209,5 @@
 | v6.0 | 2026-08-24 | 基线发布 | 见 `LOG.md` HASH A1B2C3-S9T0U1 |
 | v6.0.1 | 2026-08-24 | 0层正文必达修复 | `extractStoryContext` 三段式 + `triggerAiDjDecision` 空阻断 + `getDjSettings` NaN 容错 |
 | v6.1.0 | 2026-08-24 | 可选歌单提示词（全选/全不选） | `bgmPlaylists` 新增 `prompt/promptEnabled`（默认全不选/空）+ 设置面板选区 + `getLibrarySummaryForPrompt({filterEnabled})` / `getPlaylistPromptBlocks` / `renderSettingsPlaylistPrompts` + 三段式 `userPayload`（曲库摘要+歌单提示词+正文）+ 导入/新建迁移 |
+| v6.2.0 | 2026-08-24 | DJ 角色预设切换 + 新鲜感预设 | 新增 `DEFAULT_FRESH_PROMPT / DEFAULT_DJ_PRESETS`、“✨ 新鲜感·参考风格选新曲”（禁止复用、参考风格挑新），`cr_dj_presets / cr_dj_active_preset_id` 持久化，设置内下拉+新建/重命名/删除，`getEffectiveSystemPrompt` 接入 Sidecar |
 

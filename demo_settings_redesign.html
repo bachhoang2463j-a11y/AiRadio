@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI DJ 设置页面现代化窄屏工业级 UI (320px移动端适配) - 《天式号·太空电台》</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Jura:wght@400;600;700&family=Noto+Serif+SC:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #06080b;
+            --bg-panel: rgba(10, 13, 18, 0.97);
+            --bg-surface: #0e131b;
+            --bg-surface-elevated: #141b26;
+            --bg-surface-hover: #1b2433;
+            --bg-input: #080b10;
+            
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-gold: rgba(196, 167, 125, 0.38);
+            --border-gold-focus: #c4a77d;
+            --border-gold-glow: rgba(196, 167, 125, 0.25);
+            
+            --gold-primary: #c4a77d;
+            --gold-light: #e6d3b3;
+            --gold-dim: rgba(196, 167, 125, 0.65);
+            --gold-bg-subtle: rgba(196, 167, 125, 0.08);
+            --gold-bg-active: rgba(196, 167, 125, 0.2);
+            
+            --text-primary: #f0f3f6;
+            --text-secondary: #9aa7b8;
+            --text-muted: #627082;
+            
+            --success: #4ade80;
+            --success-bg: rgba(74, 222, 128, 0.12);
+            --danger: #f87171;
+            --danger-bg: rgba(248, 113, 113, 0.15);
+            
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            
+            --shadow-panel: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(196, 167, 125, 0.3), 0 0 24px rgba(196, 167, 125, 0.08);
+            --transition-smooth: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Jura', 'Noto Serif SC', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px 12px;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(196, 167, 125, 0.09) 0%, transparent 60%),
+                radial-gradient(circle at 100% 100%, rgba(18, 26, 38, 0.6) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* 顶部提示横幅 */
+        .demo-top-banner {
+            width: 100%;
+            max-width: 340px;
+            background: rgba(14, 19, 27, 0.9);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+        }
+
+        .demo-top-banner-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+
+        .demo-top-banner-desc {
+            font-size: 10px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* 手机/窄侧边栏视口容器 (320px 宽度) */
+        .mobile-viewport-container {
+            width: 320px;
+            height: 560px;
+            max-height: 90vh;
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-panel);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            animation: panelFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* 侧边暗金光条指示器 */
+        .mobile-viewport-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--gold-primary);
+            box-shadow: 0 0 10px var(--gold-primary);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        @keyframes panelFadeIn {
+            from { opacity: 0; transform: scale(0.97) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* 顶部 Header */
+        .panel-header {
+            padding: 11px 12px 11px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-subtle);
+            background: linear-gradient(90deg, rgba(196, 167, 125, 0.12) 0%, transparent 100%);
+            flex-shrink: 0;
+        }
+
+        .panel-header-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gold-light);
+            letter-spacing: 1px;
+            user-select: none;
+        }
+
+        .panel-header-title svg {
+            width: 13px;
+            height: 13px;
+            fill: var(--gold-primary);
+        }
+
+        .panel-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 16px;
+            cursor: pointer;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            transition: var(--transition-smooth);
+            line-height: 1;
+        }
+
+        .panel-close-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* 窄屏分栏选项卡 Tab 栏 (320px 黄金等分) */
+        .panel-nav-tabs {
+            display: flex;
+            background: rgba(6, 8, 11, 0.7);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0 4px;
+            flex-shrink: 0;
+        }
+
+        .nav-tab-item {
+            flex: 1;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 9px 2px 8px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .nav-tab-item svg {
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+            opacity: 0.7;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-tab-item:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-tab-item.active {
+            color: var(--gold-light);
+            border-bottom-color: var(--gold-primary);
+            background: linear-gradient(180deg, rgba(196, 167, 125, 0.06) 0%, transparent 100%);
+        }
+
+        .nav-tab-item.active svg {
+            fill: var(--gold-primary);
+            opacity: 1;
+        }
+
+        .tab-badge {
+            position: absolute;
+            top: 4px;
+            right: 12px;
+            background: rgba(196, 167, 125, 0.2);
+            color: var(--gold-primary);
+            font-size: 8px;
+            padding: 0 4px;
+            border-radius: 6px;
+            font-weight: 700;
+            line-height: 1.2;
+            border: 1px solid rgba(196, 167, 125, 0.3);
+        }
+
+        /* 滚动内容区 */
+        .panel-body-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .panel-body-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .panel-body-scroll::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-body-scroll::-webkit-scrollbar-thumb {
+            background: rgba(196, 167, 125, 0.3);
+            border-radius: 2px;
+        }
+
+        .tab-content-pane {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            animation: paneFade 0.2s ease;
+        }
+
+        .tab-content-pane.active {
+            display: flex;
+        }
+
+        @keyframes paneFade {
+            from { opacity: 0; transform: translateY(3px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 紧凑卡片组件 */
+        .compact-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .compact-card-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 4px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .form-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-link-action {
+            font-size: 9px;
+            color: var(--gold-primary);
+            cursor: pointer;
+            text-decoration: underline;
+            opacity: 0.85;
+            transition: var(--transition-smooth);
+        }
+
+        .form-link-action:hover {
+            opacity: 1;
+            color: var(--gold-light);
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 11px;
+            padding: 6px 8px;
+            transition: var(--transition-smooth);
+            outline: none;
+        }
+
+        .form-input:hover, .form-select:hover, .form-textarea:hover {
+            border-color: rgba(196, 167, 125, 0.3);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 0 2px var(--border-gold-glow);
+            background: #06090e;
+        }
+
+        .input-suffix-btn {
+            position: absolute;
+            right: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+            border-radius: 3px;
+            color: var(--text-secondary);
+            font-size: 9px;
+            padding: 2px 6px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .input-suffix-btn:hover {
+            background: var(--gold-bg-active);
+            color: var(--gold-light);
+            border-color: var(--border-gold);
+        }
+
+        /* 快捷模型 Chips */
+        .chip-scroll-row {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            margin-top: 2px;
+        }
+
+        .chip-scroll-row::-webkit-scrollbar {
+            height: 2px;
+        }
+
+        .chip-scroll-row::-webkit-scrollbar-thumb {
+            background: rgba(196, 167, 125, 0.2);
+        }
+
+        .model-chip {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 2px 7px;
+            font-size: 9px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            font-family: 'Fira Code', monospace;
+            transition: var(--transition-smooth);
+        }
+
+        .model-chip:hover {
+            color: var(--gold-light);
+            border-color: var(--border-gold);
+            background: var(--gold-bg-subtle);
+        }
+
+        .model-chip.active {
+            background: var(--gold-bg-active);
+            border-color: var(--gold-primary);
+            color: var(--gold-light);
+            font-weight: 600;
+        }
+
+        /* 现代 Switch 开关 (针对 320px 紧凑优化) */
+        .compact-switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-smooth);
+        }
+
+        .compact-switch-row:hover {
+            border-color: rgba(196, 167, 125, 0.25);
+        }
+
+        .switch-label-block {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            flex: 1;
+            padding-right: 8px;
+        }
+
+        .switch-label-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .switch-label-desc {
+            font-size: 9px;
+            color: var(--text-muted);
+            line-height: 1.2;
+        }
+
+        .switch-btn-control {
+            position: relative;
+            width: 32px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .switch-btn-control input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-btn-track {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            transition: var(--transition-smooth);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .switch-btn-track:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 2px;
+            bottom: 2px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            transition: var(--transition-smooth);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .switch-btn-control input:checked + .switch-btn-track {
+            background-color: var(--gold-primary);
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 6px rgba(196, 167, 125, 0.4);
+        }
+
+        .switch-btn-control input:checked + .switch-btn-track:before {
+            transform: translateX(14px);
+            background-color: #0c1017;
+        }
+
+        /* 预设工具栏按钮群 (320px 窄屏适配) */
+        .preset-btn-group {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .preset-action-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 3px;
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-family: inherit;
+            padding: 5px 2px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-align: center;
+        }
+
+        .preset-action-btn:hover {
+            background: var(--gold-bg-active);
+            color: var(--gold-light);
+            border-color: var(--border-gold);
+        }
+
+        .preset-action-btn.del-btn:hover {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* 系统提示词编辑器 */
+        .prompt-box-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .prompt-box-header {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 6px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        .prompt-textarea-field {
+            width: 100%;
+            height: 150px;
+            background: transparent;
+            border: none;
+            color: #dbe4ef;
+            font-family: 'Fira Code', 'Noto Serif SC', monospace;
+            font-size: 10px;
+            line-height: 1.5;
+            padding: 8px;
+            resize: vertical;
+            outline: none;
+        }
+
+        /* 歌单联动控制 (Tab 3) */
+        .pl-batch-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+        }
+
+        .pl-search-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 4px 8px;
+            font-size: 10px;
+            color: #fff;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .pl-search-input:focus {
+            border-color: var(--gold-primary);
+        }
+
+        .pl-card-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: var(--transition-smooth);
+        }
+
+        .pl-card-item.is-enabled {
+            border-color: rgba(196, 167, 125, 0.4);
+            background: linear-gradient(135deg, rgba(196, 167, 125, 0.07) 0%, var(--bg-surface) 100%);
+        }
+
+        .pl-card-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .pl-card-title-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .pl-card-title-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pl-card-item.is-enabled .pl-card-title-text {
+            color: var(--gold-light);
+        }
+
+        .pl-card-count {
+            font-size: 9px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1px 4px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .pl-chips-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            max-height: 38px;
+            overflow: hidden;
+        }
+
+        .pl-song-chip {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 3px;
+            font-size: 8.5px;
+            color: var(--text-secondary);
+            padding: 1px 5px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 130px;
+            overflow: hidden;
+        }
+
+        .pl-prompt-textarea {
+            width: 100%;
+            height: 38px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 3px;
+            color: #dbe4ef;
+            font-family: inherit;
+            font-size: 9.5px;
+            line-height: 1.35;
+            padding: 4px 6px;
+            resize: vertical;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .pl-prompt-textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 0 1px var(--border-gold-glow);
+        }
+
+        /* 固定底部 Footer (确保任何时候都能直接保存) */
+        .panel-footer-fixed {
+            padding: 8px 10px;
+            background: rgba(6, 9, 13, 0.98);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            z-index: 5;
+        }
+
+        .btn-footer-cancel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 11px;
+            padding: 7px 0;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-align: center;
+        }
+
+        .btn-footer-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .btn-footer-save {
+            flex: 2;
+            background: linear-gradient(135deg, rgba(196, 167, 125, 0.4) 0%, rgba(196, 167, 125, 0.18) 100%);
+            border: 1px solid var(--gold-primary);
+            border-radius: var(--radius-sm);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 7px 0;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 0 12px rgba(196, 167, 125, 0.25);
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .btn-footer-save:hover {
+            background: rgba(196, 167, 125, 0.55);
+            box-shadow: 0 0 18px rgba(196, 167, 125, 0.45);
+        }
+
+        .btn-footer-save:active {
+            transform: scale(0.99);
+        }
+
+        /* Toast 气泡提醒 */
+        .toast-bubble {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(14, 18, 25, 0.96);
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-light);
+            font-size: 11px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.85);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 99999;
+            white-space: nowrap;
+        }
+
+        .toast-bubble.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部说明提示 -->
+    <div class="demo-top-banner">
+        <div class="demo-top-banner-title">
+            <span>⚡ AI DJ 独立引擎设置 (320px 移动端窄屏标准布局)</span>
+        </div>
+        <div class="demo-top-banner-desc">
+            按现代工业 UI 设计重构：彻底解决长滑问题，<b>Tab 1 完整集成端点/Key/模型/楼层深度/Debug模式/自动选歌</b>；<b>Tab 2 角色预设与提示词</b>；<b>Tab 3 容纳 14+ 歌单联动</b>。
+        </div>
+    </div>
+
+    <!-- 320px 视口主容器 -->
+    <div class="mobile-viewport-container" id="cr-settings-modal">
+        
+        <!-- Header -->
+        <div class="panel-header">
+            <div class="panel-header-title">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <span>AI DJ 独立选歌引擎设置</span>
+            </div>
+            <button class="panel-close-btn" title="关闭设置" onclick="triggerToast('已关闭设置')">×</button>
+        </div>
+
+        <!-- 320px 黄金等分 Tab 栏 -->
+        <div class="panel-nav-tabs">
+            <button class="nav-tab-item active" onclick="switchTab('tab-engine', this)">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <span>接口与参数</span>
+            </button>
+            <button class="nav-tab-item" onclick="switchTab('tab-persona', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span>角色预设</span>
+                <span class="tab-badge" id="badge-preset-num">3</span>
+            </button>
+            <button class="nav-tab-item" onclick="switchTab('tab-prompts', this)">
+                <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
+                <span>歌单提示词</span>
+                <span class="tab-badge" id="badge-enabled-num">2/14</span>
+            </button>
+        </div>
+
+        <!-- 滚动内容区 -->
+        <div class="panel-body-scroll">
+            
+            <!-- =====================================
+                 TAB 1: 接口与参数 (包含楼层深度 & Debug)
+                 ===================================== -->
+            <div class="tab-content-pane active" id="tab-engine">
+                
+                <!-- API 卡片 -->
+                <div class="compact-card">
+                    <div class="compact-card-title">
+                        <span>🌐 API 接入凭据</span>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">API 接口地址 (Base URL):</label>
+                        <input type="text" class="form-input" id="cfg-api-url" value="https://api.deepseek.com/v1" placeholder="https://api.openai.com/v1">
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">
+                            <span>API 密钥 (API Key):</span>
+                            <span class="form-link-action" id="btn-toggle-key-vis" onclick="toggleKeyVis()">显示/隐藏</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-input" id="cfg-api-key" value="sk-xxxxxxxxxxxxxxxxxxxxxxxx" placeholder="sk-...">
+                            <button class="input-suffix-btn" onclick="testConnection()">⚡ 连通测试</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模型与楼层深度策略卡片 -->
+                <div class="compact-card">
+                    <div class="compact-card-title">
+                        <span>🤖 模型与上下文楼层</span>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">模型代号 (Model Name):</label>
+                        <input type="text" class="form-input" id="cfg-model" value="deepseek-chat" placeholder="gpt-4o-mini / deepseek-chat">
+                        <div class="chip-scroll-row">
+                            <span class="model-chip active" onclick="pickModel('deepseek-chat')">deepseek-chat</span>
+                            <span class="model-chip" onclick="pickModel('gemini-2.5-flash')">gemini-2.5-flash</span>
+                            <span class="model-chip" onclick="pickModel('gpt-4o-mini')">gpt-4o-mini</span>
+                            <span class="model-chip" onclick="pickModel('claude-3-5-haiku')">haiku</span>
+                        </div>
+                    </div>
+
+                    <!-- 上下文参考楼层深度（清晰展示） -->
+                    <div class="form-row" style="margin-top: 4px;">
+                        <label class="form-label">
+                            <span>上下文参考楼层深度:</span>
+                            <span style="font-size:9px; color:var(--gold-primary);">默认 0 层极速</span>
+                        </label>
+                        <select class="form-select" id="cfg-depth">
+                            <option value="0" selected>0 层 (仅当前 AI 最新单条回复 · 极速低消耗)</option>
+                            <option value="1">1 层 (上一条用户输入 + 当前 AI 回复)</option>
+                            <option value="2">2 轮对话 (最近 4 条消息)</option>
+                            <option value="3">3 轮对话 (最近 6 条消息)</option>
+                            <option value="5">5 轮对话 (宏观长线剧情铺垫)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 触发与调试开关卡片 (清晰展示 Debug 开关与自动选歌) -->
+                <div class="compact-card">
+                    <div class="compact-card-title">
+                        <span>⚡ 触发与调试选项</span>
+                    </div>
+
+                    <!-- 正文生成后自动选歌 Switch -->
+                    <div class="compact-switch-row">
+                        <div class="switch-label-block">
+                            <div class="switch-label-title">正文生成后自动选歌</div>
+                            <div class="switch-label-desc">酒馆回复完毕后，自动异步推荐切歌</div>
+                        </div>
+                        <label class="switch-btn-control">
+                            <input type="checkbox" id="cfg-auto-trigger" checked>
+                            <span class="switch-btn-track"></span>
+                        </label>
+                    </div>
+
+                    <!-- 提示词 Debug 模式 Switch -->
+                    <div class="compact-switch-row">
+                        <div class="switch-label-block">
+                            <div class="switch-label-title">提示词 Debug 模式</div>
+                            <div class="switch-label-desc">在 F12 控制台打印完整 Prompt 与模型决策</div>
+                        </div>
+                        <label class="switch-btn-control">
+                            <input type="checkbox" id="cfg-debug-mode">
+                            <span class="switch-btn-track"></span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- =====================================
+                 TAB 2: DJ 角色预设与系统提示词
+                 ===================================== -->
+            <div class="tab-content-pane" id="tab-persona">
+                
+                <div class="compact-card">
+                    <div class="compact-card-title">
+                        <span>🎭 DJ 角色预设</span>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">选择预设 (切换即时生效):</label>
+                        <select class="form-select" id="cfg-preset-select" onchange="onPresetSelected()">
+                            <option value="default-classic">🎬 经典优先在库 (优先0ms在库)</option>
+                            <option value="default-fresh">✨ 新鲜感·参考风格选新曲</option>
+                            <option value="preset-cyber">🌌 赛博庞克·合成波风格 DJ</option>
+                        </select>
+                    </div>
+
+                    <div class="preset-btn-group">
+                        <button class="preset-action-btn" onclick="newPresetAction()">＋ 新建</button>
+                        <button class="preset-action-btn" onclick="renamePresetAction()">✏️ 重命名</button>
+                        <button class="preset-action-btn del-btn" onclick="deletePresetAction()">🗑️ 删除</button>
+                    </div>
+                    <div style="font-size:9px; color:var(--text-muted); line-height:1.3; margin-top:2px;">
+                        内置经典/新鲜感两条出厂预设，保存时写入当前预设。
+                    </div>
+                </div>
+
+                <div class="compact-card">
+                    <div class="compact-card-title">
+                        <span>📜 系统提示词 (System Prompt)</span>
+                        <a class="form-link-action" onclick="resetPromptAction()">↺ 恢复默认</a>
+                    </div>
+
+                    <div class="prompt-box-card">
+                        <div class="prompt-box-header">
+                            <span>预设：<b id="lbl-active-preset-name" style="color:var(--gold-light);">🎬 经典优先在库</b></span>
+                            <span id="lbl-char-counter">382 字符</span>
+                        </div>
+                        <textarea class="prompt-textarea-field" id="cfg-system-prompt" oninput="updateCharCount()">你是一位顶级的电影/动漫影视配乐总监与动态氛围 BGM DJ。
+你的唯一任务是：仔细分析当前最新的剧情走向、人物情绪、环境氛围与叙事张力，为本幕剧情挑选一首绝佳的背景音乐（BGM）。
+
+【决策优先级与准则】：
+1. 优先纯音乐、动漫无人声配乐、电影原声 OST、氛围器乐与古典爵士，避免嘈杂人声打乱阅读心流。
+2. 优先在【当前电台已有曲库列表】中挑选高度契合的曲目（可实现 0 毫秒极速播放）。
+3. 若已有曲库中均不符合本轮特殊意境（如克苏鲁恐怖、1920年代爵士、热血决战、温馨日常等），请从你的海量音乐知识库中挑选一首知名且高适配度的经典原声曲目。
+4. 严格输出标准格式，禁止输出任何寒暄、废话或解释，只输出一行：
+[点一首歌: 歌名 - 歌手]</textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- =====================================
+                 TAB 3: 歌单提示词联动 (包含 14+ 丰富歌单)
+                 ===================================== -->
+            <div class="tab-content-pane" id="tab-prompts">
+                
+                <!-- 批量工具栏 -->
+                <div class="pl-batch-toolbar">
+                    <span style="color:var(--gold-light); font-weight:700;">歌单提示词联动</span>
+                    <div style="display:flex; gap:6px;">
+                        <a class="form-link-action" onclick="toggleAllCards(true)">全选</a>
+                        <span style="color:var(--border-subtle);">|</span>
+                        <a class="form-link-action" onclick="toggleAllCards(false)">全不选</a>
+                    </div>
+                </div>
+
+                <!-- 快速过滤搜索框 -->
+                <input type="text" class="pl-search-input" placeholder="🔍 快速过滤频段名称..." id="pl-filter-kw" oninput="filterPlaylists()">
+
+                <div style="font-size:9px; color:var(--text-muted); line-height:1.3; padding:0 2px;">
+                    勾选的频段将随 Sidecar 发送“前8首摘要 + 自定义提示词”。
+                </div>
+
+                <!-- 14+ 歌单卡片流列表 -->
+                <div style="display:flex; flex-direction:column; gap:8px;" id="pl-cards-dom-list">
+                    <!-- 动态生成 -->
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- 固定在底部的 Footer (无论如何滚动都永远置底可见) -->
+        <div class="panel-footer-fixed">
+            <button class="btn-footer-cancel" onclick="triggerToast('已取消修改')">取消</button>
+            <button class="btn-footer-save" onclick="saveAllSettings()">保存配置</button>
+        </div>
+
+    </div>
+
+    <!-- 状态反馈 Toast 气泡 -->
+    <div class="toast-bubble" id="toast-notify">
+        <span id="toast-text">✅ 配置已成功保存！</span>
+    </div>
+
+    <script>
+        // 14+ 丰富歌单模拟数据
+        const mockPlaylists = [
+            { category: "★ 我的收藏", count: 0, songs: ["(空频段)"], enabled: false, prompt: "" },
+            { category: "进击的巨人·燃爆战曲", count: 9, songs: ["YouSeeBIGGIRL/T:T", "ət'aek 0N tάɪtn", "立body!机st", "Vogel im Käfig", "Call of silence", "EMA", "Barricades"], enabled: true, prompt: "绝望战局反击、史诗变身、泽野弘之燃爆核爆神曲、高燃管弦乐" },
+            { category: "远征33·幽光秘境", count: 5, songs: ["Taking Down the Paintress", "Grandis Refuge", "Tics Tacs", "Lumière Nocturne", "Glow Cavern"], enabled: false, prompt: "幽光洞窟、古老遗迹、法式唯美氛围器乐、探险神秘" },
+            { category: "克苏鲁·复古秘境(1920s)", count: 6, songs: ["Rhapsody in Blue", "Dark Was the Night", "Danse Macabre", "Gymnopédie No. 1", "St. Louis Blues", "Clair de Lune"], enabled: false, prompt: "1920年代留声机、黑胶唱片质感、调查员理智检定、诡异低语" },
+            { category: "日常氛围", count: 9, songs: ["Fear Brought Me This Far", "陨落 伴奏", "Time to go home", "Nocturne in Paris", "Sleeping Stardust", "4.5 Billion Years Old"], enabled: false, prompt: "温暖酒馆壁炉、温馨日常对白、舒缓慢节奏叙事、治愈钢琴" },
+            { category: "遭遇危机", count: 8, songs: ["Into Orbit", "Aurora XV 54", "Eyes of Wonder", "Beyond the Stars", "Cornfield Chase", "Moon", "Dance For Me Wallis"], enabled: false, prompt: "紧迫危局、心跳加速、逃亡与未知压迫感、悬疑倒计时" },
+            { category: "深刻倾诉", count: 10, songs: ["Merry Christmas Mr. Lawrence", "III (Find Yourself)", "城南花已开", "破旧世界", "green to blue", "A Light Above Descending"], enabled: false, prompt: "灵魂共鸣、催泪离别、真情流露、唯美伤感" },
+            { category: "私密频段", count: 6, songs: ["Let's Go Out Tonight", "Kingdom Of Heaven", "Her Eyes", "Bed For Two", "Room 907", "Forbidden Fruit"], enabled: false, prompt: "微醺夜色、私密对白、暧昧浪漫心跳、慢摇爵士" },
+            { category: "赛博朋克·夜之城", count: 7, songs: ["Night City Vibe", "Rebel Path", "Chippin' In", "Major Crimes", "I Really Want to Stay At Your House", "Resist and Disorder"], enabled: true, prompt: "霓虹雨夜、黑客义体、Synthwave合成波、电子未来感" },
+            { category: "东方Project·幽雅幻想", count: 8, songs: ["亡き王女の為のセプテット", "幽雅に咲かせ、墨染の桜", "Bad Apple!!", "U.N.オーエンは彼女なのか？", "神々が恋した幻想郷"], enabled: false, prompt: "和风交响、幻想乡神曲、幽雅古典编曲、灵动激昂" },
+            { category: "黑暗之魂·史诗交响", count: 6, songs: ["Gwyn, Lord of Cinder", "Majula", "Soul of Cinder", "Abyss Watchers", "Ludwig, the Holy Blade"], enabled: false, prompt: "末世传火、悲壮史诗、厚重圣咏管弦、神明陨落" },
+            { category: "仙侠奇缘·古风意境", count: 7, songs: ["快哉风", "踏雪寻梅", "云水禅心", "乱红", "御剑乘风", "高山流水"], enabled: false, prompt: "御剑修仙、古筝洞箫、仙侠仗剑江湖、出尘脱俗" },
+            { category: "爵士咖啡馆", count: 6, songs: ["Autumn Leaves", "Take Five", "Fly Me to the Moon", "Blue in Green", "My Funny Valentine"], enabled: false, prompt: "午后咖啡、低音贝斯漫步、萨克斯慵懒爵士" },
+            { category: "蒸汽波·复古回响", count: 5, songs: ["リサフランク420 / 現代のコンピュー", "Private Caller", "Enjoy Yourself", "Floral Shoppe", "Late Night Stereo"], enabled: false, prompt: "80年代VCR复古质感、减速混响、Citypop回响" }
+        ];
+
+        // 渲染 14+ 歌单列表
+        function renderPlaylistCards(filterText = '') {
+            const container = document.getElementById('pl-cards-dom-list');
+            let html = '';
+            let enabledCount = 0;
+
+            const kw = (filterText || '').trim().toLowerCase();
+
+            mockPlaylists.forEach((pl, idx) => {
+                if (pl.enabled) enabledCount++;
+
+                if (kw && !pl.category.toLowerCase().includes(kw) && !pl.songs.some(s => s.toLowerCase().includes(kw))) {
+                    return; // 过滤隐藏
+                }
+
+                html += `
+                <div class="pl-card-item ${pl.enabled ? 'is-enabled' : ''}" id="pl-card-${idx}">
+                    <div class="pl-card-top-row">
+                        <label class="pl-card-title-label" for="pl-check-${idx}">
+                            <input type="checkbox" id="pl-check-${idx}" ${pl.enabled ? 'checked' : ''} onchange="toggleCardEnabled(${idx}, this.checked)" style="accent-color:var(--gold-primary); cursor:pointer;">
+                            <span class="pl-card-title-text">${pl.category}</span>
+                            <span class="pl-card-count">${pl.count}首</span>
+                        </label>
+                        <span style="font-size:9px; color:${pl.enabled ? 'var(--gold-primary)' : 'var(--text-muted)'}; font-weight:600; flex-shrink:0;">
+                            ${pl.enabled ? '● 随Sidecar发送' : '○ 未启用'}
+                        </span>
+                    </div>
+
+                    <div class="pl-chips-wrap">
+                        ${pl.songs.map(s => `<span class="pl-song-chip" title="${s}">${s}</span>`).join('')}
+                    </div>
+
+                    <textarea class="pl-prompt-textarea" placeholder="填写【${pl.category}】意境提示词（如：空灵雨境、神秘器乐...）" onchange="mockPlaylists[${idx}].prompt = this.value">${pl.prompt}</textarea>
+                </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            document.getElementById('badge-enabled-num').innerText = `${enabledCount}/${mockPlaylists.length}`;
+        }
+
+        function filterPlaylists() {
+            const kw = document.getElementById('pl-filter-kw').value;
+            renderPlaylistCards(kw);
+        }
+
+        function toggleCardEnabled(idx, checked) {
+            mockPlaylists[idx].enabled = checked;
+            const card = document.getElementById(`pl-card-${idx}`);
+            if (card) {
+                if (checked) card.classList.add('is-enabled');
+                else card.classList.remove('is-enabled');
+            }
+            renderPlaylistCards(document.getElementById('pl-filter-kw').value);
+        }
+
+        function toggleAllCards(enable) {
+            mockPlaylists.forEach(pl => pl.enabled = enable);
+            renderPlaylistCards(document.getElementById('pl-filter-kw').value);
+            triggerToast(enable ? '已全部启用 14 组歌单联动' : '已全部取消歌单联动');
+        }
+
+        // Tab 切换逻辑
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // 辅助交互
+        function pickModel(name) {
+            document.getElementById('cfg-model').value = name;
+            document.querySelectorAll('.model-chip').forEach(c => {
+                c.classList.toggle('active', c.innerText === name);
+            });
+            triggerToast(`已选择模型: ${name}`);
+        }
+
+        function toggleKeyVis() {
+            const input = document.getElementById('cfg-api-key');
+            if (input.type === 'password') {
+                input.type = 'text';
+                triggerToast('API Key 已明文显示');
+            } else {
+                input.type = 'password';
+                triggerToast('API Key 已隐藏');
+            }
+        }
+
+        function testConnection() {
+            const url = document.getElementById('cfg-api-url').value;
+            const model = document.getElementById('cfg-model').value;
+            triggerToast(`⚡ 正在测试 ${url}...`);
+            setTimeout(() => {
+                triggerToast(`✅ API 连通性测试通过！(延迟 138ms)`);
+            }, 800);
+        }
+
+        function updateCharCount() {
+            const text = document.getElementById('cfg-system-prompt').value;
+            document.getElementById('lbl-char-counter').innerText = `${text.length} 字符`;
+        }
+
+        function onPresetSelected() {
+            const select = document.getElementById('cfg-preset-select');
+            const name = select.options[select.selectedIndex].text;
+            document.getElementById('lbl-active-preset-name').innerText = name;
+            if (select.value === 'default-fresh') {
+                document.getElementById('cfg-system-prompt').value = `你是一位顶级的电影/动漫影视配乐总监与动态氛围 BGM DJ。\n你的唯一任务是：分析最新剧情的情绪 / 氛围 / 张力，为本幕挑选一首绝佳 BGM。\n\n【决策优先级与准则】：\n1. 优先纯音乐、动漫无人声配乐、电影原声 OST、氛围器乐与古典爵士，避免嘈杂人声打乱阅读心流。\n2. 【当前电台已有曲库】与【歌单提示词】仅作为“风格 / 情绪 / 器乐类型”的参考锚点，严禁直接复用其中任何一首（标题与歌手均不得重复）。你必须从你的海量音乐知识库中挑选一首与参考列表整体风格高度一致、但不在列表中的新曲，以保证新鲜感与惊喜感。\n3. 若剧情为特殊意境（如克苏鲁恐怖、1920年代爵士、热血决战等），在同风格约束下优先该细分风格的经典原声。\n4. 严格输出标准格式，禁止任何寒暄、解释或额外文本，只输出一行：\n[点一首歌: 歌名 - 歌手]`;
+            } else if (select.value === 'preset-cyber') {
+                document.getElementById('cfg-system-prompt').value = `你是一位赛博朋克深空电台专职 DJ。请分析剧情中的霓虹、雨夜、黑客义体、枪战与未知危机，挑选 Synthwave / Cyberpunk 电子氛围纯音乐。严格输出一行：[点一首歌: 歌名 - 歌手]`;
+            } else {
+                document.getElementById('cfg-system-prompt').value = `你是一位顶级的电影/动漫影视配乐总监与动态氛围 BGM DJ。\n你的唯一任务是：仔细分析当前最新的剧情走向、人物情绪、环境氛围与叙事张力，为本幕剧情挑选一首绝佳的背景音乐（BGM）。\n\n【决策优先级与准则】：\n1. 优先纯音乐、动漫无人声配乐、电影原声 OST、氛围器乐与古典爵士，避免嘈杂人声打乱阅读心流。\n2. 优先在【当前电台已有曲库列表】中挑选高度契合的曲目（可实现 0 毫秒极速播放）。\n3. 若已有曲库中均不符合本轮特殊意境，请从海量音乐知识库中挑选知名经典原声。\n4. 严格输出标准格式，只输出一行：[点一首歌: 歌名 - 歌手]`;
+            }
+            updateCharCount();
+            triggerToast(`已切换至: ${name}`);
+        }
+
+        function newPresetAction() {
+            const name = prompt('请输入新预设名称：', '科幻跑团专职 DJ');
+            if (!name) return;
+            const select = document.getElementById('cfg-preset-select');
+            const opt = document.createElement('option');
+            opt.value = 'custom-' + Date.now();
+            opt.text = '✨ ' + name;
+            select.add(opt);
+            select.value = opt.value;
+            onPresetSelected();
+            document.getElementById('badge-preset-num').innerText = select.options.length;
+            triggerToast(`已新建预设「${name}」`);
+        }
+
+        function renamePresetAction() {
+            const select = document.getElementById('cfg-preset-select');
+            const cur = select.options[select.selectedIndex].text;
+            const name = prompt('重命名预设：', cur);
+            if (!name) return;
+            select.options[select.selectedIndex].text = name;
+            document.getElementById('lbl-active-preset-name').innerText = name;
+            triggerToast(`已重命名为「${name}」`);
+        }
+
+        function deletePresetAction() {
+            const select = document.getElementById('cfg-preset-select');
+            if (select.options.length <= 1) {
+                alert('至少保留一条预设。');
+                return;
+            }
+            if (confirm(`确定删除当前预设吗？`)) {
+                select.remove(select.selectedIndex);
+                onPresetSelected();
+                document.getElementById('badge-preset-num').innerText = select.options.length;
+                triggerToast('预设已删除');
+            }
+        }
+
+        function resetPromptAction() {
+            if (confirm('确定要恢复当前预设的默认提示词吗？')) {
+                onPresetSelected();
+                triggerToast('已恢复默认提示词');
+            }
+        }
+
+        function saveAllSettings() {
+            triggerToast('✅ AI DJ 接口配置与全部歌单提示词已保存！');
+        }
+
+        function triggerToast(msg) {
+            const toast = document.getElementById('toast-notify');
+            document.getElementById('toast-text').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2300);
+        }
+
+        // 初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            renderPlaylistCards();
+            updateCharCount();
+        });
+    </script>
+</body>
+</html>

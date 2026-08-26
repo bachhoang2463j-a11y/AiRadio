@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太空电台 · 音量条律动美化方案全景对比 Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-primary: #C4A77D;
+            --gold-light: #F5E6C8;
+            --gold-glow: rgba(196, 167, 125, 0.4);
+            --gold-dim: rgba(196, 167, 125, 0.15);
+            --bg-dark: #080a0f;
+            --bg-card: rgba(16, 20, 28, 0.85);
+            --border-card: rgba(196, 167, 125, 0.2);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(196,167,125,0.08) 0%, transparent 60%),
+                radial-gradient(circle at 10% 90%, rgba(30,40,60,0.4) 0%, transparent 50%);
+            color: #e0e0e0;
+            font-family: 'Noto Serif SC', serif;
+            min-height: 100vh;
+            padding: 30px 20px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .header-title h1 {
+            font-size: 22px;
+            letter-spacing: 3px;
+            color: var(--gold-primary);
+            text-shadow: 0 0 15px rgba(196,167,125,0.3);
+            margin-bottom: 8px;
+        }
+        .header-title p {
+            font-size: 12px;
+            color: #888;
+            letter-spacing: 1px;
+        }
+
+        /* 全局统一控制面板 */
+        .global-ctrl-bar {
+            background: rgba(20, 24, 34, 0.8);
+            border: 1px solid var(--border-card);
+            border-radius: 8px;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 35px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .ctrl-btn {
+            background: linear-gradient(135deg, rgba(196,167,125,0.25), rgba(196,167,125,0.08));
+            border: 1px solid var(--gold-primary);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .ctrl-btn:hover {
+            background: rgba(196,167,125,0.4);
+            box-shadow: 0 0 12px rgba(196,167,125,0.5);
+            transform: scale(1.03);
+        }
+
+        .global-vol-slider {
+            width: 140px;
+            accent-color: var(--gold-primary);
+            cursor: pointer;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 24px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .scheme-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .scheme-card:hover {
+            border-color: var(--gold-primary);
+            box-shadow: 0 8px 35px rgba(196,167,125,0.15);
+        }
+
+        .scheme-badge {
+            display: inline-block;
+            background: var(--gold-dim);
+            color: var(--gold-primary);
+            border: 1px solid rgba(196,167,125,0.3);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+            font-family: 'Jura', monospace;
+            letter-spacing: 1px;
+        }
+
+        .scheme-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .scheme-desc {
+            font-size: 11px;
+            color: #999;
+            line-height: 1.5;
+            margin-bottom: 22px;
+        }
+
+        /* 模拟播放器容器底框 */
+        .player-mock-box {
+            background: linear-gradient(0deg, rgba(6,8,12,0.95), rgba(12,16,24,0.95));
+            border: 1px solid rgba(196,167,125,0.25);
+            border-radius: 6px;
+            padding: 16px 14px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .mock-song-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mock-song-title {
+            font-size: 12px;
+            color: var(--gold-primary);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .mock-song-artist {
+            font-size: 10px;
+            color: rgba(196,167,125,0.6);
+        }
+
+        .vol-container-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 28px;
+        }
+
+        .vol-speaker-icon {
+            color: var(--gold-primary);
+            cursor: pointer;
+            opacity: 0.8;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .vol-speaker-icon:hover {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        .vol-val-text {
+            font-family: 'Jura', monospace;
+            font-size: 11px;
+            color: var(--gold-primary);
+            width: 34px;
+            text-align: right;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+        }
+
+        /* ================= 方案 1：暗金流光呼吸能量刃 ================= */
+        .s1-track-wrapper {
+            flex: 1;
+            position: relative;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .s1-track-bg {
+            position: absolute;
+            left: 0; right: 0;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
+        .s1-track-fill {
+            height: 100%;
+            width: 80%;
+            background: linear-gradient(90deg, rgba(196,167,125,0.4), #C4A77D 70%, #FFF5DF 100%);
+            border-radius: 2px;
+            position: relative;
+            box-shadow: 0 0 calc(var(--cur-vol, 80) * 0.15px) rgba(196,167,125,0.8);
+            transition: box-shadow 0.1s;
+        }
+        /* 播放时流光扫射 */
+        .s1-track-fill.playing::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            animation: s1StreamFlow calc(2.2s - (var(--cur-vol, 80) * 0.012s)) infinite ease-in-out;
+        }
+        @keyframes s1StreamFlow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        .s1-thumb {
+            position: absolute;
+            left: 80%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            background: #FFF5DF;
+            border: 1.5px solid #0c1018;
+            box-shadow: 0 0 calc(var(--cur-vol, 80) * 0.18px) #C4A77D;
+            transition: transform 0.15s, box-shadow 0.1s;
+            cursor: grab;
+        }
+        .s1-thumb.playing {
+            animation: s1ThumbBeat calc(1.2s - (var(--cur-vol, 80) * 0.005s)) infinite alternate;
+        }
+        @keyframes s1ThumbBeat {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(calc(1 + var(--cur-vol, 80) * 0.004)); }
+        }
+
+        /* ================= 方案 2：赛博等离子波形律动图 ================= */
+        .s2-visualizer-wrapper {
+            flex: 1;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            padding: 2px 0;
+        }
+        .s2-bar {
+            flex: 1;
+            height: 4px;
+            min-height: 3px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 1.5px;
+            transition: height 0.08s ease, background 0.15s, box-shadow 0.15s;
+        }
+        .s2-bar.active {
+            background: linear-gradient(0deg, #C4A77D, #FFF2CE);
+            box-shadow: 0 0 5px rgba(196,167,125,0.5);
+        }
+
+        /* ================= 方案 3：深空星轨刻度计量器 (VU-Meter) ================= */
+        .s3-meter-wrapper {
+            flex: 1;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            gap: 3.5px;
+            cursor: pointer;
+        }
+        .s3-cell {
+            flex: 1;
+            height: 10px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 1px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: 0.15s;
+            position: relative;
+        }
+        .s3-cell.active {
+            background: #C4A77D;
+            box-shadow: 0 0 6px rgba(196,167,125,0.6);
+        }
+        .s3-cell.active.overdrive {
+            background: #FFE8A3;
+            box-shadow: 0 0 9px #FFE8A3;
+        }
+        .s3-cell.active.playing {
+            animation: s3CellPulse 1s infinite alternate;
+        }
+        @keyframes s3CellPulse {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* ================= 方案 4：等离子霓虹正弦声浪 (Canvas Wave) ================= */
+        .s4-canvas-wrapper {
+            flex: 1;
+            height: 26px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .s4-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 3px;
+            background: rgba(0,0,0,0.3);
+        }
+        .s4-slider-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .select-btn {
+            margin-top: 14px;
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(196,167,125,0.3);
+            color: var(--gold-primary);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .select-btn:hover {
+            background: var(--gold-primary);
+            color: #0c1018;
+            box-shadow: 0 0 12px rgba(196,167,125,0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">
+        <h1>■ 太空电台 · 音量条律动方案视觉对比</h1>
+        <p>支持全局拖拽调节、播放/暂停切换与真实物理节拍波形模拟</p>
+    </div>
+
+    <!-- 全局状态控制栏 -->
+    <div class="global-ctrl-bar">
+        <button class="ctrl-btn" id="toggle-play-btn">
+            <span id="play-status-icon">⏸ 正在播放 (模拟)</span>
+        </button>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:11px; color:#aaa;">主音量调节：</span>
+            <input type="range" class="global-vol-slider" id="global-vol-slider" min="0" max="100" value="80">
+            <span style="font-family:'Jura',monospace; color:var(--gold-primary); font-size:12px; font-weight:bold; width:36px;" id="global-vol-text">80%</span>
+        </div>
+    </div>
+
+    <!-- 方案展示网格 -->
+    <div class="cards-grid">
+
+        <!-- 方案 1：暗金流光呼吸能量刃 -->
+        <div class="scheme-card">
+            <span class="scheme-badge">SCHEME 01 · 呼吸流光</span>
+            <div class="scheme-title">
+                <span>暗金流光能量刃 (Shimmer Stream)</span>
+            </div>
+            <div class="scheme-desc">
+                极简高级感。内部流动着暗金色等离子光波，滑块为能量核心。音量越大流光与辉光越刺目，伴随鼓点节奏呼吸。
+            </div>
+            <div class="player-mock-box">
+                <div class="mock-song-info">
+                    <span class="mock-song-title">Lumière - The Departure</span>
+                    <span class="mock-song-artist">Lorien Testard</span>
+                </div>
+                <div class="vol-container-row">
+                    <div class="vol-speaker-icon">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </div>
+                    <div class="s1-track-wrapper" id="s1-wrapper">
+                        <div class="s1-track-bg">
+                            <div class="s1-track-fill playing" id="s1-fill"></div>
+                        </div>
+                        <div class="s1-thumb playing" id="s1-thumb"></div>
+                    </div>
+                    <span class="vol-val-text" id="s1-val">80%</span>
+                </div>
+            </div>
+            <button class="select-btn" onclick="alert('方案 1 已选定！请告诉我应用此方案即可。')">推荐：选择方案 1【暗金流光呼吸能量刃】</button>
+        </div>
+
+        <!-- 方案 2：赛博等离子波形律动图 -->
+        <div class="scheme-card">
+            <span class="scheme-badge">SCHEME 02 · 动态频谱</span>
+            <div class="scheme-title">
+                <span>等离子频谱波形柱 (Cyber Equalizer)</span>
+            </div>
+            <div class="scheme-desc">
+                最具音乐现场感。24 根独立暗金等离子柱随歌曲节拍剧烈起伏，音量决定高亮范围与跳动振幅，可直接滑选。
+            </div>
+            <div class="player-mock-box">
+                <div class="mock-song-info">
+                    <span class="mock-song-title">Stone Wave Cliffs</span>
+                    <span class="mock-song-artist">Alice Duport-Percier</span>
+                </div>
+                <div class="vol-container-row">
+                    <div class="vol-speaker-icon">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </div>
+                    <div class="s2-visualizer-wrapper" id="s2-wrapper">
+                        <!-- JS 动态生成 24 根波形柱 -->
+                    </div>
+                    <span class="vol-val-text" id="s2-val">80%</span>
+                </div>
+            </div>
+            <button class="select-btn" onclick="alert('方案 2 已选定！请告诉我应用此方案即可。')">选择方案 2【等离子频谱波形柱】</button>
+        </div>
+
+        <!-- 方案 3：深空星轨刻度计量器 -->
+        <div class="scheme-card">
+            <span class="scheme-badge">SCHEME 03 · 机械科幻</span>
+            <div class="scheme-title">
+                <span>深空刻度计量器 (VU-Meter Gauge)</span>
+            </div>
+            <div class="scheme-desc">
+                科幻飞船控制台风格。20 段微型能量晶格，点亮数量代表音量，高音量区触发过载炽金脉冲与充能扫描。
+            </div>
+            <div class="player-mock-box">
+                <div class="mock-song-info">
+                    <span class="mock-song-title">Reluctant Heroes</span>
+                    <span class="mock-song-artist">Hiroyuki Sawano</span>
+                </div>
+                <div class="vol-container-row">
+                    <div class="vol-speaker-icon">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </div>
+                    <div class="s3-meter-wrapper" id="s3-wrapper">
+                        <!-- JS 动态生成 20 格晶格 -->
+                    </div>
+                    <span class="vol-val-text" id="s3-val">80%</span>
+                </div>
+            </div>
+            <button class="select-btn" onclick="alert('方案 3 已选定！请告诉我应用此方案即可。')">选择方案 3【深空刻度计量器】</button>
+        </div>
+
+        <!-- 方案 4：等离子霓虹正弦声浪 -->
+        <div class="scheme-card">
+            <span class="scheme-badge">SCHEME 04 · 优雅声浪</span>
+            <div class="scheme-title">
+                <span>正弦粒子声浪线 (Sine Oscilloscope)</span>
+            </div>
+            <div class="scheme-desc">
+                平滑流动的暗金正弦声波，音量越大声波振幅与波浪起伏越宏大，音量为 0 时平滑收敛为一条平直线。
+            </div>
+            <div class="player-mock-box">
+                <div class="mock-song-info">
+                    <span class="mock-song-title">Sirène - Rouge d'Iris</span>
+                    <span class="mock-song-artist">Lorien Testard</span>
+                </div>
+                <div class="vol-container-row">
+                    <div class="vol-speaker-icon">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </div>
+                    <div class="s4-canvas-wrapper" id="s4-wrapper">
+                        <canvas class="s4-canvas" id="s4-canvas"></canvas>
+                    </div>
+                    <span class="vol-val-text" id="s4-val">80%</span>
+                </div>
+            </div>
+            <button class="select-btn" onclick="alert('方案 4 已选定！请告诉我应用此方案即可。')">选择方案 4【正弦粒子声浪线】</button>
+        </div>
+
+    </div>
+
+    <script>
+        let currentVol = 80;
+        let isPlaying = true;
+
+        const globalSlider = document.getElementById('global-vol-slider');
+        const globalText = document.getElementById('global-vol-text');
+        const playBtn = document.getElementById('toggle-play-btn');
+        const playIcon = document.getElementById('play-status-icon');
+
+        function setVolume(v) {
+            currentVol = Math.max(0, Math.min(100, Math.round(v)));
+            globalSlider.value = currentVol;
+            globalText.textContent = currentVol + '%';
+            document.documentElement.style.setProperty('--cur-vol', currentVol);
+
+            // 更新方案 1
+            document.getElementById('s1-fill').style.width = currentVol + '%';
+            document.getElementById('s1-thumb').style.left = currentVol + '%';
+            document.getElementById('s1-val').textContent = currentVol + '%';
+
+            // 更新方案 2
+            updateScheme2();
+            document.getElementById('s2-val').textContent = currentVol + '%';
+
+            // 更新方案 3
+            updateScheme3();
+            document.getElementById('s3-val').textContent = currentVol + '%';
+
+            // 更新方案 4
+            document.getElementById('s4-val').textContent = currentVol + '%';
+        }
+
+        globalSlider.addEventListener('input', (e) => setVolume(e.target.value));
+
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            playIcon.textContent = isPlaying ? '⏸ 正在播放 (模拟)' : '▶ 已暂停';
+            
+            const fill1 = document.getElementById('s1-fill');
+            const thumb1 = document.getElementById('s1-thumb');
+            if (isPlaying) {
+                fill1.classList.add('playing');
+                thumb1.classList.add('playing');
+            } else {
+                fill1.classList.remove('playing');
+                thumb1.classList.remove('playing');
+            }
+        });
+
+        // 方案 1 交互
+        const s1Wrapper = document.getElementById('s1-wrapper');
+        let isDraggingS1 = false;
+        function handleS1Move(e) {
+            const rect = s1Wrapper.getBoundingClientRect();
+            const pct = (e.clientX - rect.left) / rect.width * 100;
+            setVolume(pct);
+        }
+        s1Wrapper.addEventListener('mousedown', (e) => { isDraggingS1 = true; handleS1Move(e); });
+        window.addEventListener('mousemove', (e) => { if (isDraggingS1) handleS1Move(e); });
+        window.addEventListener('mouseup', () => { isDraggingS1 = false; });
+
+        // 方案 2 生成与跳动逻辑
+        const s2Wrapper = document.getElementById('s2-wrapper');
+        const S2_BAR_COUNT = 24;
+        const s2Bars = [];
+        for (let i = 0; i < S2_BAR_COUNT; i++) {
+            const bar = document.createElement('div');
+            bar.className = 's2-bar';
+            s2Wrapper.appendChild(bar);
+            s2Bars.push(bar);
+        }
+
+        function updateScheme2() {
+            const activeCount = Math.round((currentVol / 100) * S2_BAR_COUNT);
+            s2Bars.forEach((bar, idx) => {
+                if (idx < activeCount) {
+                    bar.classList.add('active');
+                } else {
+                    bar.classList.remove('active');
+                }
+            });
+        }
+
+        let isDraggingS2 = false;
+        function handleS2Move(e) {
+            const rect = s2Wrapper.getBoundingClientRect();
+            const pct = (e.clientX - rect.left) / rect.width * 100;
+            setVolume(pct);
+        }
+        s2Wrapper.addEventListener('mousedown', (e) => { isDraggingS2 = true; handleS2Move(e); });
+        window.addEventListener('mousemove', (e) => { if (isDraggingS2) handleS2Move(e); });
+        window.addEventListener('mouseup', () => { isDraggingS2 = false; });
+
+        // 方案 3 生成与逻辑
+        const s3Wrapper = document.getElementById('s3-wrapper');
+        const S3_CELL_COUNT = 20;
+        const s3Cells = [];
+        for (let i = 0; i < S3_CELL_COUNT; i++) {
+            const cell = document.createElement('div');
+            cell.className = 's3-cell';
+            s3Wrapper.appendChild(cell);
+            s3Cells.push(cell);
+        }
+
+        function updateScheme3() {
+            const activeCount = Math.round((currentVol / 100) * S3_CELL_COUNT);
+            s3Cells.forEach((cell, idx) => {
+                if (idx < activeCount) {
+                    cell.classList.add('active');
+                    if (idx >= S3_CELL_COUNT * 0.75) {
+                        cell.classList.add('overdrive');
+                    } else {
+                        cell.classList.remove('overdrive');
+                    }
+                    if (isPlaying) cell.classList.add('playing');
+                    else cell.classList.remove('playing');
+                } else {
+                    cell.classList.remove('active', 'overdrive', 'playing');
+                }
+            });
+        }
+
+        let isDraggingS3 = false;
+        function handleS3Move(e) {
+            const rect = s3Wrapper.getBoundingClientRect();
+            const pct = (e.clientX - rect.left) / rect.width * 100;
+            setVolume(pct);
+        }
+        s3Wrapper.addEventListener('mousedown', (e) => { isDraggingS3 = true; handleS3Move(e); });
+        window.addEventListener('mousemove', (e) => { if (isDraggingS3) handleS3Move(e); });
+        window.addEventListener('mouseup', () => { isDraggingS3 = false; });
+
+        // 方案 4 Canvas 声浪绘制
+        const s4Canvas = document.getElementById('s4-canvas');
+        const s4Ctx = s4Canvas.getContext('2d');
+        let s4Phase = 0;
+
+        function resizeS4() {
+            s4Canvas.width = s4Canvas.parentElement.clientWidth * window.devicePixelRatio;
+            s4Canvas.height = s4Canvas.parentElement.clientHeight * window.devicePixelRatio;
+        }
+        window.addEventListener('resize', resizeS4);
+        resizeS4();
+
+        const s4Wrapper = document.getElementById('s4-wrapper');
+        let isDraggingS4 = false;
+        function handleS4Move(e) {
+            const rect = s4Wrapper.getBoundingClientRect();
+            const pct = (e.clientX - rect.left) / rect.width * 100;
+            setVolume(pct);
+        }
+        s4Wrapper.addEventListener('mousedown', (e) => { isDraggingS4 = true; handleS4Move(e); });
+        window.addEventListener('mousemove', (e) => { if (isDraggingS4) handleS4Move(e); });
+        window.addEventListener('mouseup', () => { isDraggingS4 = false; });
+
+        // 动画渲染主循环
+        let tick = 0;
+        function animate() {
+            tick++;
+
+            // 1. 方案 2 频谱跳动
+            if (isPlaying && currentVol > 0) {
+                const maxH = 20 * (currentVol / 100);
+                s2Bars.forEach((bar, idx) => {
+                    const activeCount = Math.round((currentVol / 100) * S2_BAR_COUNT);
+                    if (idx < activeCount) {
+                        const freq = Math.sin(tick * 0.15 + idx * 0.6) * 0.5 + 0.5;
+                        const randomBump = (Math.sin(tick * 0.3 + idx * 1.7) * 0.3);
+                        const h = Math.max(3, (freq + randomBump) * maxH);
+                        bar.style.height = h + 'px';
+                    } else {
+                        bar.style.height = '3px';
+                    }
+                });
+            } else {
+                s2Bars.forEach(b => b.style.height = '3px');
+            }
+
+            // 2. 方案 4 Canvas 声浪渲染
+            const w = s4Canvas.width;
+            const h = s4Canvas.height;
+            s4Ctx.clearRect(0, 0, w, h);
+
+            if (isPlaying) s4Phase += 0.08 * (0.4 + (currentVol / 100) * 0.8);
+            
+            const midY = h / 2;
+            const activeWidth = (currentVol / 100) * w;
+            const amp = isPlaying ? (currentVol / 100) * (h * 0.38) : 0;
+
+            // 绘制背景参考虚线
+            s4Ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+            s4Ctx.lineWidth = 2;
+            s4Ctx.beginPath();
+            s4Ctx.moveTo(0, midY);
+            s4Ctx.lineTo(w, midY);
+            s4Ctx.stroke();
+
+            // 绘制激活区暗金声浪
+            if (activeWidth > 0) {
+                s4Ctx.strokeStyle = '#C4A77D';
+                s4Ctx.lineWidth = 3;
+                s4Ctx.shadowColor = 'rgba(196,167,125,0.8)';
+                s4Ctx.shadowBlur = (currentVol / 100) * 12;
+
+                s4Ctx.beginPath();
+                for (let x = 0; x <= activeWidth; x += 2) {
+                    const progress = x / activeWidth;
+                    const envelope = Math.sin(progress * Math.PI); // 两头渐细
+                    const y = midY + Math.sin(x * 0.04 + s4Phase) * amp * envelope;
+                    if (x === 0) s4Ctx.moveTo(x, y);
+                    else s4Ctx.lineTo(x, y);
+                }
+                s4Ctx.stroke();
+                s4Ctx.shadowBlur = 0;
+
+                // 绘制当前音量光标节点
+                const thumbY = midY + Math.sin(activeWidth * 0.04 + s4Phase) * amp * Math.sin(Math.PI);
+                s4Ctx.fillStyle = '#FFF5DF';
+                s4Ctx.shadowColor = '#C4A77D';
+                s4Ctx.shadowBlur = 8;
+                s4Ctx.beginPath();
+                s4Ctx.arc(activeWidth, midY, 5, 0, Math.PI * 2);
+                s4Ctx.fill();
+                s4Ctx.shadowBlur = 0;
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        setVolume(80);
+        animate();
+    </script>
+</body>
+</html>

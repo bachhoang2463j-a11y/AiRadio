@@ -297,3 +297,15 @@
   3. 补全全库即时搜索、多选批量管理、等离子波形音量条、最近播放历史频段等最新全景能力与使用指引。
 - **决策原因**：保持项目说明文档与最新交付物功能的高度一致性与清晰度。
 - **提交**：`bc36e9dbb1da79796ff077ff6a0eb304d7c07b0e`
+---
+
+## [HASH: 6ec58da] 音量律动条拖拽与跨窗口事件穿透修复（v6.14.1）
+- **日期**：2026-08-29
+- **涉及文件**：`酒馆助手脚本-电台直链版.json`、`SPEC.md`
+- **变更行为**：
+  1. 引入标准 Pointer Events 与 setPointerCapture：在 `#cr-vol-visualizer` 上绑定 `pointerdown/pointermove/pointerup/pointercancel`，利用指针捕获技术保障划动过程中事件 100% 穿透捕获；
+  2. 修复 Touch 事件 clientX 读取：全面兼容 `e.clientX`、`e.originalEvent.clientX` 与 `e.originalEvent.touches`，彻底杜绝 NaN 异常；
+  3. 跨文档层级穿透与直接点击支持：添加直接 `click` 事件处理与 `[document, parent.document, top.document]` 跨窗口事件监听兜底；
+  4. SillyTavern 实机测试验证：经 CDP 实机模拟与截图确认，点击与滑动调节已 100% 顺畅生效，音量百分比与激活柱数实时跟随。
+- **决策原因**：解决用户在 SillyTavern 环境中因沙箱/跨窗体事件隔离导致音量条无法拖动调节的致命问题。
+- **提交**：`6ec58da4f4ef117d9e4a3d463d11b36fa2d2a45d`

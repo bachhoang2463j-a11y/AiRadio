@@ -1,0 +1,3724 @@
+[
+ {
+  "title": "World Map - Taking Down the Paintress",
+  "artist": "Lorien Testard",
+  "tag": "playlist:远征33·幽光秘境",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 4,
+    "usedKw": "World Map - Taking Down the Paintress - Lorien Testard",
+    "maxScore": 310,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "World Map - Taking Down the Paintress - Lorien Testard",
+    "maxScore": 310,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 6,
+  "resolvedTrack": {
+   "name": "World Map - Taking Down the Paintress",
+   "artist": [
+    "Lorien Testard",
+    "Alice Duport-Percier"
+   ],
+   "score": 310
+  }
+ },
+ {
+  "title": "Monoco's Station - Grandis Refuge",
+  "artist": "Lorien Testard",
+  "tag": "playlist:远征33·幽光秘境",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Monoco's Station - Grandis Refuge - Lorien Testard",
+    "maxScore": 310,
+    "poolCount": 1,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Monoco's Station - Grandis Refuge - Lorien Testard",
+    "maxScore": 310,
+    "poolCount": 1
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 2,
+  "resolvedTrack": {
+   "name": "Monoco's Station - Grandis Refuge",
+   "artist": [
+    "Lorien Testard"
+   ],
+   "score": 310
+  }
+ },
+ {
+  "title": "Monoco's Station - Tics Tacs",
+  "artist": "Lorien Testard",
+  "tag": "playlist:远征33·幽光秘境",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Monoco's Station - Tics Tacs - Lorien Testard",
+    "maxScore": 310,
+    "poolCount": 2,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Monoco's Station - Tics Tacs - Lorien Testard",
+    "maxScore": 310,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 4,
+  "resolvedTrack": {
+   "name": "Monoco's Station - Tics Tacs",
+   "artist": [
+    "Lorien Testard",
+    "Alice Duport-Percier"
+   ],
+   "score": 310
+  }
+ },
+ {
+  "title": "Rhapsody in Blue",
+  "artist": "George Gershwin",
+  "tag": "playlist:克苏鲁·复古秘境(1920s)",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Rhapsody in Blue - George Gershwin",
+    "maxScore": 270,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Rhapsody in Blue - George Gershwin",
+    "maxScore": 270,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 10,
+  "resolvedTrack": {
+   "name": "Rhapsody in Blue",
+   "artist": [
+    "George Gershwin"
+   ],
+   "score": 270
+  }
+ },
+ {
+  "title": "Dark Was the Night, Cold Was the Ground",
+  "artist": "Blind Willie Johnson",
+  "tag": "playlist:克苏鲁·复古秘境(1920s)",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Dark Was the Night, Cold Was the Ground - Blind Willie Johnson",
+    "maxScore": 240,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Dark Was the Night, Cold Was the Ground - Blind Willie Johnson",
+    "maxScore": 240,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 10,
+  "resolvedTrack": {
+   "name": "Dark Was The Night, Cold Was The Ground",
+   "artist": [
+    "Blind Willie Johnson"
+   ],
+   "score": 240
+  }
+ },
+ {
+  "title": "Danse Macabre",
+  "artist": "Saint-Saëns",
+  "tag": "playlist:克苏鲁·复古秘境(1920s)",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 3,
+    "usedKw": "Danse Macabre - Saint-Saëns",
+    "maxScore": 240,
+    "poolCount": 2,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Danse Macabre - Saint-Saëns",
+    "maxScore": 240,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 4,
+  "resolvedTrack": {
+   "name": "Danse macabre",
+   "artist": [
+    "Camille Saint-Saëns",
+    "Guy Bovet"
+   ],
+   "score": 240
+  }
+ },
+ {
+  "title": "Gymnopédie No. 1",
+  "artist": "Erik Satie",
+  "tag": "playlist:克苏鲁·复古秘境(1920s)",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Gymnopédie No. 1 - Erik Satie",
+    "maxScore": 270,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Gymnopédie No. 1 - Erik Satie",
+    "maxScore": 270,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 10,
+  "resolvedTrack": {
+   "name": "Gymnopédie No. 1",
+   "artist": [
+    "Erik Satie"
+   ],
+   "score": 270
+  }
+ },
+ {
+  "title": "St. Louis Blues",
+  "artist": "Bessie Smith",
+  "tag": "playlist:克苏鲁·复古秘境(1920s)",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "St. Louis Blues - Bessie Smith",
+    "maxScore": 240,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "St. Louis Blues - Bessie Smith",
+    "maxScore": 240,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 10,
+  "resolvedTrack": {
+   "name": "St. Louis Blues",
+   "artist": [
+    "Bessie Smith"
+   ],
+   "score": 240
+  }
+ },
+ {
+  "title": "Clair de Lune",
+  "artist": "Claude Debussy",
+  "tag": "playlist:克苏鲁·复古秘境(1920s)",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 4,
+    "usedKw": "Clair de Lune - Claude Debussy",
+    "maxScore": 270,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Clair de Lune - Claude Debussy",
+    "maxScore": 310,
+    "poolCount": 5,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "Clair De Lune",
+   "artist": [
+    "Claude Debussy",
+    "Michael Silverman"
+   ],
+   "score": 270
+  }
+ },
+ {
+  "title": "YouSeeBIGGIRL/T:T",
+  "artist": "泽野弘之",
+  "tag": "playlist:进击的巨人·燃爆战曲",
+  "directDb": {
+   "hit": true,
+   "id": "482633119",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "ət'aek 0N tάɪtn",
+  "artist": "泽野弘之",
+  "tag": "playlist:进击的巨人·燃爆战曲",
+  "directDb": {
+   "hit": true,
+   "id": "26562717",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "立body!机st",
+  "artist": "泽野弘之",
+  "tag": "playlist:进击的巨人·燃爆战曲",
+  "directDb": {
+   "hit": true,
+   "id": "26562719",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Vogel im Käfig",
+  "artist": "泽野弘之",
+  "tag": "playlist:进击的巨人·燃爆战曲",
+  "directDb": {
+   "hit": true,
+   "id": "26562723",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Call of silence",
+  "artist": "泽野弘之",
+  "tag": "playlist:进击的巨人·燃爆战曲",
+  "directDb": {
+   "hit": true,
+   "id": "482636090",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "EMA",
+  "artist": "泽野弘之",
+  "tag": "playlist:进击的巨人·燃爆战曲",
+  "directDb": {
+   "hit": true,
+   "id": "26562721",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "凸】♀】♂】←巨人",
+  "artist": "泽野弘之",
+  "tag": "playlist:进击的巨人·燃爆战曲",
+  "directDb": {
+   "hit": true,
+   "id": "26562725",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "The Reluctant Heroes",
+  "artist": "泽野弘之",
+  "tag": "playlist:进击的巨人·燃爆战曲",
+  "directDb": {
+   "hit": true,
+   "id": "26562718",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "bauklötze",
+  "artist": "泽野弘之",
+  "tag": "playlist:进击的巨人·燃爆战曲",
+  "directDb": {
+   "hit": true,
+   "id": "26562724",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Fear Brought Me This Far",
+  "artist": "Evan Call",
+  "tag": "playlist:日常氛围",
+  "directDb": {
+   "hit": true,
+   "id": "2116382387",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "陨落 伴奏",
+  "artist": "鲁四月",
+  "tag": "playlist:日常氛围",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "陨落 伴奏 - 鲁四月",
+    "maxScore": 240,
+    "poolCount": 1,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "陨落 伴奏 - 鲁四月",
+    "maxScore": 240,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 6,
+  "resolvedTrack": {
+   "name": "陨落 伴奏",
+   "artist": [
+    "鲁四月"
+   ],
+   "score": 240
+  }
+ },
+ {
+  "title": "Time to go home",
+  "artist": "jacoo",
+  "tag": "playlist:日常氛围",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Time to go home - jacoo",
+    "maxScore": 240,
+    "poolCount": 2,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Time to go home - jacoo",
+    "maxScore": 240,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 4,
+  "resolvedTrack": {
+   "name": "Time to go home",
+   "artist": [
+    "Jacoo"
+   ],
+   "score": 240
+  }
+ },
+ {
+  "title": "Nocturne in Paris",
+  "artist": "",
+  "tag": "playlist:日常氛围",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Nocturne in Paris",
+    "maxScore": 225,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Nocturne in Paris",
+    "maxScore": 200,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "Nocturne in Paris",
+   "artist": [
+    "Usual Masters"
+   ],
+   "score": 225
+  }
+ },
+ {
+  "title": "Sleeping Stardust",
+  "artist": "",
+  "tag": "playlist:日常氛围",
+  "directDb": {
+   "hit": true,
+   "id": "1888748780",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "4.5 Billion Years Old",
+  "artist": "Alan Silvestri",
+  "tag": "playlist:日常氛围",
+  "directDb": {
+   "hit": true,
+   "id": "29305226",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "The Bear and the Mountain",
+  "artist": "",
+  "tag": "playlist:日常氛围",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "The Bear and the Mountain",
+    "maxScore": 265,
+    "poolCount": 2,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 3,
+    "usedKw": "The Bear and the Mountain",
+    "maxScore": 200,
+    "poolCount": 3
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 5,
+  "resolvedTrack": {
+   "name": "The Bear and the Mountain",
+   "artist": [
+    "John Stanford"
+   ],
+   "score": 265
+  }
+ },
+ {
+  "title": "Cornfield Chase",
+  "artist": "",
+  "tag": "playlist:日常氛围",
+  "directDb": {
+   "hit": true,
+   "id": "29734857",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Travelers' encore",
+  "artist": "",
+  "tag": "playlist:日常氛围",
+  "directDb": {
+   "hit": true,
+   "id": "1879098277",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Into Orbit",
+  "artist": "Audiofire Studios",
+  "tag": "playlist:遭遇危机",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Into Orbit - Audiofire Studios",
+    "maxScore": 240,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Into Orbit - Audiofire Studios",
+    "maxScore": 240,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 6,
+  "resolvedTrack": {
+   "name": "Into Orbit",
+   "artist": [
+    "Audiofire Studios"
+   ],
+   "score": 240
+  }
+ },
+ {
+  "title": "Aurora XV 54",
+  "artist": "",
+  "tag": "playlist:遭遇危机",
+  "directDb": {
+   "hit": true,
+   "id": "1934156360",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Eyes of Wonder",
+  "artist": "",
+  "tag": "playlist:遭遇危机",
+  "directDb": {
+   "hit": true,
+   "id": "1324205028",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Beyond the Stars",
+  "artist": "Cristian Onofreiciuc",
+  "tag": "playlist:遭遇危机",
+  "directDb": {
+   "hit": true,
+   "id": "1876703587",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Cornfield Chase（Piano Concerto Ver)",
+  "artist": "",
+  "tag": "playlist:遭遇危机",
+  "directDb": {
+   "hit": true,
+   "id": "29734857",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Moon（Sleeping at Last）",
+  "artist": "",
+  "tag": "playlist:遭遇危机",
+  "directDb": {
+   "hit": true,
+   "id": "470601660",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Dance For Me Wallis",
+  "artist": "",
+  "tag": "playlist:遭遇危机",
+  "directDb": {
+   "hit": true,
+   "id": "1998284878",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Echoes of the Eye",
+  "artist": "",
+  "tag": "playlist:遭遇危机",
+  "directDb": {
+   "hit": true,
+   "id": "1879098276",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Merry Christmas Mr. Lawrence",
+  "artist": "",
+  "tag": "playlist:深刻倾诉",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Merry Christmas Mr. Lawrence",
+    "maxScore": 265,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Merry Christmas Mr. Lawrence",
+    "maxScore": 200,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 10,
+  "resolvedTrack": {
+   "name": "Merry Christmas Mr. Lawrence",
+   "artist": [
+    "坂本龍一"
+   ],
+   "score": 265
+  }
+ },
+ {
+  "title": "III (Find Yourself)",
+  "artist": "",
+  "tag": "playlist:深刻倾诉",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "III (Find Yourself",
+    "maxScore": 200,
+    "poolCount": 3,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "III (Find Yourself",
+    "maxScore": 200,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 8,
+  "resolvedTrack": {
+   "name": "III (Find Yourself)",
+   "artist": [
+    "Athletics"
+   ],
+   "score": 200
+  }
+ },
+ {
+  "title": "城南花已开",
+  "artist": "",
+  "tag": "playlist:深刻倾诉",
+  "directDb": {
+   "hit": true,
+   "id": "468176711",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Call of silence（钢琴版）",
+  "artist": "",
+  "tag": "playlist:深刻倾诉",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Call of silence（钢琴版",
+    "maxScore": 128,
+    "poolCount": 2,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Call of silence（钢琴版",
+    "maxScore": 225,
+    "poolCount": 5,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url",
+     "无url",
+     "无url",
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 7,
+  "resolvedTrack": {
+   "name": "Call of silence（钢琴版）",
+   "artist": [
+    "Yi Chou"
+   ],
+   "score": 128
+  }
+ },
+ {
+  "title": "破旧世界",
+  "artist": "",
+  "tag": "playlist:深刻倾诉",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "破旧世界",
+    "maxScore": 200,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "破旧世界",
+    "maxScore": 117,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "破旧世界",
+   "artist": [
+    "魔鬼花园（李安健）"
+   ],
+   "score": 200
+  }
+ },
+ {
+  "title": "green to blue",
+  "artist": "",
+  "tag": "playlist:深刻倾诉",
+  "directDb": {
+   "hit": true,
+   "id": "2067668284",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "η（α·Pav）",
+  "artist": "",
+  "tag": "playlist:深刻倾诉",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 2,
+    "usedKw": "η（α·Pav",
+    "maxScore": 131,
+    "poolCount": 2,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "η（α·Pav",
+    "maxScore": 106,
+    "poolCount": 1
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 3,
+  "resolvedTrack": {
+   "name": "η",
+   "artist": [
+    "α·Pav"
+   ],
+   "score": 131
+  }
+ },
+ {
+  "title": "A Light Above Descending",
+  "artist": "Sea Power",
+  "tag": "playlist:深刻倾诉",
+  "directDb": {
+   "hit": true,
+   "id": "26181020",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Fire Escape In The Sea",
+  "artist": "Sea Power",
+  "tag": "playlist:深刻倾诉",
+  "directDb": {
+   "hit": true,
+   "id": "1876755251",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Whirling-In-Rags, 8 PM",
+  "artist": "Sea Power",
+  "tag": "playlist:深刻倾诉",
+  "directDb": {
+   "hit": true,
+   "id": "2006472579",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Let's Go Out Tonight",
+  "artist": "The Blue Nile",
+  "tag": "playlist:私密频段",
+  "directDb": {
+   "hit": true,
+   "id": "21878826",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Kingdom Of Heaven",
+  "artist": "13th Floor Elevators",
+  "tag": "playlist:私密频段",
+  "directDb": {
+   "hit": true,
+   "id": "549383832",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Her Eyes",
+  "artist": "Charlie Jeer",
+  "tag": "playlist:私密频段",
+  "directDb": {
+   "hit": true,
+   "id": "2613352711",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Bed For Two",
+  "artist": "1LKay",
+  "tag": "playlist:私密频段",
+  "directDb": {
+   "hit": true,
+   "id": "1417347985",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Room 907",
+  "artist": "BUBBLE TEA AND CIGARETTES",
+  "tag": "playlist:私密频段",
+  "directDb": {
+   "hit": true,
+   "id": "2060175765",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Forbidden Fruit",
+  "artist": "Monodrone",
+  "tag": "playlist:私密频段",
+  "directDb": {
+   "hit": true,
+   "id": "1959799334",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "(x2+y2−1)3 = x2y3",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "3314261339",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "4.5 Billion Years Old",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "29305226",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Beyond the Stars",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "1876703587",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Fibonacci",
+  "artist": "Grand Plan Wireless",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "3314261322",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "A Light Above Descending",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26181020",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Fire Escape In The Sea",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "1876755251",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Whirling-In-Rags, 8 PM",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "2006472579",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Let's Go Out Tonight",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "21878826",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Kingdom Of Heaven",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "549383832",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Her Eyes",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "2613352711",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Bed For Two",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "1417347985",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Room 907",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "2060175765",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Forbidden Fruit",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "1959799334",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Fear Brought Me This Far",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "2116382387",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "YouSeeBIGGIRL/T:T",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "482633119",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "youseebiggirl",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "482633119",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "ət'aek 0N tάɪtn",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562717",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "at'aek ON taitn",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562717",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "attack on titan",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562717",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "立body!机st",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562719",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "立body机st",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562719",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "立body機motion",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562719",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "立体机动",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562719",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Vogel im Käfig",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562723",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Vogel im Kafig",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562723",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "笼中鸟",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562723",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Call of silence",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "482636090",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "EMA",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562721",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "E・M・A",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562721",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "凸】♀】♂】←巨人",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562725",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Barricades",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "482636088",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "attack音D",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "482633120",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "The Reluctant Heroes",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562718",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "eye-water",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562716",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "bauklötze",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "26562724",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Aoi Hitomi",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "592893",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "青い瞳",
+  "artist": "",
+  "tag": "directdb",
+  "directDb": {
+   "hit": true,
+   "id": "592893",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "One Summer's Day",
+  "artist": "久石让",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "One Summer's Day - 久石让",
+    "maxScore": 120,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "One Summer's Day - 久石让",
+    "maxScore": 270,
+    "poolCount": 5,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url",
+     "无url",
+     "无url",
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "One Summer's Day",
+   "artist": [
+    "久石譲"
+   ],
+   "score": 120
+  }
+ },
+ {
+  "title": "Merry-Go-Round",
+  "artist": "久石让",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Merry-Go-Round - 久石让",
+    "maxScore": 160,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Merry-Go-Round - 久石让",
+    "maxScore": 270,
+    "poolCount": 5,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url",
+     "无url",
+     "无url",
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "Merry-Go-Round",
+   "artist": [
+    "久石譲"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "Summer",
+  "artist": "久石让",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Summer - 久石让",
+    "maxScore": 160,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Summer - 久石让",
+    "maxScore": 270,
+    "poolCount": 5,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url",
+     "无url",
+     "无url",
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 10,
+  "resolvedTrack": {
+   "name": "Summer",
+   "artist": [
+    "久石譲"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "The Wind Forest",
+  "artist": "久石让",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "the wind forest - 久石让",
+    "maxScore": 160,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "The Wind Forest - 久石让",
+    "maxScore": 310,
+    "poolCount": 5,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url",
+     "无url",
+     "无url",
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "The Wind Forest",
+   "artist": [
+    "久石譲"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "A Town with an Ocean View",
+  "artist": "久石让",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "A Town with an Ocean View - 久石让",
+    "maxScore": 120,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "A Town with an Ocean View - 久石让",
+    "maxScore": 196,
+    "poolCount": 3,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url",
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 7,
+  "resolvedTrack": {
+   "name": "A Town with an Ocean View",
+   "artist": [
+    "久石譲",
+    "Royal Philharmonic Orchestra"
+   ],
+   "score": 120
+  }
+ },
+ {
+  "title": "Time",
+  "artist": "Hans Zimmer",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 4,
+    "usedKw": "Time - Hans Zimmer",
+    "maxScore": 310,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Time - Hans Zimmer",
+    "maxScore": 270,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "Time",
+   "artist": [
+    "Martin Jacoby",
+    "Hans Zimmer"
+   ],
+   "score": 310
+  }
+ },
+ {
+  "title": "Stay",
+  "artist": "Hans Zimmer",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Stay - Hans Zimmer",
+    "maxScore": 310,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Stay - Hans Zimmer",
+    "maxScore": 310,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "Stay",
+   "artist": [
+    "Hans Zimmer"
+   ],
+   "score": 310
+  }
+ },
+ {
+  "title": "No Time for Caution",
+  "artist": "Hans Zimmer",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "No Time for Caution - Hans Zimmer",
+    "maxScore": 310,
+    "poolCount": 2,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "No Time for Caution - Hans Zimmer",
+    "maxScore": 310,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 7,
+  "resolvedTrack": {
+   "name": "No Time for Caution",
+   "artist": [
+    "Hans Zimmer"
+   ],
+   "score": 310
+  }
+ },
+ {
+  "title": "Paul's Dream",
+  "artist": "Hans Zimmer",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Paul's Dream - Hans Zimmer",
+    "maxScore": 310,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Paul's Dream - Hans Zimmer",
+    "maxScore": 310,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "Paul's Dream",
+   "artist": [
+    "Hans Zimmer"
+   ],
+   "score": 310
+  }
+ },
+ {
+  "title": "XL-TT",
+  "artist": "泽野弘之",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "XL-TT - 泽野弘之",
+    "maxScore": 160,
+    "poolCount": 1,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "XL-TT - 泽野弘之",
+    "maxScore": 160,
+    "poolCount": 3
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 4,
+  "resolvedTrack": {
+   "name": "XL-TT",
+   "artist": [
+    "澤野弘之"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "Perfect Time",
+  "artist": "泽野弘之",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Perfect Time - 泽野弘之",
+    "maxScore": 160,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Perfect Time - 泽野弘之",
+    "maxScore": 160,
+    "poolCount": 4
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "Perfect Time",
+   "artist": [
+    "小林未郁",
+    "mpi"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "Ashes on the Fire",
+  "artist": "Kohta Yamamoto",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Ashes on the Fire - Kohta Yamamoto",
+    "maxScore": 160,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Ashes on the Fire - Kohta Yamamoto",
+    "maxScore": 206,
+    "poolCount": 2,
+    "triedUrl": true,
+    "urlFail": [
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 6,
+  "resolvedTrack": {
+   "name": "Ashes on The Fire",
+   "artist": [
+    "山本康太"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "Credens justitiam",
+  "artist": "梶浦由记",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Credens justitiam - 梶浦由记",
+    "maxScore": 160,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Credens justitiam - 梶浦由记",
+    "maxScore": 160,
+    "poolCount": 4
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "Credens justitiam",
+   "artist": [
+    "梶浦由記"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "Sis puella magica!",
+  "artist": "梶浦由记",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Sis puella magica! - 梶浦由记",
+    "maxScore": 160,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Sis puella magica! - 梶浦由记",
+    "maxScore": 120,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 7,
+  "resolvedTrack": {
+   "name": "Sis puella magica!",
+   "artist": [
+    "梶浦由記",
+    "伊東恵里"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "nowhere",
+  "artist": "梶浦由记",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "nowhere - 梶浦由记",
+    "maxScore": 160,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "nowhere - 梶浦由记",
+    "maxScore": 120,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 10,
+  "resolvedTrack": {
+   "name": "nowhere",
+   "artist": [
+    "梶浦由記",
+    "南里侑香"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "Dance of Curse",
+  "artist": "菅野洋子",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Dance of Curse - 菅野洋子",
+    "maxScore": 160,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Dance of Curse - 菅野洋子",
+    "maxScore": 120,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 6,
+  "resolvedTrack": {
+   "name": "Dance of curse",
+   "artist": [
+    "THE WARSAW PHILHARMONIC ORCHESTRA"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "Aoi Hitomi",
+  "artist": "菅野洋子",
+  "tag": "stress",
+  "directDb": {
+   "hit": true,
+   "id": "592893",
+   "direct": "ok"
+  },
+  "sources": {},
+  "resolved": true,
+  "resolvedVia": "directLinkDb",
+  "failStage": null
+ },
+ {
+  "title": "Aerith's Theme",
+  "artist": "植松伸夫",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Aerith's Theme - 植松伸夫",
+    "maxScore": 238,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Aerith's Theme - 植松伸夫",
+    "maxScore": 310,
+    "poolCount": 5,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url",
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "Aerith's Theme [FINAL FANTASY VII]",
+   "artist": [
+    "植松伸夫"
+   ],
+   "score": 238
+  }
+ },
+ {
+  "title": "To Zanarkand",
+  "artist": "植松伸夫",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "To Zanarkand - 植松伸夫",
+    "maxScore": 270,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "To Zanarkand - 植松伸夫",
+    "maxScore": 310,
+    "poolCount": 5,
+    "triedUrl": true,
+    "urlFail": [
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 9,
+  "resolvedTrack": {
+   "name": "To Zanarkand",
+   "artist": [
+    "WDR Funkhausorchester",
+    "植松伸夫",
+    "Benyamin Nuss"
+   ],
+   "score": 270
+  }
+ },
+ {
+  "title": "Gwyn, Lord of Cinder",
+  "artist": "Motoi Sakuraba",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Gwyn, Lord of Cinder - Motoi Sakuraba",
+    "maxScore": 130,
+    "poolCount": 3,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Gwyn, Lord of Cinder - Motoi Sakuraba",
+    "maxScore": 130,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 5,
+  "resolvedTrack": {
+   "name": "Gwyn, Lord of Cinder",
+   "artist": [
+    "桜庭統"
+   ],
+   "score": 130
+  }
+ },
+ {
+  "title": "Theme of Laura",
+  "artist": "山冈晃",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Theme of Laura - 山冈晃",
+    "maxScore": 130,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Theme of Laura - 山冈晃",
+    "maxScore": 280,
+    "poolCount": 5,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url",
+     "无url",
+     "无url",
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 10,
+  "resolvedTrack": {
+   "name": "Theme of Laura",
+   "artist": [
+    "山岡晃"
+   ],
+   "score": 130
+  }
+ },
+ {
+  "title": "Gerudo Valley",
+  "artist": "近藤浩治",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Gerudo Valley - 近藤浩治",
+    "maxScore": 90,
+    "poolCount": 1,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Gerudo Valley - 近藤浩治",
+    "maxScore": 280,
+    "poolCount": 2,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url"
+    ]
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 3,
+  "resolvedTrack": {
+   "name": "Gerudo Valley",
+   "artist": [
+    "Kyle Landry"
+   ],
+   "score": 90
+  }
+ },
+ {
+  "title": "Sadness and Sorrow",
+  "artist": "高梨康治",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Sadness and Sorrow - 高梨康治",
+    "maxScore": 120,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Sadness and Sorrow - 高梨康治",
+    "maxScore": 120,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 7,
+  "resolvedTrack": {
+   "name": "Sadness And Sorrow",
+   "artist": [
+    "Piano Squall"
+   ],
+   "score": 120
+  }
+ },
+ {
+  "title": "Girei",
+  "artist": "高梨康治",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Girei - 高梨康治",
+    "maxScore": 120,
+    "poolCount": 1,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Girei - 高梨康治",
+    "maxScore": 120,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 6,
+  "resolvedTrack": {
+   "name": "Girei",
+   "artist": [
+    "Yasuharu Takanashi"
+   ],
+   "score": 120
+  }
+ },
+ {
+  "title": "The Auto-Memory Doll",
+  "artist": "Evan Call",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "The Auto-Memory Doll - Evan Call",
+    "maxScore": 45,
+    "poolCount": 2,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "The Auto-Memory Doll - Evan Call",
+    "maxScore": 35,
+    "poolCount": 3
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 5,
+  "resolvedTrack": {
+   "name": "Amy (From \"Violet Evergarden: Eternity and the Auto Memory Doll\")",
+   "artist": [
+    "AirahTea"
+   ],
+   "score": 45
+  }
+ },
+ {
+  "title": "Outer Wilds",
+  "artist": "Andrew Prahlow",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Outer Wilds - Andrew Prahlow",
+    "maxScore": 310,
+    "poolCount": 2,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Outer Wilds - Andrew Prahlow",
+    "maxScore": 310,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 4,
+  "resolvedTrack": {
+   "name": "Outer Wilds",
+   "artist": [
+    "Andrew Prahlow"
+   ],
+   "score": 310
+  }
+ },
+ {
+  "title": "The Sun Station",
+  "artist": "Andrew Prahlow",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "The Sun Station - Andrew Prahlow",
+    "maxScore": 310,
+    "poolCount": 1,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "The Sun Station - Andrew Prahlow",
+    "maxScore": 310,
+    "poolCount": 1
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 2,
+  "resolvedTrack": {
+   "name": "The Sun Station",
+   "artist": [
+    "Andrew Prahlow"
+   ],
+   "score": 310
+  }
+ },
+ {
+  "title": "The Smallest Church in Saint-Saëns",
+  "artist": "British Sea Power",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "The Smallest Church in Saint-Saëns - British Sea Power",
+    "maxScore": 120,
+    "poolCount": 1,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "The Smallest Church in Saint-Saëns - British Sea Power",
+    "maxScore": -170,
+    "poolCount": 0
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 1,
+  "resolvedTrack": {
+   "name": "The Smallest Church in Saint-Saens",
+   "artist": [
+    "Harrier Du Bois"
+   ],
+   "score": 120
+  }
+ },
+ {
+  "title": "The Sacred and The Profane",
+  "artist": "British Sea Power",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "The Sacred and The Profane - British Sea Power",
+    "maxScore": 160,
+    "poolCount": 2,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "The Sacred and The Profane - British Sea Power",
+    "maxScore": 36,
+    "poolCount": 4
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 6,
+  "resolvedTrack": {
+   "name": "The Sacred and the Profane",
+   "artist": [
+    "Paul Leonard Morgan"
+   ],
+   "score": 160
+  }
+ },
+ {
+  "title": "雾里",
+  "artist": "三亩地",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "雾里 - 三亩地",
+    "maxScore": 120,
+    "poolCount": 3,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "雾里 - 三亩地",
+    "maxScore": 120,
+    "poolCount": 1
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 4,
+  "resolvedTrack": {
+   "name": "雾里",
+   "artist": [
+    "姚六一"
+   ],
+   "score": 120
+  }
+ },
+ {
+  "title": "Nocturne op. 9 No. 2",
+  "artist": "Chopin",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Nocturne op. 9 No. 2 - Chopin",
+    "maxScore": 240,
+    "poolCount": 3,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Nocturne op. 9 No. 2 - Chopin",
+    "maxScore": 240,
+    "poolCount": 4
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 7,
+  "resolvedTrack": {
+   "name": "Nocturne Op. 9 No. 2",
+   "artist": [
+    "Fréderic Chopin",
+    "Pio Palumbo"
+   ],
+   "score": 240
+  }
+ },
+ {
+  "title": "La Campanella",
+  "artist": "Liszt",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 4,
+    "usedKw": "La Campanella - Liszt",
+    "maxScore": 280,
+    "poolCount": 4,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "La Campanella - Liszt",
+    "maxScore": 167,
+    "poolCount": 2
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 6,
+  "resolvedTrack": {
+   "name": "La Campanella",
+   "artist": [
+    "Franz Liszt"
+   ],
+   "score": 280
+  }
+ },
+ {
+  "title": "Maple Leaf Rag",
+  "artist": "Scott Joplin",
+  "tag": "stress",
+  "directDb": {
+   "hit": false
+  },
+  "sources": {
+   "netease": {
+    "searchCount": 5,
+    "usedKw": "Maple Leaf Rag - Scott Joplin",
+    "maxScore": 240,
+    "poolCount": 5,
+    "triedUrl": true
+   },
+   "kuwo": {
+    "searchCount": 5,
+    "usedKw": "Maple Leaf Rag - Scott Joplin",
+    "maxScore": 240,
+    "poolCount": 5
+   },
+   "migu": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "kugou": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   },
+   "tencent": {
+    "searchCount": 0,
+    "usedKw": null,
+    "maxScore": null,
+    "poolCount": 0
+   }
+  },
+  "resolved": true,
+  "resolvedVia": "search:netease",
+  "failStage": null,
+  "poolSize": 10,
+  "resolvedTrack": {
+   "name": "Maple Leaf Rag",
+   "artist": [
+    "Scott Joplin"
+   ],
+   "score": 240
+  }
+ }
+]

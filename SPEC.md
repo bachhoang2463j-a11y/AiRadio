@@ -1,6 +1,6 @@
 # 《音乐电台》项目规范与目标文档 (SPEC.md)
 
-> **版本**：v6.18.1  
+> **版本**：v6.18.2  
 > **定位**：SillyTavern（酒馆）专属的高性能、无感解耦、全源检索的赛博朋克深空沉浸电台。
 
 ---
@@ -10,7 +10,7 @@
 构建一个与主 RP 聊天 AI **彻底解耦**的智能背景音乐（BGM）播放系统：
 1. **零心流打扰**：主正文 AI 专注于剧情写作与沉浸演绎，无需分心输出选歌指令；
 2. **专职 Sidecar AI DJ**：正文生成完毕后由轻量级独立模型在后台分析最新氛围，专心决策选曲；
-3. **极致容错与秒级响应**：本地直链库 → 连字符双态解析 → 1~9分钟时长熔断 → 多源代理池兜底；
+3. **极致容错与秒级响应**：本地直链库 → 连字符双态解析 → 1~20分钟时长熔断 → 多源代理池兜底；
 4. **全自由管理体系**：所有预置与自定义频段/歌曲支持无限制删除、拖拽排序、增量合并与备份导出。
 
 ---
@@ -21,8 +21,8 @@
    - 绝不入侵或修改主提示词（除非用户主动配置）；
    - 默认采用 `0 层上下文深度`（仅当前 AI 最新回复），以最低 Token 开销实现秒级氛围提炼。
 2. **双层防护原则（时长与音质保障）**：
-   - **Layer 1 前置过滤**：计算码率与体积预估时长，排除 < 55s 与 > 550s 的候选源；
-   - **Layer 2 硬件级熔断**：音频元数据加载时，若时长 < 60s 或 > 540s，立即静音并秒切下一首，100% 屏蔽有声书与试听片段。
+   - **Layer 1 前置过滤**：计算码率与体积预估时长，排除 < 55s 与 > 1200s 的候选源；
+   - **Layer 2 硬件级熔断**：音频元数据加载时，若时长 < 60s 或 > 1200s，立即静音并秒切下一首，100% 屏蔽有声书与试听片段。
 3. **连字符双态自适应原则**：
    - 自动兼容形如 `Monoco's Station - Grandis Refuge` 这类标题自带横杠的歌曲，杜绝被误切断为歌手的错误。
 4. **用户数据资产安全原则**：
@@ -43,7 +43,7 @@
 ├──────────────────────────────┼──────────────────────────────┤
 │ 2. 智能音频流解析与检索矩阵   │ - 本地高精直链映射库 (0ms 播放)│
 │                              │ - 连字符双态打分检索算法     │
-│                              │ - 1~9 分钟双层硬核时长过滤网  │
+│                              │ - 1~20 分钟双层硬核时长过滤网 │
 ├──────────────────────────────┼──────────────────────────────┤
 │ 3. 歌单与资产管理系统        │ - ★ 我的收藏 (高优先独立频段) │
 │                              │ - 跨频段移动 (模态选择 + 拖拽)│
@@ -71,7 +71,7 @@
 ## 四、验收标准 (Acceptance Criteria)
 
 - [x] **连字符标题匹配**：带横杠的复杂歌名能被全词匹配，并赋予豁免作者惩罚的高分。
-- [x] **时长过滤拦截**：小于 1 分钟、大于 9 分钟的音频流（有声书、短翻唱、试听）100% 自动跳过。
+- [x] **时长过滤拦截**：小于 1 分钟、大于 20 分钟的音频流（有声书、短翻唱、试听）100% 自动跳过。
 - [x] **数据合并去重**：合并导入同名歌单时，同名歌曲不产生重复条目，新歌与新歌单正确追加。
 - [x] **UI 防挤压自适应**：移动歌曲模态框在大量歌单存在时保持每行 32px 规整排版与顺畅滚动。
 - [x] **Sidecar AI DJ 联动**：配置 API 后，点击 `✨ AI选歌` 或角色消息渲染完毕后，能自动异步向大模型请求推荐并切歌。
@@ -118,7 +118,7 @@
 | 符号 | 位置 | 职责 |
 |---|---|---|
 | `customUrlDb: {}` | `L25` | 运行时空表，占位供未来注入自定义直链，未序列化。 |
-| `directLinkDb: {title→网易云ID}` | `L27-70` | 本地高精直链库（泽野弘之/进击的巨人神曲、Evan Call、星际穿越等），`getTrackUrl` 最高优先级命中，0ms 秒播。含多别名键（如 `YouSeeBIGGIRL/T:T`/`youseebiggirl`）。 |
+| `directLinkDb: {title→网易云ID}` | `L27-72` | 本地高精直链库（泽野弘之/进击的巨人神曲、Evan Call、星际穿越、菅野よう子/エスカフローネ等），`getTrackUrl` 最高优先级命中，0ms 秒播。含多别名键（如 `YouSeeBIGGIRL/T:T`/`youseebiggirl`）。 |
 | `initialDefaultPlaylists: Array<{category,songs}>` | `L77` | 出厂预置频段与曲目，`loadPlaylists` 失败/首次与 `[重置]` 恢复时深拷贝使用。 |
 | `bgmPlaylists: Array<{category,songs,prompt,promptEnabled}>` | `L170` | 运行时歌单总表，`loadPlaylists/savePlaylists` 与 `celestial_all_playlists` 互转。每元素新增 `prompt:string('')` 与 `promptEnabled:boolean(false)` 可选歌单提示词（v6.1.0，默认全不选/空，旧存档自动迁移）。 |
 | `openedPlaylistCategories: Set<string>` | `L23` | 记录展开态的频段名，驱动 `renderPlaylists` 的 `slideDown/Up`。 |
@@ -189,7 +189,7 @@
 | `ensureSpectrumGraph()` | `function ensureSpectrumGraph()` | 惰性创建 `AudioContext → createMediaElementSource → AnalyserNode(fftSize=256, 平滑 0.75) → destination` 链路，仅对已设 crossOrigin 的元素建图且每元素仅一次，异常时静默回退（v6.18.0）。 |
 | `startSpectrumLoop()/stopSpectrumLoop()` | `function startSpectrumLoop() / stopSpectrumLoop()` | 真实频谱 rAF 循环：`getByteFrequencyData` 对数分箱（`SPECTRUM_BIN_IDX`）映射 24 柱后经三段映射——`SPECTRUM_TILT` 频率均衡（低 ×0.55 → 高 ×1.2）、每柱慢均值 AGC 相对偏离（`spectrumAvg`，时间常数约 3 秒）驱动节奏起伏（中线 35% + 形状 30% + 偏离 45%）、指数趋近平滑（`spectrumSmooth`，升 0.5 降 0.3）；逐帧仅写合成器 `transform`（实测 0.016ms/帧）；播中持续约 2 秒全零判定跨域污染自动回退；停止时清空内联 transform 交还 CSS 律动（v6.18.0 建立，v6.18.1 调优）。 |
 | `rebuildAudioElement()` | `function rebuildAudioElement()` | 重建 `<audio>` 元素并复制音量、关闭旧 AudioContext、置空频谱链路，配合 `attachAudioListeners()` 重挂事件；用于音频图建立后改载非跨域音源或关闭频谱开关的场景，规避 Web Audio 跨域静音污染（v6.18.0）。 |
-| `attachAudioListeners(el)` | `function attachAudioListeners(el)` | 集中挂载 `timeupdate`（进度条）、`loadedmetadata`（1~9 分钟时长熔断）、`ended`（循环/下一曲）三类音频事件，初始化与元素重建后各调用一次（v6.18.0，自原三处匿名监听器提取）。 |
+| `attachAudioListeners(el)` | `function attachAudioListeners(el)` | 集中挂载 `timeupdate`（进度条）、`loadedmetadata`（1~20 分钟时长熔断）、`ended`（循环/下一曲）三类音频事件，初始化与元素重建后各调用一次（v6.18.0，自原三处匿名监听器提取）。 |
 | `applyGlassEffect(on)` | `function applyGlassEffect(on)` | 切换容器 `.no-glass` 类以停用/恢复面板、贴边把手与模态遮罩的 `backdrop-filter`；启动时按 `cr_glass_effect` 键初始化，设置面板保存后即时生效（v6.17.0）。 |
 
 ### 5.8 歌单管理与渲染
@@ -205,8 +205,8 @@
 | 函数 | 位置 | 职责 | 关键细节 |
 |---|---|---|---|
 | `scoreTrackCandidate(track, cleanQuery)` | `L2025` | 连字符双态打分：`fullTitle` 全等 +100 / `singleTitle/subTitle` +90 / 包含 +30×长度比 / else -200；作者匹配 +50/30/else -100（`fullTitle` 已中时豁免）；无作者时品质词/album 命中 +25；OST 标记/意图 +40；`OST_COMPOSERS` 名家 +30；劣质词（翻唱/伴奏/DJ…）-150；有声书词 -300。 | 是 `searchAndResolveBestTrack` 的排序依据，>30 分入池。 |
-| `searchAndResolveBestTrack(cleanQuery)` | `L2129` `async function searchAndResolveBestTrack(cleanQuery)` | 多源检索闭环：内联 `fetchSearch(kw, source)`（主 `music-api` + `corsproxy.io` 兜底）与 `fetchDirectUrl(source,id)`（`size*8/(br*1000)` 预估时长，<55s 或 >550s 前置过滤）；`sources=[netease,kuwo,migu,kugou,tencent]` 轮询，关键词回退 `fullTitle→aliasFullTitle→title→subTitle`，候选按 `_score` 降序取前 6 逐一试 `fetchDirectUrl` 首个可播即返。 | 双层时长防护的 Layer 1 在此。 |
-| `getTrackUrl(rawTitle, rawArtist)` | `L2219` `async function getTrackUrl(rawTitle,rawArtist): Promise<{url,track}|null>` | 四级解析优先级：① 直链（`isHttpUrl`）→ ② `customUrlDb/localCustomUrls` 本地映射 → ③ `directLinkDb` 网易云 ID 直取（`corsproxy` 代理）→ ④ `cleanTrackQuery`+`searchAndResolveBestTrack` 全网检索。 | 0ms 命中在前，全网检索兜底在后。 |
+| `searchAndResolveBestTrack(cleanQuery)` | `L2129` `async function searchAndResolveBestTrack(cleanQuery)` | 多源检索闭环：内联 `fetchSearch(kw, source)`（主 `music-api` + `corsproxy.io` 兜底）与 `fetchDirectUrl(source,id)`（`size*8/(br*1000)` 预估时长，<55s 或 >1200s 前置过滤）；`sources=[netease,kuwo,migu,kugou,tencent]` 轮询，关键词回退 `fullTitle→aliasFullTitle→title→subTitle`，候选按 `_score` 降序取前 6 逐一试 `fetchDirectUrl` 首个可播即返。 | 双层时长防护的 Layer 1 在此。 |
+| `getTrackUrl(rawTitle, rawArtist)` | `L2219` `async function getTrackUrl(rawTitle,rawArtist): Promise<{url,track}|null>` | 四级解析优先级：① 直链（`isHttpUrl`）→ ② `customUrlDb/localCustomUrls` 本地映射 → ③ `directLinkDb` 网易云 ID 直取（gdstudio 直连优先，`corsproxy.io` 兜底）→ ④ `cleanTrackQuery`+`searchAndResolveBestTrack` 全网检索。 | 0ms 命中在前，全网检索兜底在后。 |
 | `findSongInPlaylists(title, artist)` | `L2252` | 在 `bgmPlaylists` 中按 `normalizeStr` 模糊定位歌曲，标题/全称包含即中，作者为可选收紧。 | 供 `playDirect` 的“已在库则锚定”分支。 |
 | `playSpecificSong(pIdx, sIdx)` | `L2275` `async function playSpecificSong(pIdx,sIdx)` | 歌单内定向播放：置指针→高亮→`getTrackUrl`→`audioObj.src=→play()`→`cr_last_song_*` 记忆→`updatePlayerFavBtn`；失败 2s 后 `nextSong`。 | 单曲循环/顺序/随机由 `playMode` 与 `audio ended` 协作。 |
 | `playDirect(title, artist)` | `L2316` `async function playDirect(title, artist)` | 任意标题直播：先 `findSongInPlaylists` 锚定库内，否则 `getTrackUrl` 全网；重置高亮→`getTrackUrl→play()` 并记忆。 | 手动搜索、`[点一首歌]` 指令、Sidecar 决策的统一出口。 |
@@ -231,7 +231,8 @@
 - **运行环境**：TavernHelper/油猴 IIFE，依赖 `jQuery`、`localStorage`、`fetch`、`HTMLAudioElement`，无需构建。
 - **数据契约**：`bgmPlaylists` 结构 `{category:string, songs:{title,artist}[], prompt?:string, promptEnabled?:boolean}`（`prompt=''`, `promptEnabled=false` 为默认，全不选/空；旧存档自动迁移，`L172`），导入时 `category+songs` 强校验（`L1844`），额外字段透传；增量合并时同名频段不覆盖既有 `prompt`。
 - **备份契约**：导出含 `{version:"6.0", playlists, urls}`（`L1808`），导入时 `urls` 以 `{...existing, ...imported}` 合并（`L1857`）。
-- **时长契约**：Layer 1 `<55s/>550s` 丢弃（`L2151`），Layer 2 `<60s/>540s` 熔断切歌（`L1998`）。
+- **时长契约**：Layer 1 `<55s/>1200s` 丢弃（`L2151`），Layer 2 `<60s/>1200s` 熔断切歌（`L1998`）。
+- **诊断工具**：`tools/hitrate-probe.mjs` 五源命中率探针（v6.18.2）——从主 JSON `content` 程序化抽取 `cleanTrackQuery/scoreTrackCandidate` 等纯函数复刻线上解析链（零漂移），跑出厂歌单 + directLinkDb 全键 + 偏好曲风压力清单，输出 `tools/hitrate-report.md/json`；`--filter <regex>` 可定向回归单曲。
 
 ---
 
@@ -268,4 +269,5 @@
 | v6.17.1 | 2026-08-30 | 律动波形真实感优化 | 奇偶柱采用单高峰/双矮峰双波形，各柱时长在互不成倍数档位间轮换，复现原 JS 引擎长短峰交错、永不循环的频谱观感 |
 | v6.18.0 | 2026-08-30 | 真实音频频谱引擎上线（可选开关） | 新增真实频谱开关（默认关闭，PC 推荐），逐源 CORS 预检后接入 Web Audio 实时 FFT 驱动波形柱；跨域脏源自动回退 CSS 模拟律动，元素重建机制杜绝跨域静音，任何回退不影响播放 |
 | v6.18.1 | 2026-08-30 | 频谱反馈节奏感调优 | 频率均衡压制低频抬高高频，每柱慢均值 AGC 以相对偏离驱动节拍起伏，双重时域平滑消除闪烁，实测零饱和零贴地、围绕中线随节奏跳动 |
+| v6.18.2 | 2026-08-31 | 五源命中率实测查漏补缺 | 新增 `tools/hitrate-probe.mjs` 探针（119 首偏好曲风实测 98.3%→100%）；修复双层时长熔断上限误杀 9~20 分钟古典/OST 完整版（550/540s→1200s）；`directLinkDb` 新增菅野よう子《青い瞳》双别名键；直链分支去 corsproxy 单点依赖（直连优先、代理兜底） |
 

@@ -1,6 +1,6 @@
 # 《音乐电台》项目规范与目标文档 (SPEC.md)
 
-> **版本**：v6.17.0  
+> **版本**：v6.17.1  
 > **定位**：SillyTavern（酒馆）专属的高性能、无感解耦、全源检索的赛博朋克深空沉浸电台。
 
 ---
@@ -101,10 +101,11 @@
 - [x] **Sidecar AI DJ 自定义末尾纯文本直注架构优化**：移除系统预设的“【用户核心补充要求】：”包装前缀，将末尾注入定位调整至格式指令（`[点一首歌: 歌名 - 歌手]`）的最末端，支持用户直接按需写入完全自定义的纯文本指令（v6.15.1）。
 - [x] **初始化载入自动播放独立开关**：在设置面板 Tab 1 触发与调试卡片中新增【酒馆初始化载入时自动播放】开关（`#cr-cfg-init-autoplay`）；默认关闭，刷新或初次加载酒馆时仅回填记忆曲目元数据并保持静默待机，杜绝自动开播打扰；开启后恢复自动续播（v6.16.0）。
 - [x] **移动端性能优化：律动引擎合成器化与毛玻璃开关**：① 音量条律动引擎由 JS `requestAnimationFrame` 每帧改写 24 根柱高（每帧布局+重绘，移动端掉帧主因）迁移为纯 CSS `crVolDance` 关键帧 `scaleY` 合成器动画，各柱以负值 `animation-delay` 错峰形成波浪，振幅经容器 `--cr-vol` 变量随音量缩放（`updateVolAnimState` 仅在播放/音量事件时切换 `.playing`，暂停态零开销）；② 新增【毛玻璃视觉效果】开关（`#cr-cfg-glass`，默认开启，`cr_glass_effect` 持久化），关闭后 `applyGlassEffect` 为面板/把手/模态遮罩停用 `backdrop-filter` 并改用 0.98 不透明度纯色背景，显著降低移动端 GPU 负担（v6.17.0）。
+- [x] **律动波形真实感优化**：律动动画升级为奇偶双波形体系（`crVolDanceA` 单高峰 / `crVolDanceB` 双矮峰，`:nth-child(2n)` 分流），且创建柱时各柱 `animation-duration` 在互不成倍数的 6 档间轮换、负值 `animation-delay` 逐柱错相，复现原 JS 引擎长短峰交错、永不循环的频谱观感，仍保持纯合成器零主线程开销（v6.17.1）。
 
 ---
 
-## 五、脚本函数职责清单 (Function Reference) — v6.17.0 现状
+## 五、脚本函数职责清单 (Function Reference) — v6.17.1 现状
 
 > 约定：`0 层 = AI 最新回复`，`1 层 = 上一条用户输入 + 当前 AI`，`N 层 = 最近 N*2 条`。
 > 注释密度：正文 IIFE 内约 2.1% 行注释（52/2721），以 `// === ... ===` 分区为主，函数体几乎无行内注释，命名即文档。
@@ -180,7 +181,7 @@
 | `updatePlayerFavBtn()` | `L1381` | 依 `currentPlayingTrackInfo` 与 `isSongFavorited` 切换底栏收藏按钮 `is-fav/favSolid/favOutline`。 |
 | `downloadCurrentAudio()` | `L1395` `async function downloadCurrentAudio()` | 捕获 `audioObj.src` 的 `fetch→blob→ObjectURL→a.click` 下载为 `歌名 - 歌手.mp3`（非法字符转 `_`），失败降级为新标签直链。`#cr-player-dl-btn` 绑定。 |
 | `updateVolumeUI(vol)` | `L1437` `function updateVolumeUI(vol)` | 同步滑块值/`--vol-pct`/百分比文本与三态 SVG（`High/Low/Mute #D34B4B`），初始化与 `input/click` 回调均调用；v6.17.0 起额外写入容器 `--cr-vol` 变量并触发 `updateVolAnimState()`。 |
-| `updateVolAnimState()` | `function updateVolAnimState()` | 按 `isPlaying && !isLoading && !audioObj.paused && audioObj.volume > 0` 切换 `#cr-vol-visualizer` 的 `.playing` 类，控制 CSS 律动动画启停（v6.17.0，替代已删除的 rAF 循环 `startVolumeEqualizerLoop`）。 |
+| `updateVolAnimState()` | `function updateVolAnimState()` | 按 `isPlaying && !isLoading && !audioObj.paused && audioObj.volume > 0` 切换 `#cr-vol-visualizer` 的 `.playing` 类，控制 CSS 律动动画启停（v6.17.0，替代已删除的 rAF 循环 `startVolumeEqualizerLoop`）。律动为奇偶双波形 `crVolDanceA/B` + 逐柱轮换时长（`VOL_DURATIONS`）交错驱动（v6.17.1）。 |
 | `applyGlassEffect(on)` | `function applyGlassEffect(on)` | 切换容器 `.no-glass` 类以停用/恢复面板、贴边把手与模态遮罩的 `backdrop-filter`；启动时按 `cr_glass_effect` 键初始化，设置面板保存后即时生效（v6.17.0）。 |
 
 ### 5.8 歌单管理与渲染
@@ -256,4 +257,5 @@
 | v6.15.1 | 2026-08-29 | 自定义末尾纯文本直注架构优化 | 移除固定前缀包装，并将注入位置调整至格式输出指令最末端，提供 100% 自由度的纯文本注入 |
 | v6.16.0 | 2026-08-30 | 初始化载入自动播放独立控制开关上线 | 设置面板新增初始化自动播放开关，默认关闭静默待机并回填底栏记忆，点击播放即播，杜绝载入自动开播打扰 |
 | v6.17.0 | 2026-08-30 | 移动端性能优化：律动引擎合成器化与毛玻璃开关 | 音量条律动由 JS 每帧改高迁移为纯 CSS scaleY 合成器动画（消除每帧布局重绘与掉帧），新增毛玻璃视觉效果开关供用户在磨砂质感与移动端 GPU 负担间自由取舍 |
+| v6.17.1 | 2026-08-30 | 律动波形真实感优化 | 奇偶柱采用单高峰/双矮峰双波形，各柱时长在互不成倍数档位间轮换，复现原 JS 引擎长短峰交错、永不循环的频谱观感 |
 

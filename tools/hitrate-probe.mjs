@@ -8,7 +8,8 @@
  * 纯函数（normalizeStr/cleanTrackQuery/scoreTrackCandidate 等）从项目 JSON 中
  * 程序化抽取后 eval，保证与线上逻辑零漂移。
  *
- * 用法：node tools/hitrate-probe.mjs [--quick]
+ * 用法：node tools/hitrate-probe.mjs [--quick] [--filter <regex>] [--down-gdstudio]
+ *   --down-gdstudio 模拟主源 gdstudio 整体宕机，验证 motues 备源故障转移链路
  * 输出：tools/hitrate-report.json + tools/hitrate-report.md
  */
 import fs from 'node:fs';
@@ -155,32 +156,60 @@ for (const [t, a] of STRESS) addSong(t, a, 'stress');
 
 // ---------------------------------------------------------------- 复刻线上解析链
 const gds = 'https://music-api.gdstudio.xyz/api.php';
+const MOTUES = 'https://open.motues.top/music';
+const downGds = process.argv.includes('--down-gdstudio'); // 模拟 gdstudio 整体宕机
 
 async function apiSearch(kw, source) {
-    const url = `${gds}?types=search&source=${source}&name=${encodeURIComponent(kw)}&count=5&pages=1`;
-    await sleep(REQ_DELAY);
-    const data = await fetchJson(url);
-    return Array.isArray(data) ? data : [];
+    if (!downGds) {
+        const url = `${gds}?types=search&source=${source}&name=${encodeURIComponent(kw)}&count=5&pages=1`;
+        await sleep(REQ_DELAY);
+        const data = await fetchJson(url);
+        if (!data.__error) return Array.isArray(data) ? data : [];
+    }
+    // 主源异常/模拟宕机 → netease 备源 motues（复刻生产 failover：仅异常时触发）
+    if (source === 'netease') {
+        await sleep(REQ_DELAY);
+        const m = await fetchJson(`${MOTUES}?server=netease&type=search&id=${encodeURIComponent(kw)}&limit=5`);
+        if (Array.isArray(m)) return m;
+    }
+    return [];
 }
 
-async function apiUrl(source, id) {
-    const url = `${gds}?types=url&source=${source}&id=${id}&br=320`;
-    await sleep(REQ_DELAY);
-    return fetchJson(url);
-}
-
-// 复刻 fetchDirectUrl：返回 {url} 或 {fail: '无url'|'时长不合格:<est>s'|'api错误'}
-async function probeDirectUrl(source, id) {
-    const data = await apiUrl(source, id);
-    if (data.__error) return { fail: 'api错误:' + data.__error };
-    if (data && data.url) {
+// 复刻 fetchDirectUrl 的 checkUrlData：返回 {url} / {fail:'时长不合格:<est>s'} / null(无url)
+const checkUrlData = (data) => {
+    if (data && !data.__error && data.url) {
         if (data.size && data.br) {
             const estDur = data.size / ((data.br * 1000) / 8);
-            if (estDur < 55 || estDur > 1200) return { fail: `时长不合格:${Math.round(estDur)}s`, size: data.size, br: data.br };
+            if (estDur < 55 || estDur > 1200) return { fail: `时长不合格:${Math.round(estDur)}s` };
         }
-        return { url: data.url, size: data.size, br: data.br };
+        return { url: data.url };
     }
-    return { fail: '无url' };
+    return null;
+};
+
+async function probeDirectUrl(source, id) {
+    let gdsFail = null;
+    if (!downGds) {
+        await sleep(REQ_DELAY);
+        const data = await fetchJson(`${gds}?types=url&source=${source}&id=${id}&br=320`);
+        if (data.__error) gdsFail = 'api错误';
+        else {
+            const r = checkUrlData(data);
+            if (r && r.url) return { ...r, via: 'gdstudio' };
+            gdsFail = r ? r.fail : '无url';
+        }
+    } else gdsFail = '模拟宕机';
+    // 备源 motues（仅 netease，ID 同空间）：主源无url/试听片段/宕机时兜底
+    if (source === 'netease') {
+        await sleep(REQ_DELAY);
+        const m = await fetchJson(`${MOTUES}?server=netease&type=url&id=${id}&br=320`);
+        if (!m.__error) {
+            const r2 = checkUrlData(m);
+            if (r2 && r2.url) return { ...r2, via: 'motues' };
+            return { fail: `${gdsFail}; motues:${r2 ? r2.fail : '无url'}` };
+        }
+    }
+    return { fail: gdsFail };
 }
 
 // ---------------------------------------------------------------- 单曲探测
@@ -200,7 +229,7 @@ async function probeSong(song) {
     // ① directLinkDb 分支（生产环境恒走 corsproxy.io，此处两种都测）
     if (trackId) {
         const direct = await probeDirectUrl('netease', trackId);
-        result.directDb = { hit: true, id: trackId, direct: direct.url ? 'ok' : direct.fail };
+        result.directDb = { hit: true, id: trackId, direct: direct.url ? 'ok' : direct.fail, via: direct.via || null };
         if (direct.url) {
             result.resolved = true;
             result.resolvedVia = 'directLinkDb';
@@ -255,7 +284,7 @@ async function probeSong(song) {
         result.sources[cand.source].triedUrl = true;
         if (r.url) {
             result.resolved = true;
-            result.resolvedVia = `search:${cand.source}`;
+            result.resolvedVia = `search:${cand.source}${r.via === 'motues' ? '+motues' : ''}`;
             result.resolvedTrack = { name: cand.name, artist: cand.artist, score: cand._score };
             return result;
         } else {
@@ -310,6 +339,7 @@ for (const r of resolved) {
 
 let md = `# AiRadio 五源命中率诊断报告\n\n`;
 md += `生成时间：${new Date().toLocaleString('zh-CN')}  \n`;
+md += `模式：${downGds ? '**gdstudio 模拟宕机（motues 备源验证）**' : '正常（主源 gdstudio）'}  \n`;
 md += `测试总数：**${results.length}**，命中 **${resolved.length}**（${(resolved.length / results.length * 100).toFixed(1)}%），失败 **${failed.length}**\n\n`;
 md += `## 分组命中\n\n| 分组 | 命中/总数 |\n|---|---|\n`;
 for (const [t, v] of Object.entries(byTag)) md += `| ${t} | ${v.ok}/${v.total} |\n`;

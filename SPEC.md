@@ -1,6 +1,6 @@
 # 《音乐电台》项目规范与目标文档 (SPEC.md)
 
-> **版本**：v6.18.2  
+> **版本**：v6.19.0  
 > **定位**：SillyTavern（酒馆）专属的高性能、无感解耦、全源检索的赛博朋克深空沉浸电台。
 
 ---
@@ -205,8 +205,8 @@
 | 函数 | 位置 | 职责 | 关键细节 |
 |---|---|---|---|
 | `scoreTrackCandidate(track, cleanQuery)` | `L2025` | 连字符双态打分：`fullTitle` 全等 +100 / `singleTitle/subTitle` +90 / 包含 +30×长度比 / else -200；作者匹配 +50/30/else -100（`fullTitle` 已中时豁免）；无作者时品质词/album 命中 +25；OST 标记/意图 +40；`OST_COMPOSERS` 名家 +30；劣质词（翻唱/伴奏/DJ…）-150；有声书词 -300。 | 是 `searchAndResolveBestTrack` 的排序依据，>30 分入池。 |
-| `searchAndResolveBestTrack(cleanQuery)` | `L2129` `async function searchAndResolveBestTrack(cleanQuery)` | 多源检索闭环：内联 `fetchSearch(kw, source)`（主 `music-api` + `corsproxy.io` 兜底）与 `fetchDirectUrl(source,id)`（`size*8/(br*1000)` 预估时长，<55s 或 >1200s 前置过滤）；`sources=[netease,kuwo,migu,kugou,tencent]` 轮询，关键词回退 `fullTitle→aliasFullTitle→title→subTitle`，候选按 `_score` 降序取前 6 逐一试 `fetchDirectUrl` 首个可播即返。 | 双层时长防护的 Layer 1 在此。 |
-| `getTrackUrl(rawTitle, rawArtist)` | `L2219` `async function getTrackUrl(rawTitle,rawArtist): Promise<{url,track}|null>` | 四级解析优先级：① 直链（`isHttpUrl`）→ ② `customUrlDb/localCustomUrls` 本地映射 → ③ `directLinkDb` 网易云 ID 直取（gdstudio 直连优先，`corsproxy.io` 兜底）→ ④ `cleanTrackQuery`+`searchAndResolveBestTrack` 全网检索。 | 0ms 命中在前，全网检索兜底在后。 |
+| `searchAndResolveBestTrack(cleanQuery)` | `L2129` `async function searchAndResolveBestTrack(cleanQuery)` | 多源检索闭环：内联 `fetchSearch(kw, source)`（主 `music-api` + `corsproxy.io` 兜底，双失败置 `gdsSearchDead` 本曲内熔断防逐源空等）与 `fetchDirectUrl(source,id)`（`checkUrlData` 统一校验：`size*8/(br*1000)` 预估时长，<55s 或 >1200s 前置过滤）；仅 netease 源在主源无 url/试听片段/宕机时自动转移 motues 备源（v6.19.0）；`sources=[netease,kuwo,migu,kugou,tencent]` 轮询，关键词回退 `fullTitle→aliasFullTitle→title→subTitle`，候选按 `_score` 降序取前 6 逐一试 `fetchDirectUrl` 首个可播即返。 | 双层时长防护的 Layer 1 在此。 |
+| `getTrackUrl(rawTitle, rawArtist)` | `L2219` `async function getTrackUrl(rawTitle,rawArtist): Promise<{url,track}|null>` | 四级解析优先级：① 直链（`isHttpUrl`）→ ② `customUrlDb/localCustomUrls` 本地映射 → ③ `directLinkDb` 网易云 ID 直取（gdstudio 直连 → `corsproxy.io` → motues 三级兜底）→ ④ `cleanTrackQuery`+`searchAndResolveBestTrack` 全网检索。 | 0ms 命中在前，全网检索兜底在后；自定义直链恒为第一优先，备源仅服务在线解析环节。 |
 | `findSongInPlaylists(title, artist)` | `L2252` | 在 `bgmPlaylists` 中按 `normalizeStr` 模糊定位歌曲，标题/全称包含即中，作者为可选收紧。 | 供 `playDirect` 的“已在库则锚定”分支。 |
 | `playSpecificSong(pIdx, sIdx)` | `L2275` `async function playSpecificSong(pIdx,sIdx)` | 歌单内定向播放：置指针→高亮→`getTrackUrl`→`audioObj.src=→play()`→`cr_last_song_*` 记忆→`updatePlayerFavBtn`；失败 2s 后 `nextSong`。 | 单曲循环/顺序/随机由 `playMode` 与 `audio ended` 协作。 |
 | `playDirect(title, artist)` | `L2316` `async function playDirect(title, artist)` | 任意标题直播：先 `findSongInPlaylists` 锚定库内，否则 `getTrackUrl` 全网；重置高亮→`getTrackUrl→play()` 并记忆。 | 手动搜索、`[点一首歌]` 指令、Sidecar 决策的统一出口。 |
@@ -232,7 +232,8 @@
 - **数据契约**：`bgmPlaylists` 结构 `{category:string, songs:{title,artist}[], prompt?:string, promptEnabled?:boolean}`（`prompt=''`, `promptEnabled=false` 为默认，全不选/空；旧存档自动迁移，`L172`），导入时 `category+songs` 强校验（`L1844`），额外字段透传；增量合并时同名频段不覆盖既有 `prompt`。
 - **备份契约**：导出含 `{version:"6.0", playlists, urls}`（`L1808`），导入时 `urls` 以 `{...existing, ...imported}` 合并（`L1857`）。
 - **时长契约**：Layer 1 `<55s/>1200s` 丢弃（`L2151`），Layer 2 `<60s/>1200s` 熔断切歌（`L1998`）。
-- **诊断工具**：`tools/hitrate-probe.mjs` 五源命中率探针（v6.18.2）——从主 JSON `content` 程序化抽取 `cleanTrackQuery/scoreTrackCandidate` 等纯函数复刻线上解析链（零漂移），跑出厂歌单 + directLinkDb 全键 + 偏好曲风压力清单，输出 `tools/hitrate-report.md/json`；`--filter <regex>` 可定向回归单曲。
+- **在线音源契约**：主源 `music-api.gdstudio.xyz`（CORS `*`，实际有效源 netease+kuwo，其余三源返回空）；备源 `open.motues.top/music`（Meting 协议，仅 netease，track ID 与主源同空间无需转换，CORS 回显 Origin，服务端带 VIP 账号池可解锁受限曲，有限流）。故障转移触发条件：主源无 url / 试听片段（时长不合格）/ 网络异常，且仅覆盖 netease 通道；主源健康时备源零请求（v6.19.0）。
+- **诊断工具**：`tools/hitrate-probe.mjs` 五源命中率探针（v6.18.2）——从主 JSON `content` 程序化抽取 `cleanTrackQuery/scoreTrackCandidate` 等纯函数复刻线上解析链（零漂移），跑出厂歌单 + directLinkDb 全键 + 偏好曲风压力清单，输出 `tools/hitrate-report.md/json`；`--filter <regex>` 可定向回归单曲，`--down-gdstudio` 模拟主源宕机验证 motues 备源链路（v6.19.0）。
 
 ---
 
@@ -270,4 +271,5 @@
 | v6.18.0 | 2026-08-30 | 真实音频频谱引擎上线（可选开关） | 新增真实频谱开关（默认关闭，PC 推荐），逐源 CORS 预检后接入 Web Audio 实时 FFT 驱动波形柱；跨域脏源自动回退 CSS 模拟律动，元素重建机制杜绝跨域静音，任何回退不影响播放 |
 | v6.18.1 | 2026-08-30 | 频谱反馈节奏感调优 | 频率均衡压制低频抬高高频，每柱慢均值 AGC 以相对偏离驱动节拍起伏，双重时域平滑消除闪烁，实测零饱和零贴地、围绕中线随节奏跳动 |
 | v6.18.2 | 2026-08-31 | 五源命中率实测查漏补缺 | 新增 `tools/hitrate-probe.mjs` 探针（119 首偏好曲风实测 98.3%→100%）；修复双层时长熔断上限误杀 9~20 分钟古典/OST 完整版（550/540s→1200s）；`directLinkDb` 新增菅野よう子《青い瞳》双别名键；直链分支去 corsproxy 单点依赖（直连优先、代理兜底） |
+| v6.19.0 | 2026-08-31 | motues 备源故障转移上线 | 在线解析三处接入备源自动转移（搜索/取链/直链库，仅 netease 通道，ID 同空间）；主源无url/试听片段/宕机时兜底，健康时零请求；实测模拟宕机 15/15 由备源接管、正常模式零触发 |
 

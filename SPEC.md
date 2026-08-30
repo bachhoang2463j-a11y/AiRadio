@@ -1,6 +1,6 @@
 # 《音乐电台》项目规范与目标文档 (SPEC.md)
 
-> **版本**：v6.17.1  
+> **版本**：v6.18.0  
 > **定位**：SillyTavern（酒馆）专属的高性能、无感解耦、全源检索的赛博朋克深空沉浸电台。
 
 ---
@@ -102,10 +102,11 @@
 - [x] **初始化载入自动播放独立开关**：在设置面板 Tab 1 触发与调试卡片中新增【酒馆初始化载入时自动播放】开关（`#cr-cfg-init-autoplay`）；默认关闭，刷新或初次加载酒馆时仅回填记忆曲目元数据并保持静默待机，杜绝自动开播打扰；开启后恢复自动续播（v6.16.0）。
 - [x] **移动端性能优化：律动引擎合成器化与毛玻璃开关**：① 音量条律动引擎由 JS `requestAnimationFrame` 每帧改写 24 根柱高（每帧布局+重绘，移动端掉帧主因）迁移为纯 CSS `crVolDance` 关键帧 `scaleY` 合成器动画，各柱以负值 `animation-delay` 错峰形成波浪，振幅经容器 `--cr-vol` 变量随音量缩放（`updateVolAnimState` 仅在播放/音量事件时切换 `.playing`，暂停态零开销）；② 新增【毛玻璃视觉效果】开关（`#cr-cfg-glass`，默认开启，`cr_glass_effect` 持久化），关闭后 `applyGlassEffect` 为面板/把手/模态遮罩停用 `backdrop-filter` 并改用 0.98 不透明度纯色背景，显著降低移动端 GPU 负担（v6.17.0）。
 - [x] **律动波形真实感优化**：律动动画升级为奇偶双波形体系（`crVolDanceA` 单高峰 / `crVolDanceB` 双矮峰，`:nth-child(2n)` 分流），且创建柱时各柱 `animation-duration` 在互不成倍数的 6 档间轮换、负值 `animation-delay` 逐柱错相，复现原 JS 引擎长短峰交错、永不循环的频谱观感，仍保持纯合成器零主线程开销（v6.17.1）。
+- [x] **真实音频频谱引擎（可选，默认关闭）**：设置面板新增【真实音频频谱】开关（`#cr-cfg-spectrum`，`cr_spectrum` 持久化，PC 端推荐、下一曲起生效）；开启后经 `prepareSpectrumForSrc` 以 2 字节 Range 请求逐源预检 CORS（按域名缓存、2.5s 超时），干净源接入 Web Audio（`AnalyserNode` fftSize=256 + 对数分箱映射 24 柱，JS 逐帧仅写合成器 `transform`，实测每帧 0.016ms）；跨域脏源或播中持续 2 秒全零自动回退 CSS 模拟律动并提示一次；`rebuildAudioElement` 在拆除音频图场景重建 `<audio>` 并重挂事件（`attachAudioListeners`），杜绝"图已建立 + 无 crossOrigin 加载 = 整条静音"的隐患，任何回退均不影响播放（v6.18.0）。
 
 ---
 
-## 五、脚本函数职责清单 (Function Reference) — v6.17.1 现状
+## 五、脚本函数职责清单 (Function Reference) — v6.18.0 现状
 
 > 约定：`0 层 = AI 最新回复`，`1 层 = 上一条用户输入 + 当前 AI`，`N 层 = 最近 N*2 条`。
 > 注释密度：正文 IIFE 内约 2.1% 行注释（52/2721），以 `// === ... ===` 分区为主，函数体几乎无行内注释，命名即文档。
@@ -182,6 +183,12 @@
 | `downloadCurrentAudio()` | `L1395` `async function downloadCurrentAudio()` | 捕获 `audioObj.src` 的 `fetch→blob→ObjectURL→a.click` 下载为 `歌名 - 歌手.mp3`（非法字符转 `_`），失败降级为新标签直链。`#cr-player-dl-btn` 绑定。 |
 | `updateVolumeUI(vol)` | `L1437` `function updateVolumeUI(vol)` | 同步滑块值/`--vol-pct`/百分比文本与三态 SVG（`High/Low/Mute #D34B4B`），初始化与 `input/click` 回调均调用；v6.17.0 起额外写入容器 `--cr-vol` 变量并触发 `updateVolAnimState()`。 |
 | `updateVolAnimState()` | `function updateVolAnimState()` | 按 `isPlaying && !isLoading && !audioObj.paused && audioObj.volume > 0` 切换 `#cr-vol-visualizer` 的 `.playing` 类，控制 CSS 律动动画启停（v6.17.0，替代已删除的 rAF 循环 `startVolumeEqualizerLoop`）。律动为奇偶双波形 `crVolDanceA/B` + 逐柱轮换时长（`VOL_DURATIONS`）交错驱动（v6.17.1）。 |
+| `spectrumEnabled()` | `function spectrumEnabled()` | 读取 `cr_spectrum` 键判断真实频谱开关状态（默认关闭），播放流程逐曲调用（v6.18.0）。 |
+| `prepareSpectrumForSrc(url)` | `async function prepareSpectrumForSrc(url)` | 真实频谱逐曲预检：2 字节 Range 请求按域名缓存探测 CORS（2.5s 超时）；干净源设 `crossOrigin='anonymous'` 并 `ensureSpectrumGraph()`，脏源/开关关闭则清除 crossOrigin 并在音频图存在时 `rebuildAudioElement()` 脱离 Web Audio 路由，脏源回退时 Toast 提示一次（v6.18.0）。 |
+| `ensureSpectrumGraph()` | `function ensureSpectrumGraph()` | 惰性创建 `AudioContext → createMediaElementSource → AnalyserNode(fftSize=256, 平滑 0.75) → destination` 链路，仅对已设 crossOrigin 的元素建图且每元素仅一次，异常时静默回退（v6.18.0）。 |
+| `startSpectrumLoop()/stopSpectrumLoop()` | `function startSpectrumLoop() / stopSpectrumLoop()` | 真实频谱 rAF 循环：`getByteFrequencyData` 对数分箱（`SPECTRUM_BIN_IDX`）映射 24 柱，读数手动乘以 `audioObj.volume`（element.volume 不影响分析器），逐帧仅写合成器 `transform`（实测 0.016ms/帧）；播中持续约 2 秒全零判定跨域污染自动回退；停止时清空内联 transform 交还 CSS 律动（v6.18.0）。 |
+| `rebuildAudioElement()` | `function rebuildAudioElement()` | 重建 `<audio>` 元素并复制音量、关闭旧 AudioContext、置空频谱链路，配合 `attachAudioListeners()` 重挂事件；用于音频图建立后改载非跨域音源或关闭频谱开关的场景，规避 Web Audio 跨域静音污染（v6.18.0）。 |
+| `attachAudioListeners(el)` | `function attachAudioListeners(el)` | 集中挂载 `timeupdate`（进度条）、`loadedmetadata`（1~9 分钟时长熔断）、`ended`（循环/下一曲）三类音频事件，初始化与元素重建后各调用一次（v6.18.0，自原三处匿名监听器提取）。 |
 | `applyGlassEffect(on)` | `function applyGlassEffect(on)` | 切换容器 `.no-glass` 类以停用/恢复面板、贴边把手与模态遮罩的 `backdrop-filter`；启动时按 `cr_glass_effect` 键初始化，设置面板保存后即时生效（v6.17.0）。 |
 
 ### 5.8 歌单管理与渲染
@@ -258,4 +265,5 @@
 | v6.16.0 | 2026-08-30 | 初始化载入自动播放独立控制开关上线 | 设置面板新增初始化自动播放开关，默认关闭静默待机并回填底栏记忆，点击播放即播，杜绝载入自动开播打扰 |
 | v6.17.0 | 2026-08-30 | 移动端性能优化：律动引擎合成器化与毛玻璃开关 | 音量条律动由 JS 每帧改高迁移为纯 CSS scaleY 合成器动画（消除每帧布局重绘与掉帧），新增毛玻璃视觉效果开关供用户在磨砂质感与移动端 GPU 负担间自由取舍 |
 | v6.17.1 | 2026-08-30 | 律动波形真实感优化 | 奇偶柱采用单高峰/双矮峰双波形，各柱时长在互不成倍数档位间轮换，复现原 JS 引擎长短峰交错、永不循环的频谱观感 |
+| v6.18.0 | 2026-08-30 | 真实音频频谱引擎上线（可选开关） | 新增真实频谱开关（默认关闭，PC 推荐），逐源 CORS 预检后接入 Web Audio 实时 FFT 驱动波形柱；跨域脏源自动回退 CSS 模拟律动，元素重建机制杜绝跨域静音，任何回退不影响播放 |
 

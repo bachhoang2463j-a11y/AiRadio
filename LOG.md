@@ -376,3 +376,17 @@
   3. 观感复现：还原原 JS 双正弦引擎"长短峰交错、锯齿状真实频谱"的特征，同时保持纯合成器动画零主线程开销，性能优化成果不受影响。
 - **决策原因**：用户反馈 v6.17.0 的单一波形整齐划一（行波观感），不如原版模拟真实；要求在纯 CSS 合成器动画的前提下复现长短峰交错的自然律动。
 - **提交**：`be33175725321a940fa99756c3e676dfb116ddf8`
+
+---
+
+## [HASH: fe81044] 真实音频频谱可选引擎上线（v6.18.0）
+- **日期**：2026-08-30
+- **涉及文件**：`酒馆助手脚本-电台直链版.json`、`SPEC.md`
+- **变更行为**：
+  1. 设置开关：设置面板 Tab 1 新增【真实音频频谱】Switch（`#cr-cfg-spectrum`，`cr_spectrum` 持久化，默认关闭，PC 端推荐、下一曲起生效）；
+  2. 逐源 CORS 预检：`prepareSpectrumForSrc` 在每次设定 `audioObj.src` 前以 2 字节 Range 请求探测音源 CORS（按域名缓存、2.5s 超时防拖慢起播），干净源设 `crossOrigin=anonymous` 并惰性建图（`AudioContext → MediaElementSource → AnalyserNode(fftSize=256) → destination`）；
+  3. 实时频谱循环：`startSpectrumLoop` 对数分箱映射 24 根波形柱，逐帧仅写合成器 `transform`（实测 0.016ms/帧，不触发布局），读数手动乘以 `element.volume`（实测该属性不影响分析器输出）；
+  4. 多层回退保障：预检失败 → 清除 crossOrigin 并回退 CSS 模拟律动（Toast 提示一次）；播中持续约 2 秒全零 → 判定链路污染自动回退；`rebuildAudioElement` 在音频图已建立后改载非跨域源或关闭开关时重建 `<audio>` 并重挂事件（`attachAudioListeners`，自原三处匿名监听器提取），杜绝"图已建立 + 无 crossOrigin 加载 = 整条输出静音"的隐患（浏览器控制台实测复现过该静音告警后修复）；
+  5. TDZ 修复：频谱引擎状态变量声明前移至首次 `updateVolumeUI` 调用之前，避免初始化期 `Cannot access before initialization` 中断整个脚本。
+- **决策原因**：用户希望音量条按真实音频律动并询问复杂度与开销；实测确认性能无忧（0.016ms/帧）、真正的坑在跨域（直链音源普遍无 CORS 头，直接接入会静音），故按用户选择做默认关闭的可选开关 + 失败自动回退，永不影响播放。
+- **提交**：`fe81044604aa2b5052ac40a7c5f1093d3469e3b8`

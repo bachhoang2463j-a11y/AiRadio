@@ -425,3 +425,18 @@
 - **实测数据**：修复前 117/119（98.3%），修复后全量回归 121/121（含新增 2 键）100% 命中；另发现 gdstudio 聚合源的 migu/kugou/tencent 三源在全部测试中搜索结果恒为空，"五源轮询"实际有效源仅 netease+kuwo 双源。
 - **决策原因**：用户要求根据其纯音乐/动漫影视 OST 偏好实测五源轮询盲区并查漏补缺（此前评估过 ST 插件的网易云 VIP cookie 代理方案，因无会员且 gdstudio 已解决 VIP 音源而放弃）。
 - **提交**：`87cd0499794806f22cb80f65455ac7ec15ac86fd`
+
+---
+
+## [HASH: 34b3839] motues 备源故障转移上线（v6.19.0）
+- **日期**：2026-08-31
+- **涉及文件**：`酒馆助手脚本-电台直链版.json`、`SPEC.md`、`tools/hitrate-probe.mjs`、`tools/hitrate-report-downmode.md`
+- **变更行为**：
+  1. 背景调研：实测国内外十余个公益音乐聚合 API（vkeys/lolimi/elysium 等已挂；Meting 三家实例 injahow/omega/mikus 无 VIP 解锁，仅出 30 秒试听；xtboke 无 CORS 且无 VIP），最终确认 `open.motues.top/music`（Meting 协议，服务端带 VIP 账号池）为唯一全能备选——其搜索响应与 gdstudio 完全同构（`{id,name,artist[],album}`），且 netease track ID 与主源同空间，取链可无缝转移；
+  2. `fetchSearch`：主源 gdstudio 直连+corsproxy 双失败时置 `gdsSearchDead` 本曲内熔断（避免宕机时逐源空等超时），netease 搜索转 motues（`?server=netease&type=search&id=<kw>&limit=5`）；
+  3. `fetchDirectUrl`：重构出 `checkUrlData` 统一校验（url 存在性 + 55~1200s 时长预过滤）；主源"无 url / 试听片段（时长不合格）/ 网络异常"三种情形下 netease 候选自动转 motues 取链（`?server=netease&type=url&id=<同ID>&br=320`）；
+  4. `getTrackUrl` 直链库分支：gdstudio 直连 → corsproxy 之后追加 motues 第三级兜底；
+  5. 探针同步复刻 failover 逻辑并新增 `--down-gdstudio` 模拟宕机开关；自定义直链（URL 直填 + localCustomUrls）仍为第一优先级不受影响。
+- **验证数据**：模拟宕机模式 15 首代表性子集（直链库+搜索+压力曲）15/15 全部由 motues 接管；正常模式同子集 15/15 且零触发 motues（主源健康时备源完全静默）；VIP 受限曲 Cornfield Chase 经 motues 取链为完整 5.08MB/320kbps（与主源字节数一致）。
+- **决策原因**：用户确认接入备源但要求保持自设直链第一优先；gdstudio 为项目唯一活跃在线源（migu/kugou/tencent 恒空、kuwo 取链端点损坏），单点风险需消除，motues 是实测唯一具备 VIP 解锁能力的备选。
+- **提交**：`34b38393d1e2b949d10cf29407c598117e73247d`

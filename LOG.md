@@ -411,3 +411,17 @@
   4. 动态增益基准改为均衡后峰值归一（1.0/max(0.25, ref)，替代 1.15 满幅），配合形状项 clamp 消除整体饱和。
 - **决策原因**：用户反馈 v6.18.0 首版动态增益下低频撑满不动、高频快速闪烁，且明确"不在乎还原、只要跟着节奏动"，遂以压低低频、抬高高频、变化平缓为目标重构映射曲线。
 - **提交**：`f6a40b8e3a5e6672c5d760784372528bee891ac7`
+
+---
+
+## [HASH: 87cd049] 五源命中率实测查漏补缺（v6.18.2）
+- **日期**：2026-08-31
+- **涉及文件**：`酒馆助手脚本-电台直链版.json`、`SPEC.md`、`tools/hitrate-probe.mjs`、`tools/hitrate-report*.md/json`
+- **变更行为**：
+  1. 新增诊断探针 `tools/hitrate-probe.mjs`：从主 JSON `content` 程序化抽取 `normalizeStr/cleanTrackQuery/scoreTrackCandidate` 等纯函数（零漂移复刻线上解析链），对 119 首（出厂歌单全量 + directLinkDb 全键 + 偏好曲风压力清单）实测五源轮询，输出 `tools/hitrate-report.md/json`（`--filter` 支持定向回归）；
+  2. 修复双层时长熔断误杀：Layer 1 前置过滤上限 550s→1200s、Layer 2 播放侧熔断上限 540s→1200s——实测《Rhapsody in Blue》netease 满分候选（270 分）因完整版 865~991 秒被全量丢弃，古典/OST 完整版普遍 9~20 分钟，原 9 分钟上限属于过滤器 bug 而非无源；有声书/串烧防护由打分模型负关键词（-150/-300）继续承担；
+  3. `directLinkDb` 新增菅野よう子《青い瞳》（エスカフローネ OST）双别名键 `Aoi Hitomi/青い瞳 → 592893`：该曲日文原名与"菅野洋子"查询在打分模型中匹配失败（-130 分）且 kuwo 源全部无 url，直链 ID 实测 320kbps/197s 完整可播；
+  4. `directLinkDb` 分支去 corsproxy.io 单点依赖：原实现恒走 `corsproxy.io` 代理取 url，代理故障时全部 66 首直链秒播曲目会集体失效；改为 gdstudio 直连优先、corsproxy 仅作回退（与 `fetchSearch` 分支策略一致）。
+- **实测数据**：修复前 117/119（98.3%），修复后全量回归 121/121（含新增 2 键）100% 命中；另发现 gdstudio 聚合源的 migu/kugou/tencent 三源在全部测试中搜索结果恒为空，"五源轮询"实际有效源仅 netease+kuwo 双源。
+- **决策原因**：用户要求根据其纯音乐/动漫影视 OST 偏好实测五源轮询盲区并查漏补缺（此前评估过 ST 插件的网易云 VIP cookie 代理方案，因无会员且 gdstudio 已解决 VIP 音源而放弃）。
+- **提交**：`87cd0499794806f22cb80f65455ac7ec15ac86fd`

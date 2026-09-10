@@ -466,3 +466,20 @@
 - **验证数据**：IAB mock 端到端实测——清预设后出厂三条齐全；切换到场景预设后勾选回填正确（选歌单✓/选歌✗）、保存后 localStorage 持久化正确；触发 AI 选歌时 System Prompt 含"电影配乐大师"且覆盖战斗/推理/倾诉/哀伤四类场景，payload 末尾注入频段名格式指令，AI 返回 `[点一首歌: 深空电子]` 后频段内随机命中曲目正常播放。
 - **决策原因**：用户要求生成第三条默认角色预设，提醒模型以电影配乐大师身份合理分析当前故事场景（战斗、推理、倾诉、哀伤等）后选择输出频段而非歌曲，并默认勾选频段指令。
 - **提交**：`3e321982abde7bcaa1ee4e57fbdedd4084c26566`
+
+---
+
+## [HASH: ae77baf] 自动播放触发雷达可靠性重构（v6.21.0）
+- **日期**：2026-09-11
+- **涉及文件**：`酒馆助手脚本-电台直链版.json`、`tools/radar-probe.mjs`、`SPEC.md`
+- **变更行为**：
+  1. AI DJ 自动选歌触发从「四消息事件直触发」升级为「GENERATION_STARTED/ENDED 生成门控」（参考《蚀心入魔·数据库》脚本的 generationGate 模式）：生成进行中（正文未定稿）一律不决策不锁楼，`GENERATION_ENDED` 携带 message_id 触发、此时楼层必然完整落库；`GENERATION_STOPPED` 与 120 秒 staleness 兜底防门控卡死；
+  2. quiet/dryRun 后台生成过滤（同数据库脚本 12s TTL 窗口）：其他插件的 quiet_prompt 规划请求不再误触发 AI DJ，也不再因误触发抢占楼层去重锁导致真实楼层漏播；
+  3. `triggerAiDjDecision` 全路径返回 boolean 成败（频段命中/单曲播放=true，空正文阻断/接口异常/空返回=false），雷达失败即清楼层锁，同一楼可被后续事件重试——修复原版「一次失败、本楼永久错过」；
+  4. 直播指令 `[点一首歌: ...]` 增加"聊天文件|楼层|指令原文"幂等去重键：流式生成中途扫到完整指令仍即时播放（不受门控拦截），流式早期漏检由 MESSAGE_RECEIVED/GENERATION_ENDED 重扫补上，重复事件不再重播；
+  5. 事件参数归一化 `normalizeMessageId`（number / message 对象取 message_id / 数字字符串）与 `fetchMessageText`（事件楼层优先、`getChatMessages(-1)` 最新楼兜底、Promise 返回与 window.parent 宿主降级兼容）；`CHAT_CHANGED` 重置楼层锁与指令键，杜绝换聊天后 message id 空间重叠导致的撞锁漏播；
+  6. 旧环境降级：`tavern_events` 缺 GENERATION_STARTED/ENDED 任一事件时不注册门控，维持原直触发行为；雷达扫描异常在 debugMode 下输出控制台而非静默吞掉；
+  7. 新增回归探针 `tools/radar-probe.mjs`：从主 JSON content 零漂移抽取雷达模块，stub 酒馆事件序列验证六场景（流式竞态/失败重试/quiet 过滤/指令幂等/CHAT_CHANGED 重置/旧环境降级）。
+- **验证数据**：`node tools/radar-probe.mjs` 12/12 断言通过；打包 JSON 回读零漂移、`node --check` 语法通过。
+- **决策原因**：用户反馈插件经常不触发自动播放，并提供《蚀心入魔·数据库》脚本作为参考。根因分析：原版在 CHARACTER_MESSAGE_RENDERED（流式早期）触发 1500ms 防抖扫描，生成超过 1.5 秒时拿到半截/空正文——AI DJ 要么被空正文阻断、要么拿半截剧情瞎选，且单值去重锁 `lastHandledMessageId` 在调用前置位，一次失败后本楼所有后续事件（含正文定稿后的 MESSAGE_RECEIVED）全部被拦，表现为"经常不触发"。数据库脚本以 GENERATION_STARTED/ENDED + quiet 门控 + TTL 判定保证只在"真实楼层生成结束后"处理，本次将该机制移植并按电台场景简化。
+- **提交**：`ae77baf57cb294d6bba865bbdf003df9a8df8b20`

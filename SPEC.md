@@ -1,6 +1,6 @@
 # 《音乐电台》项目规范与目标文档 (SPEC.md)
 
-> **版本**：v6.21.0  
+> **版本**：v6.22.0  
 > **定位**：SillyTavern（酒馆）专属的高性能、无感解耦、全源检索的赛博朋克深空沉浸电台。
 
 ---
@@ -232,6 +232,13 @@
 ## 六、非功能与约束
 
 - **运行环境**：TavernHelper/油猴 IIFE，依赖 `jQuery`、`localStorage`、`fetch`、`HTMLAudioElement`，无需构建。
+- **性能契约**（v6.22.0）：
+  - 字体非阻塞：Google Fonts 以独立 `<link id="celestial-radio-font">` 在主样式表后异步加载（URL 自带 `display=swap`），主样式表 38KB 不再被 `@import` 阻塞首屏，被墙环境下面板样式即时生效、字体后续换装；
+  - 搜索防抖：`#bgm-search-input` 键入后 250ms 防抖触发 `renderPlaylists`（全库 innerHTML 重建，代价 O(总歌数)），Enter 立即渲染并取消挂起定时器；
+  - 音量持久化：滑块 `input` 期间仅更新 `audioObj.volume` 与 UI，`change`（拖动结束）才写 `cr_player_volume`，消除拖动中 ~60Hz 同步 localStorage 写盘；
+  - 不可见即停：面板折叠（`is-collapsed`）或 `document.hidden` 时停止 24 柱 CSS 律动与频谱 rAF 循环（`updateVolAnimState` 门控 + `visibilitychange` 监听），恢复可见自动重启；
+  - AI 上下文浅拷贝：`triggerAiDjDecision` 内 `ctx.chat` 改 `slice()` 浅拷贝（下游只读遍历），消除超长对话（>100 楼）整史深拷贝的 GC 卡顿；
+  - `renderPlaylists` 内 `celestial_custom_urls` 惰性解析一次（函数级缓存），不再每首 `[本地直链解析]` 歌曲同步 `JSON.parse`。
 - **数据契约**：`bgmPlaylists` 结构 `{category:string, songs:{title,artist}[], prompt?:string, promptEnabled?:boolean}`（`prompt=''`, `promptEnabled=false` 为默认，全不选/空；旧存档自动迁移，`L172`），导入时 `category+songs` 强校验（`L1844`），额外字段透传；增量合并时同名频段不覆盖既有 `prompt`。
 - **备份契约**：导出含 `{version:"6.0", playlists, urls}`（`L1808`），导入时 `urls` 以 `{...existing, ...imported}` 合并（`L1857`）。
 - **时长契约**：Layer 1 `<55s/>1200s` 丢弃（`L2151`），Layer 2 `<60s/>1200s` 熔断切歌（`L1998`）。
@@ -278,4 +285,5 @@
 | v6.20.0 | 2026-09-04 | Sidecar 采样参数配置与预设互斥输出指令、歌单名随机选歌上线 | 设置页 Tab1 新增温度(0~2,默认0.65)/TopP(0~1,默认1)输入并透传请求体；AI 输出 `[点一首歌: 频段名]` 时在已启用频段内随机抽曲秒播（`findPlaylistByCommand` 归一化双轮匹配）；每个 DJ 预设新增互斥勾选「输出选歌指令/输出选歌单指令」，都不勾则 payload 不注入任何格式指令 |
 | v6.20.1 | 2026-09-04 | 第三条出厂预设「配乐大师·场景频段决策」上线 | 新增 `DEFAULT_SCENE_PROMPT`（电影配乐大师分析战斗/推理/倾诉/哀伤等场景后只决策频段，严禁输出歌曲名，输出 `[点一首歌: 频段名]`），默认勾选歌单指令；「恢复默认」按钮按预设 id 三路分流回填 |
 | v6.21.0 | 2026-09-11 | 自动播放触发雷达可靠性重构（参考蚀心数据库门控） | GENERATION_STARTED/ENDED 门控：生成中不决策不锁楼、正文定稿后才触发 AI DJ；quiet/dryRun 后台生成 12s TTL 过滤；决策失败清锁可重试；直播指令幂等去重键；事件参数归一化与最新楼兜底；CHAT_CHANGED 重置锁；旧环境缺 GENERATION 事件自动降级。回归探针 `tools/radar-probe.mjs` 12/12 通过 |
+| v6.22.0 | 2026-09-12 | 性能优化：字体非阻塞加载与运行时热路径降本 | Google Fonts `@import` 改独立 link 异步加载（主样式表不再被阻塞首屏）；搜索 input 250ms 防抖全库重建；音量滑块仅 change 持久化；折叠/后台暂停 24 柱律动与频谱 rAF；`ctx.chat` 深拷贝改浅拷贝；`renderPlaylists` 直链映射惰性解析。雷达 12/12、命中率 121/121、IAB 冒烟全绿 |
 

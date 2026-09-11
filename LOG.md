@@ -483,3 +483,20 @@
 - **验证数据**：`node tools/radar-probe.mjs` 12/12 断言通过；打包 JSON 回读零漂移、`node --check` 语法通过。
 - **决策原因**：用户反馈插件经常不触发自动播放，并提供《蚀心入魔·数据库》脚本作为参考。根因分析：原版在 CHARACTER_MESSAGE_RENDERED（流式早期）触发 1500ms 防抖扫描，生成超过 1.5 秒时拿到半截/空正文——AI DJ 要么被空正文阻断、要么拿半截剧情瞎选，且单值去重锁 `lastHandledMessageId` 在调用前置位，一次失败后本楼所有后续事件（含正文定稿后的 MESSAGE_RECEIVED）全部被拦，表现为"经常不触发"。数据库脚本以 GENERATION_STARTED/ENDED + quiet 门控 + TTL 判定保证只在"真实楼层生成结束后"处理，本次将该机制移植并按电台场景简化。
 - **提交**：`ae77baf57cb294d6bba865bbdf003df9a8df8b20`
+
+---
+
+## [HASH: c87b77f] 性能优化：字体非阻塞加载与运行时热路径降本（v6.22.0）
+- **日期**：2026-09-12
+- **涉及文件**：`酒馆助手脚本-电台直链版.json`、`SPEC.md`
+- **变更行为**：
+  1. **字体非阻塞加载**：移除主样式表首行 `@import url('https://fonts.googleapis.com/...')`（该行会阻塞整个 38.5KB 样式表生效，fonts.googleapis.com 被墙时电台面板裸奔数秒），改为在 `$('head').append(styles)` 后追加独立 `<link id="celestial-radio-font" rel="stylesheet">`——主样式表立即生效，字体 CSS 异步到达后按 URL 自带 `display=swap` 换装，font-family 回退链（serif/monospace/sans-serif）原样保留；`pagehide` 清理与首行重跑清理选择器均加入 `#celestial-radio-font` 防残留；
+  2. **搜索防抖**：`#bgm-search-input` 的 `input` 事件加 250ms 防抖（原每键入一字符即全量 `renderPlaylists`——O(总歌数) 的 innerHTML 重建，200 首库约 100-300KB）；Enter 路径立即渲染并 `clearTimeout` 取消挂起的防抖定时器，杜绝双渲染；
+  3. **renderPlaylists 直链映射惰性解析**：循环内每首 `[本地直链解析]` 歌曲一次的 `JSON.parse(localStorage.getItem('celestial_custom_urls'))` 改为函数级 `localUrlCache` 惰性解析一次（首命中才解析），全库渲染从 N 次同步 JSON 解析降为 ≤1 次；
+  4. **音量持久化去高频写盘**：`#cr-vol-slider` 处理器按事件类型分流——`input`（拖动中 ~60Hz）仅更新 `audioObj.volume` 与 UI，`change`（拖动结束）才写 `localStorage.cr_player_volume`；
+  5. **不可见即停**：`updateVolAnimState` 的 `playing` 条件增加 `!state.collapsed`、`real` 条件增加 `!document.hidden`——面板折叠时停掉 24 柱 infinite CSS 律动，页面后台时停掉频谱 rAF；新增 `visibilitychange` 监听恢复可见时重启频谱（保留 2 秒全零自动回退逻辑）；折叠/展开三处入口（拖拽收起、点击展开、关闭按钮）补调 `updateVolAnimState()`；频谱 `tick` 顶部加 `document.hidden` 守卫双保险；
+  6. **AI 上下文浅拷贝**：`triggerAiDjDecision` 内 2 处 `JSON.parse(JSON.stringify(ctx.chat))`（整段聊天史深拷贝，超长对话 50-500KB+ 的 GC/主线程卡顿）改为 `ctx.chat.slice()` 浅拷贝——下游已核实为只读遍历（`.some` 存在性检查/倒序扫描/`push` 补正楼，不突变消息对象），同 RpgCombat LOG-213 手法。
+- **评估背景**：用户问"是否有类似 RpgCombat 的压缩代码/静态构建优化空间"。结论：**不适用**——本脚本是 `type:script` 一次性 eval 常驻，体积不在热路径（RpgCombat 是正则插件每次渲染注入 DOM，体积直接在热路径且需 `&amp;`/`$1` 免疫加固）；38.5KB 手写 CSS 无 Tailwind JIT 税，静态构建 N/A；且建 src→terser→JSON 管线会打断 radar/hitrate 双探针按精确锚点抽取源码的零漂移回归机制。真收益在字体首屏阻塞与运行时热路径，已由只读审计（CSS 动画/定时器/事件监听/雷达扫描/播放检索/深拷贝六类）逐项定位。
+- **验证数据**：`node --check` 语法通过；`node tools/radar-probe.mjs` 12/12 断言通过（雷达锚点未动）；`node tools/hitrate-probe.mjs` 121/121 命中全绿（六个纯函数锚点未动）；IAB 冒烟——面板 fixed/z-index 99999 正确渲染、227 条 CSS 规则、字体 link 在 head 且无 @import、音量 input 期间 localStorage 零写入/change 后写入 0.55、搜索防抖窗口内 DOM 不重建（15687 不变）400ms 后过滤渲染（457）、折叠摘除 playing 类展开恢复、全程零控制台报错。
+- **决策原因**：用户选定「修复字体加载阻塞 + 运行时性能审计」方向。五源检索串行→并行化经评估属网络行为语义变更（源优先级/熔断时序），hitrate 探针围绕当前行为建模，本轮不做、留档待后续单独设计验证。
+- **提交**：`c87b77f88b9f0aa954f954dd6f1553a9724476c9`

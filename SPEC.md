@@ -1,6 +1,6 @@
 # 《音乐电台》项目规范与目标文档 (SPEC.md)
 
-> **版本**：v6.22.0  
+> **版本**：v6.23.0  
 > **定位**：SillyTavern（酒馆）专属的高性能、无感解耦、全源检索的赛博朋克深空沉浸电台。
 
 ---
@@ -107,6 +107,7 @@
 - [x] **Sidecar 采样参数与预设互斥输出指令、歌单名随机选歌**：设置页 Tab1 新增温度/Top P 输入（钳制 0~2 / 0~1，默认 0.65 / 1，持久化 `cr_dj_temperature/cr_dj_top_p`）并透传 OpenAI 兼容请求体；AI 决策输出 `[点一首歌: 频段名]` 时在已勾选发送的频段中归一化匹配歌单名（精确→最长包含双轮），命中后随机抽取该频段一首走 `playSpecificSong` 直链秒播链路；每个 DJ 预设新增互斥勾选「🎵 输出选歌指令 / 📻 输出选歌单指令」（同勾以歌单优先，都不勾则不注入任何格式指令），勾选状态随预设新建/切换/保存/迁移全链路持久化（v6.20.0）。
 - [x] **第三条出厂预设「配乐大师·场景频段决策」**：新增 `DEFAULT_SCENE_PROMPT`（id `default-scene`）——以顶级电影配乐大师身份分析当前场景类型（激烈战斗/悬疑推理/深情倾诉/哀伤离别/温馨日常等），只从已列频段中决策整体氛围最契合的一个频段，只决策频段不决策曲目、严禁输出歌曲名或歌手、严禁虚构频段名，输出 `[点一首歌: 频段名]`；默认勾选 `cmdPlaylist`（出厂唯一默认频段指令的预设）；「恢复默认」按钮按预设 id 三路分流回填对应出厂提示词（v6.20.1）。
 - [x] **自动播放触发雷达可靠性重构（参考《蚀心入魔·数据库》门控）**：AI DJ 自动选歌决策从"四事件直触发"升级为"GENERATION_STARTED/ENDED 门控"——生成进行中（正文未定稿）不决策不锁楼，`GENERATION_ENDED` 正文定稿后才触发，杜绝流式回复半截正文导致的提前决策与空正文阻断；quiet/dryRun 后台生成（其他插件规划请求）12 秒 TTL 窗口内不触发；`triggerAiDjDecision` 全路径返回 boolean 成败，失败（空正文/接口异常）清楼层锁允许后续事件重试；直播指令 `[点一首歌]` 增加"聊天|楼层|指令原文"幂等去重键，流式期间漏检由后续事件重扫补上；事件参数归一化（number/message 对象/数字字符串）+ `getChatMessages(-1)` 最新楼兜底 + Promise 返回兼容；`CHAT_CHANGED` 重置楼层锁与指令键防跨聊天撞锁；旧环境缺 GENERATION 事件时自动降级为原直触发行为（v6.21.0）。
+- [x] **自动选歌无歌三根因修复（v6.21.0 失效链的排障根治）**：排障确认酒馆 `GENERATION_ENDED` 的载荷是 `chat.length`（比真实楼层号大 1 的越界值），`fetchMessageText` 改以实际取到的楼层 `message_id` 为准——越界载荷仍可回退最新楼取正文，但锁键与消息事件（`MESSAGE_UPDATED`/`CHARACTER_MESSAGE_RENDERED`，填表/翻译等写楼插件二次事件）算出一致，杜绝同楼重复决策把正在播的歌顶掉；`playDirect` 返回 `Promise<boolean>`（曲库命中秒播链路沿用信标自愈、浏览器自动发声拦截也算成功；五源检索无果回传 false），`triggerAiDjDecision` 对单曲路径 `await` 其成败、检索失败不再当作决策成功锁死本楼；决策失败后不再只等后续事件，自愈定时器 8s/20s 主动补试（同楼最多两次封顶，遇 `HTTP 429` 避让到限流点 15s 后）；`CHAT_CHANGED` 同步重置自愈重试状态；雷达探针扩展 G/H/I 三场景（chat.length 越界锁键一致/失败自愈/429 避让），探针新增 `setTimeout/clearTimeout` 时基注入（自愈时基截短、延迟原值断言）（v6.23.0）。
 
 ---
 
@@ -175,7 +176,7 @@
 
 | 函数 | 位置 | 职责 | 关键细节 |
 |---|---|---|---|
-| `triggerAiDjDecision(isManual)` | `L1400` `async function triggerAiDjDecision(isManual=false)` | 唯一 Sidecar 入口：`getDjSettings`→ 校验 `apiKey` → `await extractStoryContext` → `getLibrarySummaryForPrompt({filterEnabled:true})` + `getPlaylistPromptBlocks()` → 空正文阻断 → 以“[曲库摘要] + [歌单提示词]”（勾选段，无则省略）+ “[正文]”三段拼 `userPayload` → `endpoint+/chat/completions` → `fetch`→ 解析 `[点一首歌: 歌名 - 歌手]` → `playDirect`。`system` 侧使用 `getEffectiveSystemPrompt()`（选中预设，v6.2.0），`debug` 下“📚 歌单提示词”与“📜 System Prompt”均随预设实时变化。 | `isManual=true` 走 `#cr-manual-dj-btn`；`isManual=false` 走 `onMessageChange`。全选/全不选仅作用于曲库段过滤。v6.21.0 起全路径返回 boolean 成败（成功=已执行播放决策），雷达据此失败清锁重试。 |
+| `triggerAiDjDecision(isManual)` | `L1400` `async function triggerAiDjDecision(isManual=false)` | 唯一 Sidecar 入口：`getDjSettings`→ 校验 `apiKey` → `await extractStoryContext` → `getLibrarySummaryForPrompt({filterEnabled:true})` + `getPlaylistPromptBlocks()` → 空正文阻断 → 以“[曲库摘要] + [歌单提示词]”（勾选段，无则省略）+ “[正文]”三段拼 `userPayload` → `endpoint+/chat/completions` → `fetch`→ 解析 `[点一首歌: 歌名 - 歌手]` → `await playDirect` 回传成败（含 429 限流时间戳标记）。`system` 侧使用 `getEffectiveSystemPrompt()`（选中预设，v6.2.0），`debug` 下“📚 歌单提示词”与“📜 System Prompt”均随预设实时变化。 | `isManual=true` 走 `#cr-manual-dj-btn`；`isManual=false` 走 `onMessageChange`。全选/全不选仅作用于曲库段过滤。v6.21.0 起全路径返回 boolean 成败（成功=已执行播放决策），雷达据此失败清锁重试；v6.23.0 起单曲路径以检索成败为准（锁楼不再虚报成功），429 标记供自愈重试避让。 |
 
 ### 5.7 收藏与播放器
 
@@ -212,10 +213,10 @@
 | `getTrackUrl(rawTitle, rawArtist)` | `L2219` `async function getTrackUrl(rawTitle,rawArtist): Promise<{url,track}|null>` | 四级解析优先级：① 直链（`isHttpUrl`）→ ② `customUrlDb/localCustomUrls` 本地映射 → ③ `directLinkDb` 网易云 ID 直取（gdstudio 直连 → `corsproxy.io` → motues 三级兜底）→ ④ `cleanTrackQuery`+`searchAndResolveBestTrack` 全网检索。 | 0ms 命中在前，全网检索兜底在后；自定义直链恒为第一优先，备源仅服务在线解析环节。 |
 | `findSongInPlaylists(title, artist)` | `L2252` | 在 `bgmPlaylists` 中按 `normalizeStr` 模糊定位歌曲，标题/全称包含即中，作者为可选收紧。 | 供 `playDirect` 的“已在库则锚定”分支。 |
 | `playSpecificSong(pIdx, sIdx)` | `L2275` `async function playSpecificSong(pIdx,sIdx)` | 歌单内定向播放：置指针→高亮→`getTrackUrl`→`audioObj.src=→play()`→`cr_last_song_*` 记忆→`updatePlayerFavBtn`；失败 2s 后 `nextSong`。 | 单曲循环/顺序/随机由 `playMode` 与 `audio ended` 协作。 |
-| `playDirect(title, artist)` | `L2316` `async function playDirect(title, artist)` | 任意标题直播：先 `findSongInPlaylists` 锚定库内，否则 `getTrackUrl` 全网；重置高亮→`getTrackUrl→play()` 并记忆。 | 手动搜索、`[点一首歌]` 指令、Sidecar 决策的统一出口。 |
+| `playDirect(title, artist)` | `L2316` `async function playDirect(title, artist): Promise<boolean>` | 任意标题直播：先 `findSongInPlaylists` 锚定库内（`true`），否则 `getTrackUrl` 全网；重置高亮→`getTrackUrl→await audioObj.play()` 并记忆。五源检索无果回传 `false`（v6.23.0 起；检索前 UI 先置"多源检索中"）。 | 手动搜索、`[点一首歌]` 指令、Sidecar 决策的统一出口；`play()` 改 `try/await` 替代裸 then/catch（v6.23.0）。 |
 | `updateBgmUI()` | `L2362` `function updateBgmUI()` | 切换 `#bgm-play-pause play/pause` 与边缘点 `playing` 脉动，`currentPlaylistIndex===-1` 时空态文案，末尾 `updatePlayerFavBtn`。 | `playSpecificSong/playDirect/prevSong/nextSong/loadedmetadata/ended` 均回调。 |
 | `prevSong() / nextSong()` | `L2374 / L2388` | 上/下一首：未锚定频段时跨频段随机选，非随机时按 `playMode` 顺序或随机索引，`playSpecificSong` 驱动。 | 供按钮与时长熔断/播完自动切歌。 |
-| `onMessageChange(messageId)` | `L2406` `const onMessageChange = (messageId)=>void` | 双擎雷达回调：1500ms 防抖→`normalizeMessageId` 归一化事件参数→`fetchMessageText` 取楼文本（单楼优先、`getChatMessages(-1)` 最新楼兜底、Promise/宿主降级兼容）→正则 `/\[\s*点一首歌\s*[:：]\s*([^\]]+?)\s*\]/g` 直播指令优先 `playDirect`（"聊天|楼层|指令原文"幂等去重键）；否则 `autoTrigger&&apiKey` 且生成门控放行（非生成中、非 quiet/dryRun 窗口、非决策重入、楼层未锁）时 `triggerAiDjDecision(false)` 自动选歌，失败清锁可重试（v6.21.0）。 | 由 `tavern_events.MESSAGE_SWIPED/MESSAGE_UPDATED/CHARACTER_MESSAGE_RENDERED/MESSAGE_RECEIVED` + `CHAT_CHANGED`（重置锁）+ `GENERATION_STARTED/ENDED/STOPPED`（门控，成对可用才启用）驱动（含 `window.parent` 降级）。 |
+| `onMessageChange(messageId)` | `L2406` `const onMessageChange = (messageId)=>void` | 双擎雷达回调：1500ms 防抖→`normalizeMessageId` 归一化事件参数→`fetchMessageText` 取楼文本（单楼优先、`getChatMessages(-1)` 最新楼兜底且以**实际取到的楼层 id** 为锁键、Promise/宿主降级兼容，v6.23.0 起杜绝 `chat.length` 越界载荷的锁键错位）→正则 `/\[\s*点一首歌\s*[:：]\s*([^\]]+?)\s*\]/g` 直播指令优先 `playDirect`（"聊天|楼层|指令原文"幂等去重键）；否则 `autoTrigger&&apiKey` 且生成门控放行（非生成中、非 quiet/dryRun 窗口、非决策重入、楼层未锁）时 `triggerAiDjDecision(false)` 自动选歌，失败清锁并排期自愈补试（8s/20s、同楼最多两次，429 避让 15s，v6.23.0）。 | 由 `tavern_events.MESSAGE_SWIPED/MESSAGE_UPDATED/CHARACTER_MESSAGE_RENDERED/MESSAGE_RECEIVED` + `CHAT_CHANGED`（重置锁、自愈重试与定时器）+ `GENERATION_STARTED/ENDED/STOPPED`（门控，成对可用才启用）驱动（含 `window.parent` 降级）。 |
 
 ### 5.10 内联辅助（非顶层函数，职责同列）
 
@@ -286,4 +287,5 @@
 | v6.20.1 | 2026-09-04 | 第三条出厂预设「配乐大师·场景频段决策」上线 | 新增 `DEFAULT_SCENE_PROMPT`（电影配乐大师分析战斗/推理/倾诉/哀伤等场景后只决策频段，严禁输出歌曲名，输出 `[点一首歌: 频段名]`），默认勾选歌单指令；「恢复默认」按钮按预设 id 三路分流回填 |
 | v6.21.0 | 2026-09-11 | 自动播放触发雷达可靠性重构（参考蚀心数据库门控） | GENERATION_STARTED/ENDED 门控：生成中不决策不锁楼、正文定稿后才触发 AI DJ；quiet/dryRun 后台生成 12s TTL 过滤；决策失败清锁可重试；直播指令幂等去重键；事件参数归一化与最新楼兜底；CHAT_CHANGED 重置锁；旧环境缺 GENERATION 事件自动降级。回归探针 `tools/radar-probe.mjs` 12/12 通过 |
 | v6.22.0 | 2026-09-12 | 性能优化：字体非阻塞加载与运行时热路径降本 | Google Fonts `@import` 改独立 link 异步加载（主样式表不再被阻塞首屏）；搜索 input 250ms 防抖全库重建；音量滑块仅 change 持久化；折叠/后台暂停 24 柱律动与频谱 rAF；`ctx.chat` 深拷贝改浅拷贝；`renderPlaylists` 直链映射惰性解析。雷达 12/12、命中率 121/121、IAB 冒烟全绿 |
+| v6.23.0 | 2026-09-16 | 自动选歌无歌三根因修复（排障根治） | `GENERATION_ENDED` 载荷实为 `chat.length`——锁键改以实际楼层 id 为准防同楼重复决策；`playDirect` 回传 `Promise<boolean>`、检索失败不再锁楼；决策失败 8s/20s 自愈补试（429 避让 15s）；雷达探针 G/H/I 新场景，22/22 全绿 |
 

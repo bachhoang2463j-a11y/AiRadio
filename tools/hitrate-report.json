@@ -272,7 +272,7 @@
    "netease": {
     "searchCount": 4,
     "usedKw": "Danse Macabre - Saint-Saëns",
-    "maxScore": 240,
+    "maxScore": 200,
     "poolCount": 3,
     "triedUrl": true
    },
@@ -280,7 +280,12 @@
     "searchCount": 5,
     "usedKw": "Danse Macabre - Saint-Saëns",
     "maxScore": 240,
-    "poolCount": 2
+    "poolCount": 2,
+    "triedUrl": true,
+    "urlFail": [
+     "无url",
+     "无url"
+    ]
    },
    "migu": {
     "searchCount": 0,
@@ -306,12 +311,11 @@
   "failStage": null,
   "poolSize": 5,
   "resolvedTrack": {
-   "name": "Danse macabre",
+   "name": "Danse Macabre (Saint-Saëns)",
    "artist": [
-    "Camille Saint-Saëns",
-    "Guy Bovet"
+    "Various Artists"
    ],
-   "score": 240
+   "score": 200
   }
  },
  {
@@ -413,7 +417,8 @@
   "resolvedTrack": {
    "name": "St. Louis Blues",
    "artist": [
-    "Bessie Smith"
+    "Bessie Smith",
+    "Louis Armstrong"
    ],
    "score": 240
   }
@@ -440,6 +445,7 @@
     "poolCount": 5,
     "triedUrl": true,
     "urlFail": [
+     "无url",
      "无url"
     ]
    },
@@ -689,7 +695,7 @@
     "searchCount": 5,
     "usedKw": "Time to go home - jacoo",
     "maxScore": 240,
-    "poolCount": 3,
+    "poolCount": 2,
     "triedUrl": true
    },
    "kuwo": {
@@ -720,7 +726,7 @@
   "resolved": true,
   "resolvedVia": "search:netease",
   "failStage": null,
-  "poolSize": 5,
+  "poolSize": 4,
   "resolvedTrack": {
    "name": "Time to go home",
    "artist": [
@@ -905,7 +911,7 @@
     "searchCount": 5,
     "usedKw": "Into Orbit - Audiofire Studios",
     "maxScore": 240,
-    "poolCount": 4,
+    "poolCount": 3,
     "triedUrl": true
    },
    "kuwo": {
@@ -936,7 +942,7 @@
   "resolved": true,
   "resolvedVia": "search:netease",
   "failStage": null,
-  "poolSize": 6,
+  "poolSize": 5,
   "resolvedTrack": {
    "name": "Into Orbit",
    "artist": [
@@ -1181,7 +1187,7 @@
     "searchCount": 5,
     "usedKw": "Call of silence（钢琴版",
     "maxScore": 128,
-    "poolCount": 2,
+    "poolCount": 1,
     "triedUrl": true
    },
    "kuwo": {
@@ -1220,7 +1226,7 @@
   "resolved": true,
   "resolvedVia": "search:netease",
   "failStage": null,
-  "poolSize": 7,
+  "poolSize": 6,
   "resolvedTrack": {
    "name": "Call of silence（钢琴版）",
    "artist": [
@@ -2049,7 +2055,7 @@
    "netease": {
     "searchCount": 5,
     "usedKw": "One Summer's Day - 久石让",
-    "maxScore": 120,
+    "maxScore": 160,
     "poolCount": 4,
     "triedUrl": true
    },
@@ -2093,9 +2099,9 @@
   "resolvedTrack": {
    "name": "One Summer's Day",
    "artist": [
-    "久石譲"
+    "Anime Box"
    ],
-   "score": 120
+   "score": 160
   }
  },
  {
@@ -2290,7 +2296,7 @@
     "searchCount": 5,
     "usedKw": "A Town with an Ocean View - 久石让",
     "maxScore": 120,
-    "poolCount": 5,
+    "poolCount": 4,
     "triedUrl": true
    },
    "kuwo": {
@@ -2327,7 +2333,7 @@
   "resolved": true,
   "resolvedVia": "search:netease",
   "failStage": null,
-  "poolSize": 8,
+  "poolSize": 7,
   "resolvedTrack": {
    "name": "A Town with an Ocean View",
    "artist": [
@@ -2453,7 +2459,7 @@
     "searchCount": 5,
     "usedKw": "No Time for Caution - Hans Zimmer",
     "maxScore": 310,
-    "poolCount": 2,
+    "poolCount": 4,
     "triedUrl": true
    },
    "kuwo": {
@@ -2484,7 +2490,7 @@
   "resolved": true,
   "resolvedVia": "search:netease",
   "failStage": null,
-  "poolSize": 7,
+  "poolSize": 9,
   "resolvedTrack": {
    "name": "No Time for Caution",
    "artist": [
@@ -3211,7 +3217,9 @@
   "resolvedTrack": {
    "name": "Gerudo Valley",
    "artist": [
-    "Kyle Landry"
+    "山下康介",
+    "Chad Seiter",
+    "Orchestra Nova San Diego"
    ],
    "score": 90
   }
@@ -3385,7 +3393,7 @@
     "searchCount": 5,
     "usedKw": "Outer Wilds - Andrew Prahlow",
     "maxScore": 310,
-    "poolCount": 1,
+    "poolCount": 2,
     "triedUrl": true
    },
    "kuwo": {
@@ -3416,7 +3424,7 @@
   "resolved": true,
   "resolvedVia": "search:netease",
   "failStage": null,
-  "poolSize": 3,
+  "poolSize": 4,
   "resolvedTrack": {
    "name": "Outer Wilds",
    "artist": [
@@ -3548,7 +3556,7 @@
     "searchCount": 5,
     "usedKw": "The Sacred and The Profane - British Sea Power",
     "maxScore": 36,
-    "poolCount": 4
+    "poolCount": 5
    },
    "migu": {
     "searchCount": 0,
@@ -3572,7 +3580,7 @@
   "resolved": true,
   "resolvedVia": "search:netease",
   "failStage": null,
-  "poolSize": 6,
+  "poolSize": 7,
   "resolvedTrack": {
    "name": "The Sacred And The Profane",
    "artist": [
@@ -3593,7 +3601,7 @@
     "searchCount": 5,
     "usedKw": "雾里 - 三亩地",
     "maxScore": 120,
-    "poolCount": 3,
+    "poolCount": 2,
     "triedUrl": true
    },
    "kuwo": {
@@ -3624,7 +3632,7 @@
   "resolved": true,
   "resolvedVia": "search:netease",
   "failStage": null,
-  "poolSize": 4,
+  "poolSize": 3,
   "resolvedTrack": {
    "name": "雾里",
    "artist": [
@@ -3645,7 +3653,7 @@
     "searchCount": 5,
     "usedKw": "Nocturne op. 9 No. 2 - Chopin",
     "maxScore": 240,
-    "poolCount": 4,
+    "poolCount": 2,
     "triedUrl": true
    },
    "kuwo": {
@@ -3676,7 +3684,7 @@
   "resolved": true,
   "resolvedVia": "search:netease",
   "failStage": null,
-  "poolSize": 8,
+  "poolSize": 6,
   "resolvedTrack": {
    "name": "Nocturne Op. 9 No. 2",
    "artist": [

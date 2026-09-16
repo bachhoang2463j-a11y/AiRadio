@@ -500,3 +500,18 @@
 - **验证数据**：`node --check` 语法通过；`node tools/radar-probe.mjs` 12/12 断言通过（雷达锚点未动）；`node tools/hitrate-probe.mjs` 121/121 命中全绿（六个纯函数锚点未动）；IAB 冒烟——面板 fixed/z-index 99999 正确渲染、227 条 CSS 规则、字体 link 在 head 且无 @import、音量 input 期间 localStorage 零写入/change 后写入 0.55、搜索防抖窗口内 DOM 不重建（15687 不变）400ms 后过滤渲染（457）、折叠摘除 playing 类展开恢复、全程零控制台报错。
 - **决策原因**：用户选定「修复字体加载阻塞 + 运行时性能审计」方向。五源检索串行→并行化经评估属网络行为语义变更（源优先级/熔断时序），hitrate 探针围绕当前行为建模，本轮不做、留档待后续单独设计验证。
 - **提交**：`c87b77f88b9f0aa954f954dd6f1553a9724476c9`
+
+---
+
+## [HASH: eb1e6fa] 自动选歌无歌三根因修复（v6.23.0）
+- **日期**：2026-09-16
+- **涉及文件**：`酒馆助手脚本-电台直链版.json`、`tools/radar-probe.mjs`、`SPEC.md`
+- **变更行为**：
+  1. **锁键统一（根因一）**：`fetchMessageText` 以实际取到的楼层 `message_id` 为锁键，不再盲用事件载荷——酒馆 `GENERATION_ENDED` 的载荷经排障实测是 `chat.length`（比真实楼层号大 1 的越界值，`script.js:3202`），旧逻辑据此锁出的 `chatFile|N` 永远拦不住填表/翻译等写楼插件带真实楼层号的二次事件（锁键 `chatFile|N-1`），同楼重复决策把正在播的歌顶掉；新逻辑越界载荷仍可回退最新楼取到正确正文，且锁键与所有消息事件一致；
+  2. **播放成败回传（根因二）**：`playDirect` 改为返回 `Promise<boolean>`——曲库命中走秒播链路沿用 `playSpecificSong` 信标自愈回传 `true`，浏览器自动发声拦截（用户点一下即播）也算 `true`，仅五源检索无果回传 `false`；`triggerAiDjDecision` 单曲路径 `await playDirect` 回传其成败——检索失败不再被当作决策成功锁死本楼；`audioObj.play()` 由裸 then/catch 改为 `try/await`，失败语义可被调用方捕获；
+  3. **失败自愈重试（根因二/三）**：雷达新增 `djRetryTimer/djRetryState`——决策失败（空正文/接口异常/检索无果）清锁后不再只等后续事件（蚀心填表轮次跑完后可能再无事件），8s/20s 主动补试（同楼最多两次封顶，不无限轮询）；新楼到达自动重置重试状态；`CHAT_CHANGED` 同步清定时器与重试状态；
+  4. **429 限流避让（根因三）**：`triggerAiDjDecision` 的 catch 识别 `HTTP 429` 并记录 `djLast429At` 时间戳；自愈重试延迟 `Math.max(原时基, 限流点+15s)`，避开蚀心数据库（`useMainApi:true`）与电台同一时间窗打同一供应商的限流；
+  5. **探针升级**：`tools/radar-probe.mjs` 新增 `setTimeout/clearTimeout` 时基注入（真实 8s/20s/429 延迟截短为 1.6s，`delays` 记录延迟原值供断言，收尾清场悬挂定时器）+ 场景 G（chat.length 越界载荷锁键一致：`GENERATION_ENDED(6)` 锁住后 `MESSAGE_UPDATED(5)` 同一楼不再重复决策）+ 场景 H（失败自愈：8s→20s 升级、最多两次封顶）+ 场景 I（429 避让 ≥12s）；场景 B 时序适配（自愈定时器重置防抖后的双周期等待）。旧六场景断言原样保留。
+- **验证数据**：`node --check` 语法通过；`node tools/radar-probe.mjs` 22/22 断言通过（含 G/H/I 三新场景）；`node tools/hitrate-probe.mjs` 命中率全绿（纯函数锚点未动）；IAB 冒烟——面板正确渲染、227 条 CSS 规则（与 v6.22.0 基线一致）、设置弹窗挂载、播放器静默待机、全程零运行时错误。
+- **决策原因**：用户启用「自动调用 LLM 分析」后经常无歌播放，进入排障模式分析。根因链：① 锁楼键错位——`GENERATION_ENDED` 越界载荷与写楼插件真实楼层号算出不同锁键，同楼重复决策顶歌；② 检索失败锁楼——`playDirect` 失败不回传、`triggerAiDjDecision` 无条件 `return true`，`[连接丢失]` 后本楼永不再试；③ API 并发竞争——电台选歌请求与蚀心数据库填表请求（默认 `useMainApi:true`）同一时间窗打同一供应商，被限流后重试依赖"后续事件"但事件可能不再来。修复确认后按四点方案实施（锁键统一/成败回传/自愈重试/429 避让）。
+- **提交**：`eb1e6fabd440aafe3abcb5b6db4a7e41dd5efe92`

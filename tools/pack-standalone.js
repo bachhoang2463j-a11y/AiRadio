@@ -1,7 +1,7 @@
 // 打包单 HTML：内嵌 jQuery 与剥离后的电台脚本
 const fs = require('fs');
 const jquery = fs.readFileSync('D:/Project/AiRadio/tools/jquery-3.7.1.min.js', 'utf8');
-const script = fs.readFileSync('D:/Project/AiRadio/tools/standalone_script.js', 'utf8');
+const script = fs.readFileSync('D:/Project/AiRadio/tools/standalone_script_v2.js', 'utf8');
 
 const html = `<!DOCTYPE html>
 <html lang="zh-CN">

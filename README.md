@@ -67,6 +67,7 @@
 ```text
 D:\Project\AiRadio
 ├── 酒馆助手脚本-电台直链版.json   # 核心发布脚本 (Tampermonkey / TavernHelper 兼容)
+├── 音乐电台-单机版.html          # 本地单文件版：无需酒馆，浏览器双击即用（歌单/搜歌/下载）
 ├── Coding rule.md              # Agents 工作约定与开发规范
 ├── SPEC.md                     # 项目目标、设计原则与验收规范 (v6.14.0)
 ├── README.md                   # 项目现状、能力介绍与使用说明 (本文档)

@@ -637,9 +637,9 @@ html, body {
    全屏黑胶播放舞台 (#cr-vinyl-overlay) 优化返回键与光影
    ========================================================================== */
 #cr-vinyl-overlay {
-    position: fixed; inset: 0; bottom: 78px; z-index: 200;
+    position: absolute; inset: 0; bottom: 78px; z-index: 200;
     opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
-    overflow: hidden;
+    overflow: hidden; background: #090b11;
 }
 #cr-vinyl-overlay.open { opacity: 1; pointer-events: auto; }
 .vinyl-bg {
@@ -648,9 +648,9 @@ html, body {
     transition: background-image 0.4s;
 }
 
-/* 优雅精工的黑胶收起返回键（彻底解决红圈箭头吐槽） */
+/* 优雅精工的黑胶收起返回键 */
 .vinyl-close {
-    position: absolute; top: 22px; left: 24px; z-index: 10; cursor: pointer;
+    position: absolute; top: 22px; left: 24px; z-index: 20; cursor: pointer;
     color: var(--gold-light); font-size: 16px;
     width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
@@ -723,6 +723,282 @@ html, body {
 }
 
 /* ==========================================================================
+   手机播放页精工底栏 (1:1 照抄原版设计)
+   ========================================================================== */
+.vinyl-mobile-panel {
+    display: none;
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    padding: 6px 22px 24px 22px;
+    flex-direction: column;
+}
+/* 第 1 行: 收藏按钮 ♡ + 居中歌名/副标题歌手 + 下载按钮 ⤓ */
+.v-row-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.v-circle-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(196, 167, 125, 0.35);
+    background: rgba(16, 20, 30, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--gold-light);
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    flex-shrink: 0;
+    padding: 0;
+}
+.v-circle-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    fill: none;
+    transition: all 0.2s;
+}
+.v-circle-btn:hover {
+    border-color: var(--gold-primary);
+    transform: scale(1.06);
+    box-shadow: 0 0 12px rgba(196, 167, 125, 0.35);
+}
+.v-circle-btn.is-fav {
+    border-color: var(--gold-primary);
+    color: var(--gold-bright);
+}
+.v-circle-btn.is-fav svg {
+    fill: var(--gold-bright);
+    stroke: var(--gold-bright);
+    filter: drop-shadow(0 0 6px rgba(196, 167, 125, 0.6));
+}
+.v-meta-center {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    padding: 0 8px;
+}
+.v-meta-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--gold-bright);
+    letter-spacing: 0.6px;
+    font-family: var(--font-serif);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8), 0 0 14px rgba(196, 167, 125, 0.3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+.v-meta-artist {
+    font-size: 12.5px;
+    color: var(--gold-primary);
+    opacity: 0.85;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+/* 第 2 行: 横贯式进度条（左金右暗，带前端微小滑块） */
+.v-row-progress {
+    width: 100%;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 16px;
+    padding: 0 2px;
+}
+.v-progress-track {
+    width: 100%;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.12);
+    position: relative;
+    overflow: visible;
+}
+.v-progress-fill {
+    height: 100%;
+    width: 32%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #C4A77D 0%, #FFF2CE 100%);
+    position: relative;
+    box-shadow: 0 0 8px rgba(196, 167, 125, 0.5);
+}
+.v-progress-bead {
+    position: absolute;
+    right: -3px;
+    top: -2px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #FFF2CE;
+    box-shadow: 0 0 8px rgba(255, 242, 206, 0.95);
+}
+
+/* 第 3 行: 上一曲 |◀ + 圆形发光播放/暂停键 ⏸ + 下一曲 ▶| */
+.v-row-ctrls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    margin-bottom: 22px;
+}
+.v-ctrl-btn {
+    background: none;
+    border: none;
+    color: var(--gold-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+.v-ctrl-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+    stroke: currentColor;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+}
+.v-ctrl-btn:hover {
+    color: var(--gold-light);
+    transform: scale(1.15);
+}
+.v-play-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(196, 167, 125, 0.5);
+    background: radial-gradient(circle, rgba(34, 28, 22, 0.9) 0%, rgba(13, 15, 22, 0.9) 100%);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.7), 0 0 16px rgba(196, 167, 125, 0.28);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF2CE;
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    padding: 0;
+}
+.v-play-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+.v-play-btn:hover {
+    border-color: var(--gold-primary);
+    transform: scale(1.08);
+    box-shadow: 0 0 22px rgba(196, 167, 125, 0.5);
+}
+
+/* 第 4 行: 左侧小喇叭 🔊 + 中间等离子律动条 + 右侧音量百分比 93% */
+.v-row-volume {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+.v-vol-icon {
+    color: var(--gold-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+.v-vol-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+.v-vol-icon:hover { color: var(--gold-light); }
+.v-vol-visualizer-container {
+    position: relative;
+    flex: 1;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.v-vol-visualizer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    width: 100%;
+}
+.v-vol-bar {
+    flex: 1;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    height: 6px;
+    min-width: 2.5px;
+    transition: background 0.2s, height 0.2s, opacity 0.2s;
+    opacity: 0.3;
+}
+.v-vol-bar.active {
+    opacity: 0.95;
+    background: #C4A77D;
+    box-shadow: 0 0 4px rgba(196, 167, 125, 0.4);
+}
+/* 前 7 柱稍微粗壮且发高亮，完美对标原版截图 */
+.v-vol-bar:nth-child(-n+7) {
+    height: 12px;
+    border-radius: 3px;
+}
+.v-vol-bar:nth-child(-n+7).active {
+    background: linear-gradient(180deg, #FFF3D1 0%, #D4B277 100%);
+    box-shadow: 0 0 7px rgba(255, 243, 209, 0.6);
+}
+.v-vol-visualizer.playing .v-vol-bar.active {
+    animation: vVolDance 0.6s ease-in-out infinite alternate;
+}
+.v-vol-visualizer.playing .v-vol-bar.active:nth-child(even) {
+    animation-name: vVolDanceAlt;
+    animation-duration: 0.75s;
+}
+@keyframes vVolDance {
+    0% { transform: scaleY(0.7); }
+    100% { transform: scaleY(1.3); }
+}
+@keyframes vVolDanceAlt {
+    0% { transform: scaleY(1.25); }
+    100% { transform: scaleY(0.65); }
+}
+.v-vol-native-slider {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    margin: 0;
+}
+.v-vol-text {
+    font-size: 13px;
+    color: var(--gold-primary);
+    width: 36px;
+    text-align: right;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
    移动端响应式布局自适应 (@media <= 768px 或手机模拟模式)
    ========================================================================== */
 @media (max-width: 768px) {
@@ -764,13 +1040,20 @@ html, body {
     #cr-prev-btn { display: none; }
     .bgm-play-btn { width: 38px; height: 38px; }
     .pb-right { display: none; }
-    #cr-vinyl-overlay { bottom: 0; }
-    .vinyl-stage { flex-direction: column; justify-content: center; gap: 20px; padding: 40px 20px 30px; }
-    .vinyl-disc { width: min(65vw, 250px); height: min(65vw, 250px); }
-    .vinyl-meta { max-width: 100%; min-width: 0; text-align: center; }
-    .vinyl-title { font-size: 19px; }
-    .vinyl-artist { font-size: 12.5px; margin-top: 6px; }
-    .vinyl-album { display: none; }
+    #cr-vinyl-overlay {
+        position: absolute; inset: 0; bottom: 0;
+        background: #090c14; border-radius: 0;
+        display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; font-size: 14px; }
+    .vinyl-stage {
+        flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 36px 12px 0 12px; gap: 0; min-height: 0;
+    }
+    .vinyl-turntable { margin: auto 0; }
+    .vinyl-disc { width: min(58vw, 235px); height: min(58vw, 235px); }
+    .vinyl-meta { display: none !important; }
+    .vinyl-mobile-panel { display: flex; }
 }
 
 /* 手机视图模拟模式 */
@@ -809,13 +1092,21 @@ html, body {
 #cr-stage.view-mobile #cr-prev-btn { display: none; }
 #cr-stage.view-mobile .bgm-play-btn { width: 38px; height: 38px; }
 #cr-stage.view-mobile .pb-right { display: none; }
-#cr-stage.view-mobile #cr-vinyl-overlay { bottom: 0; }
-#cr-stage.view-mobile .vinyl-stage { flex-direction: column; justify-content: center; gap: 20px; padding: 40px 20px 30px; }
-#cr-stage.view-mobile .vinyl-disc { width: min(65vw, 250px); height: min(65vw, 250px); }
-#cr-stage.view-mobile .vinyl-meta { max-width: 100%; min-width: 0; text-align: center; }
-#cr-stage.view-mobile .vinyl-title { font-size: 19px; }
-#cr-stage.view-mobile .vinyl-artist { font-size: 12.5px; margin-top: 6px; }
-#cr-stage.view-mobile .vinyl-album { display: none; }
+#cr-stage.view-mobile #cr-vinyl-overlay {
+    position: absolute !important; inset: 0 !important; bottom: 0 !important;
+    border-radius: 35px !important; background: #090c14 !important;
+    display: flex !important; flex-direction: column !important; justify-content: space-between !important;
+    overflow: hidden !important;
+}
+#cr-stage.view-mobile .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; font-size: 14px; }
+#cr-stage.view-mobile .vinyl-stage {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 36px 12px 0 12px; gap: 0; min-height: 0;
+}
+#cr-stage.view-mobile .vinyl-turntable { margin: auto 0; }
+#cr-stage.view-mobile .vinyl-disc { width: min(58vw, 235px); height: min(58vw, 235px); }
+#cr-stage.view-mobile .vinyl-meta { display: none !important; }
+#cr-stage.view-mobile .vinyl-mobile-panel { display: flex; }
 
 /* 模态框与Toast */
 .cr-modal-overlay {
@@ -994,9 +1285,9 @@ html, body {
                     </div>
                     <div class="cr-vol-visualizer-container" title="滑动调节音量">
                         <div class="cr-vol-visualizer" id="cr-vol-visualizer"></div>
-                        <input type="range" class="cr-vol-native-slider" id="cr-vol-slider" min="0" max="100" value="80">
+                        <input type="range" class="cr-vol-native-slider" id="cr-vol-slider" min="0" max="100" value="93">
                     </div>
-                    <span class="cr-vol-text" id="cr-vol-text">80%</span>
+                    <span class="cr-vol-text" id="cr-vol-text">93%</span>
                 </div>
             </div>
         </footer>
@@ -1022,6 +1313,61 @@ html, body {
                     <div class="vinyl-title" id="cr-vinyl-title">未接入深空频段</div>
                     <div class="vinyl-artist" id="cr-vinyl-artist">Waiting for signal...</div>
                     <div class="vinyl-album" id="cr-vinyl-album">Celestial Audio Station · 320Kbps HD</div>
+                </div>
+            </div>
+
+            <!-- 手机播放页精工底栏 (1:1 照抄原版设计) -->
+            <div class="vinyl-mobile-panel" id="cr-vinyl-mobile-panel">
+                <!-- 第 1 行: 收藏按钮 ♡ + 居中歌名/副标题歌手 + 下载按钮 ⤓ -->
+                <div class="v-row-meta">
+                    <button type="button" class="v-circle-btn" id="v-mob-fav-btn" title="收藏">
+                        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                    <div class="v-meta-center">
+                        <div class="v-meta-title" id="v-mob-title">陨落 伴奏</div>
+                        <div class="v-meta-artist" id="v-mob-artist">鲁四月</div>
+                    </div>
+                    <button type="button" class="v-circle-btn" id="v-mob-dl-btn" title="下载离线缓存">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 第 2 行: 横贯式进度条（左金右暗，带前端微小滑块） -->
+                <div class="v-row-progress" id="v-mob-prog-row" title="点击或拖动调整进度">
+                    <div class="v-progress-track">
+                        <div class="v-progress-fill" id="v-mob-prog-fill">
+                            <div class="v-progress-bead"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第 3 行: 上一曲 |◀ + 圆形发光播放/暂停键 ⏸ + 下一曲 ▶| -->
+                <div class="v-row-ctrls">
+                    <button type="button" class="v-ctrl-btn" id="v-mob-prev-btn" title="上一曲">
+                        <svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
+                    </button>
+                    <button type="button" class="v-play-btn" id="v-mob-play-btn" title="播放/暂停">
+                        <svg id="v-mob-play-icon" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    </button>
+                    <button type="button" class="v-ctrl-btn" id="v-mob-next-btn" title="下一曲">
+                        <svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+                    </button>
+                </div>
+
+                <!-- 第 4 行: 左侧小喇叭 🔊 + 中间等离子律动条 + 右侧音量百分比 93% -->
+                <div class="v-row-volume">
+                    <span class="v-vol-icon" id="v-mob-vol-icon" title="静音切换">
+                        <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                    </span>
+                    <div class="v-vol-visualizer-container" id="v-mob-vol-container" title="滑动调节音量">
+                        <div class="v-vol-visualizer" id="v-mob-vol-visualizer"></div>
+                        <input type="range" class="v-vol-native-slider" id="v-mob-vol-slider" min="0" max="100" value="93">
+                    </div>
+                    <span class="v-vol-text" id="v-mob-vol-text">93%</span>
                 </div>
             </div>
         </div>
@@ -1062,6 +1408,7 @@ const DEFAULT_PLAYLISTS = [
     {
         category: "远征33·幽光秘境",
         songs: [
+            { title: "陨落 伴奏", artist: "鲁四月" },
             { title: "World Map - Taking Down the Paintress", artist: "Lorien Testard" },
             { title: "Monoco's Station - Grandis Refuge", artist: "Lorien Testard" },
             { title: "Monoco's Station - Tics Tacs", artist: "Lorien Testard" }
@@ -1101,8 +1448,8 @@ let playlists = JSON.parse(JSON.stringify(DEFAULT_PLAYLISTS));
 let currentPlaylistIndex = 2;
 let currentSongIndex = 0;
 let isPlaying = false;
-let currentVolume = 0.8;
-let lastVolume = 0.8;
+let currentVolume = 0.93;
+let lastVolume = 0.93;
 let playProgress = 32;
 let duration = 236;
 let searchQuery = "";
@@ -1121,7 +1468,7 @@ function getCoverForSong(idx) {
 }
 
 // ==========================================================================
-// 24 柱等离子音量波形律动条
+// 24 柱 PC 端等离子音量波形律动条
 // ==========================================================================
 const VOL_BAR_COUNT = 24;
 const $volVis = document.getElementById('cr-vol-visualizer');
@@ -1136,23 +1483,56 @@ for (let i = 0; i < VOL_BAR_COUNT; i++) {
 }
 const volBars = $volVis.querySelectorAll('.cr-vol-bar');
 
+// ==========================================================================
+// 26 柱手机端等离子波形律动条与 PC 端同步
+// ==========================================================================
+const V_MOB_VOL_COUNT = 26;
+const $vMobVolVis = document.getElementById('v-mob-vol-visualizer');
+for (let i = 0; i < V_MOB_VOL_COUNT; i++) {
+    const dur = VOL_DURATIONS[i % VOL_DURATIONS.length];
+    const bar = document.createElement('div');
+    bar.className = 'v-vol-bar';
+    bar.style.animationDuration = `${dur}s`;
+    bar.style.animationDelay = `-${(i * 0.08 % dur).toFixed(2)}s`;
+    $vMobVolVis.appendChild(bar);
+}
+const vMobVolBars = $vMobVolVis.querySelectorAll('.v-vol-bar');
+
 function updateVolume(val) {
     currentVolume = Math.max(0, Math.min(1, val));
     const pct = Math.round(currentVolume * 100);
+
+    // PC 播放条音量
     document.getElementById('cr-vol-slider').value = pct;
     document.getElementById('cr-vol-text').innerText = pct + '%';
     $volVis.style.setProperty('--cr-vol', currentVolume);
-
     const activeCount = Math.round(currentVolume * VOL_BAR_COUNT);
     volBars.forEach((bar, idx) => {
         if (idx < activeCount) bar.classList.add('active');
         else bar.classList.remove('active');
     });
 
+    // 手机黑胶底栏音量
+    const $mobSlider = document.getElementById('v-mob-vol-slider');
+    const $mobText = document.getElementById('v-mob-vol-text');
+    if ($mobSlider) $mobSlider.value = pct;
+    if ($mobText) $mobText.innerText = pct + '%';
+    if ($vMobVolVis) {
+        const mobActiveCount = Math.round(currentVolume * V_MOB_VOL_COUNT);
+        vMobVolBars.forEach((bar, idx) => {
+            if (idx < mobActiveCount) bar.classList.add('active');
+            else bar.classList.remove('active');
+        });
+    }
+
     const isMuted = currentVolume === 0;
-    document.getElementById('cr-vol-icon').innerHTML = isMuted ?
+    const speakerSvg = isMuted ?
         `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D34B4B" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"></line><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon></svg>` :
-        `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+        `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
+
+    document.getElementById('cr-vol-icon').innerHTML = speakerSvg;
+    const mobVolIcon = document.getElementById('v-mob-vol-icon');
+    if (mobVolIcon) mobVolIcon.innerHTML = speakerSvg;
 }
 
 // ==========================================================================
@@ -1309,6 +1689,13 @@ function playTrack(pIdx, sIdx) {
     document.getElementById('cr-vinyl-cover').src = coverUrl;
     document.getElementById('cr-vinyl-bg').style.backgroundImage = `url(${coverUrl})`;
 
+    // 同步手机黑胶底栏歌曲信息与收藏态
+    const mobTitle = document.getElementById('v-mob-title');
+    const mobArtist = document.getElementById('v-mob-artist');
+    if (mobTitle) mobTitle.innerText = song.title;
+    if (mobArtist) mobArtist.innerText = song.artist || '未知艺术家';
+    updateMobileFavBtn(song);
+
     updatePlayStateUI(true);
     renderTracks();
     renderSidebar();
@@ -1326,17 +1713,22 @@ function updatePlayStateUI(playing) {
     const playSvg = document.getElementById('play-icon-svg');
     const disc = document.getElementById('cr-vinyl-disc');
     const tonearm = document.getElementById('cr-vinyl-tonearm');
+    const mobPlayIcon = document.getElementById('v-mob-play-icon');
 
     if (playing) {
         playSvg.innerHTML = `<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>`;
+        if (mobPlayIcon) mobPlayIcon.innerHTML = `<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>`;
         disc.classList.add('spinning');
         tonearm.classList.add('on');
         $volVis.classList.add('playing');
+        if ($vMobVolVis) $vMobVolVis.classList.add('playing');
     } else {
         playSvg.innerHTML = `<polygon points="5 3 19 12 5 21 5 3"></polygon>`;
+        if (mobPlayIcon) mobPlayIcon.innerHTML = `<polygon points="5 3 19 12 5 21 5 3"></polygon>`;
         disc.classList.remove('spinning');
         tonearm.classList.remove('on');
         $volVis.classList.remove('playing');
+        if ($vMobVolVis) $vMobVolVis.classList.remove('playing');
     }
 }
 
@@ -1359,6 +1751,8 @@ setInterval(() => {
     if (isPlaying) {
         playProgress = (playProgress + 0.3) % 100;
         document.getElementById('bgm-progress-fill').style.width = playProgress + '%';
+        const mobFill = document.getElementById('v-mob-prog-fill');
+        if (mobFill) mobFill.style.width = playProgress + '%';
         const curSec = Math.floor((playProgress / 100) * duration);
         const curM = Math.floor(curSec / 60);
         const curS = String(curSec % 60).padStart(2, '0');
@@ -1369,6 +1763,17 @@ setInterval(() => {
 // ==========================================================================
 // 模态框与Toast交互
 // ==========================================================================
+function updateMobileFavBtn(song) {
+    if (!song) return;
+    const favPl = playlists.find(p => p.category === '★ 我的收藏');
+    const isFav = favPl && favPl.songs.some(s => s.title === song.title);
+    const btn = document.getElementById('v-mob-fav-btn');
+    if (btn) {
+        if (isFav) btn.classList.add('is-fav');
+        else btn.classList.remove('is-fav');
+    }
+}
+
 function toggleFav(song) {
     let favPl = playlists.find(p => p.category === '★ 我的收藏');
     if (!favPl) {
@@ -1383,6 +1788,8 @@ function toggleFav(song) {
         favPl.songs.unshift({ title: song.title, artist: song.artist || '' });
         showToast(`★ 已加入【我的收藏】`);
     }
+    const currentSong = playlists[currentPlaylistIndex]?.songs[currentSongIndex];
+    updateMobileFavBtn(currentSong);
     renderSidebar();
     renderTracks();
 }
@@ -1443,7 +1850,11 @@ backdrop.onclick = closeMobileDrawer;
 
 // 黑胶开合
 const vinylOverlay = document.getElementById('cr-vinyl-overlay');
-function openVinyl() { vinylOverlay.classList.add('open'); }
+function openVinyl() {
+    const currentSong = playlists[currentPlaylistIndex]?.songs[currentSongIndex];
+    updateMobileFavBtn(currentSong);
+    vinylOverlay.classList.add('open');
+}
 function closeVinyl() { vinylOverlay.classList.remove('open'); }
 document.getElementById('pb-cover').onclick = openVinyl;
 document.getElementById('pb-info-click').onclick = openVinyl;
@@ -1454,7 +1865,46 @@ document.getElementById('bgm-play-pause').onclick = togglePlay;
 document.getElementById('cr-prev-btn').onclick = prevSong;
 document.getElementById('cr-next-btn').onclick = nextSong;
 
-// 音量滑块
+// 手机黑胶底栏事件监听
+document.getElementById('v-mob-play-btn').onclick = togglePlay;
+document.getElementById('v-mob-prev-btn').onclick = prevSong;
+document.getElementById('v-mob-next-btn').onclick = nextSong;
+document.getElementById('v-mob-fav-btn').onclick = () => {
+    const pl = playlists[currentPlaylistIndex];
+    if (pl && pl.songs[currentSongIndex]) {
+        toggleFav(pl.songs[currentSongIndex]);
+    }
+};
+document.getElementById('v-mob-dl-btn').onclick = () => {
+    const pl = playlists[currentPlaylistIndex];
+    const song = pl && pl.songs[currentSongIndex];
+    showToast(`已启动离线高保真无损缓存: 《${song ? song.title : '当前曲目'}》`);
+};
+document.getElementById('v-mob-vol-slider').oninput = (e) => {
+    updateVolume(e.target.value / 100);
+};
+document.getElementById('v-mob-vol-icon').onclick = () => {
+    if (currentVolume > 0) {
+        lastVolume = currentVolume;
+        updateVolume(0);
+    } else {
+        updateVolume(lastVolume || 0.93);
+    }
+};
+document.getElementById('v-mob-prog-row').onclick = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    playProgress = Math.max(0, Math.min(100, (clickX / rect.width) * 100));
+    document.getElementById('bgm-progress-fill').style.width = playProgress + '%';
+    const mobFill = document.getElementById('v-mob-prog-fill');
+    if (mobFill) mobFill.style.width = playProgress + '%';
+    const curSec = Math.floor((playProgress / 100) * duration);
+    const curM = Math.floor(curSec / 60);
+    const curS = String(curSec % 60).padStart(2, '0');
+    document.getElementById('pb-cur-time').innerText = `${curM}:${curS}`;
+};
+
+// PC 音量滑块
 document.getElementById('cr-vol-slider').oninput = (e) => {
     updateVolume(e.target.value / 100);
 };
@@ -1463,7 +1913,7 @@ document.getElementById('cr-vol-icon').onclick = () => {
         lastVolume = currentVolume;
         updateVolume(0);
     } else {
-        updateVolume(lastVolume || 0.8);
+        updateVolume(lastVolume || 0.93);
     }
 };
 
@@ -1523,7 +1973,7 @@ viewBtns.forEach(btn => {
 });
 
 // 初始化渲染
-updateVolume(0.8);
+updateVolume(0.93);
 playTrack(2, 0);
 </script>
 </body>

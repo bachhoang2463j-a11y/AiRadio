@@ -515,3 +515,17 @@
 - **验证数据**：`node --check` 语法通过；`node tools/radar-probe.mjs` 22/22 断言通过（含 G/H/I 三新场景）；`node tools/hitrate-probe.mjs` 命中率全绿（纯函数锚点未动）；IAB 冒烟——面板正确渲染、227 条 CSS 规则（与 v6.22.0 基线一致）、设置弹窗挂载、播放器静默待机、全程零运行时错误。
 - **决策原因**：用户启用「自动调用 LLM 分析」后经常无歌播放，进入排障模式分析。根因链：① 锁楼键错位——`GENERATION_ENDED` 越界载荷与写楼插件真实楼层号算出不同锁键，同楼重复决策顶歌；② 检索失败锁楼——`playDirect` 失败不回传、`triggerAiDjDecision` 无条件 `return true`，`[连接丢失]` 后本楼永不再试；③ API 并发竞争——电台选歌请求与蚀心数据库填表请求（默认 `useMainApi:true`）同一时间窗打同一供应商，被限流后重试依赖"后续事件"但事件可能不再来。修复确认后按四点方案实施（锁键统一/成败回传/自愈重试/429 避让）。
 - **提交**：`eb1e6fabd440aafe3abcb5b6db4a7e41dd5efe92`
+
+---
+
+## [HASH: 9570836] 剥离酒馆依赖转制本地单 HTML 应用（歌单/搜歌/下载全保留）
+- **日期**：2026-10-06
+- **涉及文件**：`音乐电台-单机版.html`（新增）、`tools/strip-dj.js`、`tools/pack-standalone.js`、`tools/standalone_script.js`、`tools/_extracted_script.js`、`tools/jquery-3.7.1.min.js`、`README.md`
+- **变更行为**：
+  1. **手术剥离**：以 v6.23.0 提取脚本（4497 行）为基底，按标记行锚点删除酒馆专属代码——AI DJ 默认提示词与三预设常量、`getDjSettings/saveDjSettings`、DJ 预设存取五函数、`extractStoryContext`（含 `window.parent`/`getChatMessages` 楼层提取）、`getLibrarySummaryForPrompt/getPlaylistPromptBlocks/renderSettingsPlaylistPrompts`、`triggerAiDjDecision`、`#cr-manual-dj-btn` 绑定、双擎雷达全区（`lastHandledMessageId` 起至事件注册 catch 止）、`[点一首歌:]` 楼层指令解析；产出 3288 行 `standalone_script.js`，酒馆专属符号 grep 零残留；
+  2. **设置面板精简**：`cr-settings-modal` 重写为单卡片四项通用设置（最近播放历史容量/启动自动播放/毛玻璃/真实频谱），标题改「⚡ 电台设置」，`openSettingsModal` 与保存处理器同步重写为直接读写 `localStorage`（`cr_history_limit`/`cr_init_autoplay`/`cr_glass_effect`/`cr_spectrum` 四键原样沿用）；⚙ 按钮 title 改「电台设置」；
+  3. **数据与网络层零改动**：`celestial_all_playlists` 等存储键、出厂默认歌单、直链库与自定义直链映射、五源检索打分引擎（gdstudio 主源 + motues 备源 + corsproxy 兜底）、网易云歌单导入、MP3 下载、批量管理/拖拽/导入导出全部原样保留；`prompt/promptEnabled` 数据字段保留（导入导出与酒馆版互通，仅 UI 移除）；
+  4. **单文件打包**：`pack-standalone.js` 内嵌 jQuery 3.7.1 min（87.5KB，酒馆环境自带而单文件需自带）+ 剥离脚本，body 深空底色 `#05070d`，产出 245KB `音乐电台-单机版.html`，file:// 双击即用；Google Fonts 保持异步 link 加载（断网回退系统字体）。
+- **验证数据**：`node --check` 语法通过；酒馆符号（getDjSettings/triggerAiDjDecision/eventOn/getChatMessages/window.parent/点一首歌 等 30+ 项）grep 零残留；IAB 冒烟全绿——面板渲染与贴边把手、出厂歌单三频段加载、设置面板四项打开/保存（toast「✅ 电台设置已保存！」）、搜索过滤（未命中出「🌐 全网检索并试听」入口）、深空电子频段展开三曲目、点击 Cornfield Chase 走直链库→gdstudio 取链 API→音频实际播放（进度条 16% 前进、律动条 13 柱激活）、最近播放自动记入 1 首；截图确认暗金 UI 布局完整。
+- **决策原因**：用户要求把插件转为"其他设备点开就能搜歌"的本地单 HTML，只保留歌单与搜歌下载、去掉 LLM 设置。经确认选「剥离现有脚本 + 功能全保」路线：搜歌打分引擎等实测资产零损失，重写路线被否。
+- **提交**：`9570836`

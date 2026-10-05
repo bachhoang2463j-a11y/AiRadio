@@ -529,3 +529,18 @@
 - **验证数据**：`node --check` 语法通过；酒馆符号（getDjSettings/triggerAiDjDecision/eventOn/getChatMessages/window.parent/点一首歌 等 30+ 项）grep 零残留；IAB 冒烟全绿——面板渲染与贴边把手、出厂歌单三频段加载、设置面板四项打开/保存（toast「✅ 电台设置已保存！」）、搜索过滤（未命中出「🌐 全网检索并试听」入口）、深空电子频段展开三曲目、点击 Cornfield Chase 走直链库→gdstudio 取链 API→音频实际播放（进度条 16% 前进、律动条 13 柱激活）、最近播放自动记入 1 首；截图确认暗金 UI 布局完整。
 - **决策原因**：用户要求把插件转为"其他设备点开就能搜歌"的本地单 HTML，只保留歌单与搜歌下载、去掉 LLM 设置。经确认选「剥离现有脚本 + 功能全保」路线：搜歌打分引擎等实测资产零损失，重写路线被否。
 - **提交**：`9570836`
+
+---
+
+## [HASH: bf257a7] 单机版重构为全页仿网易云播放器并新增封面抓取与黑胶播放页
+- **日期**：2026-10-06
+- **涉及文件**：`音乐电台-单机版.html`、`tools/rebuild-ui.js`（新增）、`tools/ui-css.txt`（新增）、`tools/ui-html.txt`（新增）、`tools/standalone_script_v2.js`（新增）、`tools/pack-standalone.js`
+- **变更行为**：
+  1. **全页三区布局重写**：320px 贴边面板 → 左侧歌单栏（248px：品牌/搜索/歌单导航/新建/导入导出）+ 中央曲目表（歌单头 + 网易云式编号行列表）+ 底部全宽播放条（76px：封面缩略图/歌名歌手/收藏/控制/进度+时间/播放模式/下载/音量律动）；贴边收纳、面板拖拽、折叠/展开（`state.collapsed`/`dockSide/dockTop/applyDockPosition`/edge-handle）全部移除；`#cr-app-body` 包裹 sidebar+main，`#cr-app` 纵向 flex 使播放条全宽置底；
+  2. **事件层零改动技巧**：`$ctn` 重指向 `$('#cr-app')`，29 处 `$ctn.on` 委托绑定（song-row/batch/cat-up-down/import-163/rename/del/move-modal/拖拽）原样沿用；`.cat-title` 点击展开逻辑替换为 `.pl-nav-item` 点击选中查看（新增 `selectedPlaylistIndex` 查看态，与 `currentPlaylistIndex` 播放态分离）；`renderPlaylists` 重写为 `renderSidebarNav + renderTrackTable` 调度，行渲染共用 `rowHtml`（批量 checkbox/搜索来源列/直链解析 artist 兼容）；
+  3. **封面抓取链**（实测打通）：五源搜歌选中候选为 netease 时直取 `pic_id`，库内曲目播放成功后异步以「歌名 - 歌手」补搜一次 `types=search&source=netease` 取首候选 `pic_id`（不阻塞播放）→ `types=pic` 换网易云 CDN 直链；`size` 参数多后端行为不一致（`300y300` 时好时坏、整数可用），取不带 size 的默认 300 链接后客户端改写 `param=300y300→500y500`；`coverCache` 按 `title|artist` 缓存，`applyCurrentCover` 以 `currentPlayingTrackInfo.title` 比对丢弃切歌后的过期响应，无封面回退内嵌 SVG 占位图；封面挂载三处：底部条 `#pb-cover`、黑胶页 `#cr-vinyl-cover`、模糊背景 `#cr-vinyl-bg`；
+  4. **黑胶播放页**：点击底部封面展开（`#cr-vinyl-overlay.open`，bottom:76px 让位播放条），旋转唱片（`animation-play-state` 随播放起停）+ 唱针起落（`.on` rotate）+ 封面模糊背景（blur 60px/brightness 0.32）+ 歌名/歌手/专辑大字版式（专辑取自封面搜索响应的 album 字段）；点击 ⌄ 收起；
+  5. **播放条时间显示**：`formatTime` + `timeupdate`（当前时刻）/`loadedmetadata`（总时长，先于时长熔断判断写入）；启动初始化的 `#bgm-current-*` 死引用（酒馆版遗留，模板中无此元素）替换为 `#bgm-now-*` 并回填记忆曲目封面。
+- **验证数据**：`node --check` 语法通过；旧 UI 符号（state./openedPlaylistCategories/celestial-radio-container/cat-title/#cat-/bgm-current- 等）grep 零残留；封面 API 实测——search 响应带 `pic_id`、`types=pic&source=netease` 返回 `p2.music.126.net` 直链（HTTP 200 image/jpg）、`500y500` 格式 size 被部分后端 422 拒绝；IAB 验收全绿——三区几何（sidebar 248×644 / main 1032×644 / player-bar 1280×76）、播放（进度 4.3%/律动 playing/最近播放记录）、封面三处挂载为真实 CDN 图、黑胶层叠 elementFromPoint 三点全命中 overlay、搜索视图（"Echoes" 命中 2 首并标注来源歌单）、设置面板开合正常；施工中发现并修复首次渲染 TDZ（`renderPlaylists` 引用尾部声明的 `selectedPlaylistIndex`，调用移至脚本尾部）。
+- **决策原因**：用户反馈单机版无需贴边小窗形态，要求仿网易云 PC/网页版做正经网页播放器，并测试歌曲缩略图抓取。封面链路验证可行后经确认追加黑胶大图播放页（用户选定「要黑胶播放页」）。
+- **提交**：`bf257a7`

@@ -966,6 +966,8 @@
         /* ===== 全屏封面模式（复刻 demo_preview：左封面出血羽化 + 右信息歌词） ===== */
         /* 默认隐藏；仅 mode-fullscreen-cover 下展示，经典黑胶模式不受影响 */
         .fs-cover-art { display: none; }
+        /* 封面一直出血到屏幕最底，让 PC 底栏的毛玻璃有内容可糊（经典黑胶仍留出 78px 底栏位） */
+        #cr-vinyl-overlay.mode-fullscreen-cover { bottom: 0; }
         #cr-vinyl-overlay.mode-fullscreen-cover .vinyl-turntable { display: none; }
         #cr-vinyl-overlay.mode-fullscreen-cover .vinyl-stage { display: block; padding: 0; gap: 0; }
         #cr-vinyl-overlay.mode-fullscreen-cover .vinyl-bg {
@@ -983,7 +985,7 @@
         #cr-vinyl-overlay.mode-fullscreen-cover .vinyl-meta {
             position: absolute; right: 0; top: 0; bottom: 0;
             width: 48%; max-width: none; min-width: 0; height: auto;
-            padding: 70px 7% 56px 2%; z-index: 10;
+            padding: 70px 7% 88px 2%; z-index: 10;
         }
         /* 全屏封面模式白色文字体系（经典黑胶模式仍为鎏金） */
         #cr-vinyl-overlay.mode-fullscreen-cover .vinyl-title {
@@ -1019,6 +1021,17 @@
             background: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.22) 100%);
         }
         #cr-vinyl-overlay.mode-fullscreen-cover .vinyl-vignette { display: block; }
+
+        /* PC 底栏在全屏封面模式下浮到封面之上，改成 demo 同款半透明毛玻璃。
+           仅桌面生效：窄屏走 @media (max-width:768px) 的悬浮胶囊，?mobile 预览靠 :not(.force-mobile) 排除。 */
+        @media (min-width: 769px) {
+            #cr-app:not(.force-mobile).fs-cover-open #cr-player-bar {
+                z-index: 220;
+                background: rgba(16, 18, 26, 0.52);
+            }
+            /* 关闭毛玻璃时保持原不透明底，避免封面透出成一团糊 */
+            #cr-app:not(.force-mobile).no-glass.fs-cover-open #cr-player-bar { background: var(--panel-glass); }
+        }
 
         /* ===== 播放器模式切换弹窗（复刻 demo_preview） ===== */
         #cr-vinyl-mode-btn { left: auto; right: 76px; }
@@ -4011,6 +4024,7 @@
         $('#cr-vinyl-overlay').addClass('open');
         updateCoverUI();
         updateBgmUI();
+        syncFsCoverBarState();
         // 歌词区此时才从隐藏转为显示，scrollTop 归零，需重新居中到当前播放位置
         currentLyricIdx = -1;
         updateLyricHighlight(true);
@@ -4018,16 +4032,30 @@
     }
     $('#pb-cover').on('click', openVinylPage);
     $('.pb-info').on('click', openVinylPage);
-    $('#cr-vinyl-close').on('click', () => $('#cr-vinyl-overlay').removeClass('open'));
+    $('#cr-vinyl-close').on('click', () => {
+        $('#cr-vinyl-overlay').removeClass('open');
+        // 覆盖层有 0.35s 淡出：立刻降底栏层级会让它在淡出期间被盖住闪一下，等淡完再复位
+        setTimeout(syncFsCoverBarState, 380);
+    });
 
     // === 播放器模式：全屏封面 / 经典黑胶（模式类挂在 overlay 上，两模式共用同一套歌词 DOM） ===
     const PLAYBACK_MODE_KEY = 'cr_playback_mode';
+    let currentPlaybackMode = 'fullscreen-cover';
+
+    // 全屏封面模式下 PC 底栏要浮到封面之上做毛玻璃；其余情况维持普通底栏
+    function syncFsCoverBarState() {
+        const on = currentPlaybackMode === 'fullscreen-cover' && $('#cr-vinyl-overlay').hasClass('open');
+        $('#cr-app').toggleClass('fs-cover-open', on);
+    }
+
     function setPlaybackMode(mode, silent) {
         const m = (mode === 'vinyl') ? 'vinyl' : 'fullscreen-cover';
+        currentPlaybackMode = m;
         $('#cr-vinyl-overlay').removeClass('mode-fullscreen-cover mode-vinyl').addClass('mode-' + m);
         $('#pm-card-cover').toggleClass('selected', m === 'fullscreen-cover');
         $('#pm-card-vinyl').toggleClass('selected', m === 'vinyl');
         localStorage.setItem(PLAYBACK_MODE_KEY, m);
+        syncFsCoverBarState();
         // 两模式下歌词容器的几何位置不同，切换后需重新居中到当前播放行
         currentLyricIdx = -1;
         updateLyricHighlight(true);

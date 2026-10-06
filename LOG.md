@@ -650,3 +650,20 @@
   4. **实测同步性**（连续采样「高亮行中心与容器中心偏差」）：PC 12 次采样跨越 2 次行切换恒为 1~2px；移动端小歌词区 8 次恒为 0px；移动端全屏歌词 8 次恒为 1px。
 - **决策原因**：用户实测反馈歌词高亮与滚动移动不同步、观感怪异。
 - **提交**：`ac5e2e9`
+
+---
+
+## [HASH: 25e5ed0] 全屏封面播放模式上线（复刻 demo_preview 双模式 + 播放器模式弹窗）
+- **日期**：2026-10-06
+- **涉及文件**：`tools/standalone_script_v2.js`、`音乐电台-单机版.html`（重新打包）
+- **变更行为**：
+  1. **双模式架构（复用同一套 DOM，歌词链零改动）**：`#cr-vinyl-overlay` 上挂 `mode-fullscreen-cover` / `mode-vinyl` 类互斥切换。在 `.vinyl-stage` 内新增 `.fs-cover-art > #fs-cover-img`，圆形黑胶盘与出血大封面按模式互斥显示；`#cr-lyric-scroll-pc`（在 `.vinyl-meta` 内）与 `#cr-lyric-inner-mob`（在 `.cr-lyric-mobile` 内）**原样不动**，`renderLyrics` / `updateLyricHighlight` / `scrollLyricToCenter` / 手动滑动保护全部未改——避免为第二种模式分叉一套歌词同步逻辑（该链路已修过三轮 bug）；
+  2. **桌面全屏封面**：`.fs-cover-art` 绝对定位左侧 58%、`object-fit: cover` + `object-position: left center`，右侧 `linear-gradient(to right, #000 0%, #000 48%, rgba(0,0,0,.85) 65%, transparent)` mask 自然羽化消隐；`.vinyl-meta` 改右侧 48% 绝对定位（`padding: 70px 7% 56px 2%`，底边距按单机版 overlay `bottom: 78px` 适配而非 demo 的 88px）；`.vinyl-bg` 在该模式下提亮为 `blur(65px) brightness(0.72) saturate(1.15)` 并加 `.vinyl-vignette` 右侧暗角托底白字；
+  3. **纯白文字体系**：`mode-fullscreen-cover` 下标题、专辑/歌手/来源信息行、药丸标签（改白底深字）、歌词主行/译文/高亮行全部转纯白（高亮行 `#fff` + 阴影），经典黑胶模式仍为鎏金 `#E8D5B5`/`#C4A77D`，两模式观感互不污染；
+  4. **移动端全屏封面**：`.fs-cover-art` 改 `position: relative; flex: 1 1 0` 撑满上部，mask 改为向下羽化 `to bottom` 且 `object-position: center 25%`；歌词区沿用既有 `.cr-lyric-mobile` 168px 居中；`.vinyl-mobile-panel` 加 `transparent → rgba(12,14,20,.88)` 底部渐变暗晕。按项目约定 `@media (max-width:768px)` 与 `#cr-app.force-mobile` 双份镜像；
+  5. **切换入口（完整复刻 demo）**：右上角网易云按钮左侧新增同款圆形按钮 `#cr-vinyl-mode-btn`（桌面 `right:76px` / 移动 `right:64px`），点开毛玻璃弹窗 `#cr-player-mode-modal`（`.pm-cards-grid` 两张卡片「全屏封面 / 经典黑胶」+ 选中勾选徽标，选中态用暗金描边替代 demo 的网易云红）；弹窗缩略图取 `assets/modes/*.png`（170×105 / 165×105）**base64 内联**（各约 26KB）以保持单文件可移植，不引入外部资源依赖；
+  6. **JS**：`updateCoverUI` 增加 `#fs-cover-img` 同步；新增 `setPlaybackMode(mode, silent)`（切模式类名 + 卡片选中态 + 写 `localStorage.cr_playback_mode` + 因两模式歌词容器几何不同而强制重算居中 `currentLyricIdx=-1; updateLyricHighlight(true)` 并 60ms 后补一次 + 非静默 toast）与 `initPlayerModeControls()`（按钮开合、卡片切换、弹窗外点击关闭）；初始化默认 `fullscreen-cover`；
+  7. **实测（IAB，1280×720 / 390×844 / 1280×800+?mobile）**：桌面封面 742×642（58%）、`.vinyl-meta` 614×642（48%）、标题 `rgb(255,255,255)`、切换黑胶后标题与高亮歌词回 `rgb(255,245,223)` 且歌词居中偏差 **0px**、`#fs-cover-art` 显示状态与 localStorage 值同步；真实曲目（远征33）封面走通 `p2.music.126.net` 直链、31 行歌词正常高亮；移动端封面 390×454 向下羽化 + 歌词 168px + 底栏 222px，`?mobile` 桌面预览钩子同构。
+- **决策原因**：用户要求把 `demo_preview.html` 的「全屏封面模式」移植进单机版；经 plan 确认走「完整复刻 demo（按钮+弹窗双卡片，缩略图 base64 内联）／默认全屏封面／纯白配色」三项选型。
+- **顺带核实**：用户指出 demo 移动端「进入全屏播放页后列表底栏依然显示」的缺陷——根因为 demo `#cr-player-bar` 的 `z-index: 220` 高于 overlay 的 `200`；单机版底栏为 `120`、overlay 为 `200`，实测移动端底栏中心点 `elementFromPoint` 命中覆盖层内的 `v-mob-vol-slider`，**该缺陷在单机版不存在**，未额外加隐藏规则。
+- **提交**：`25e5ed0`

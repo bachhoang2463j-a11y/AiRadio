@@ -491,11 +491,11 @@ html, body {
    ========================================================================== */
 #cr-player-bar {
     height: 78px; flex-shrink: 0; display: flex; align-items: center;
-    padding: 0 24px; gap: 16px; position: relative; z-index: 120;
-    background: var(--panel-glass);
-    backdrop-filter: var(--panel-blur); -webkit-backdrop-filter: var(--panel-blur);
-    border-top: 1px solid var(--gold-border);
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+    padding: 0 24px; gap: 16px; position: relative; z-index: 220;
+    background: rgba(16, 18, 26, 0.52);
+    backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.45);
     transition: all 0.35s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -637,7 +637,7 @@ html, body {
    全屏黑胶播放舞台 (#cr-vinyl-overlay) 优化返回键与光影
    ========================================================================== */
 #cr-vinyl-overlay {
-    position: absolute; inset: 0; bottom: 78px; z-index: 200;
+    position: absolute; inset: 0; bottom: 0; z-index: 200;
     opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
     overflow: hidden; background: #1c1a1e;
 }
@@ -835,7 +835,7 @@ html, body {
 /* 右侧歌曲信息与歌词区 */
 .fs-right-pane {
     position: absolute; right: 0; top: 0; bottom: 0;
-    width: 48%; padding: 75px 8% 30px 2%;
+    width: 48%; padding: 70px 8% 88px 2%;
     box-sizing: border-box; display: flex; flex-direction: column;
     z-index: 10;
 }
@@ -1231,8 +1231,14 @@ html, body {
         position: absolute; inset: 0; bottom: 0;
         background: #090c14; border-radius: 0;
         display: flex; flex-direction: column; justify-content: space-between;
+        overflow: hidden;
     }
-    .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; font-size: 14px; }
+    .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; font-size: 14px; z-index: 30; }
+    .vinyl-top-actions { top: 18px; right: 18px; gap: 8px; z-index: 30; }
+    .vinyl-win-icons { display: none !important; }
+    .vinyl-mode-btn { padding: 4px 11px; font-size: 11.5px; }
+
+    /* 经典黑胶舞台 */
     .vinyl-stage {
         flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
         padding: 36px 12px 0 12px; gap: 0; min-height: 0;
@@ -1240,52 +1246,124 @@ html, body {
     .vinyl-turntable { margin: auto 0; }
     .vinyl-disc { width: min(58vw, 235px); height: min(58vw, 235px); }
     .vinyl-meta { display: none !important; }
-    .vinyl-mobile-panel { display: flex; }
 
-    /* 移动端全屏封面模式上下分屏（无外框，封面撑满上部向下自然羽化扩散） */
-    .fs-cover-stage {
-        display: none;
-        flex-direction: column !important; align-items: center !important;
-        padding: 44px 16px 6px 16px !important; gap: 4px !important;
-        overflow: hidden !important; justify-content: flex-start !important;
-        position: absolute !important; inset: 0 !important; bottom: 0 !important;
-    }
+    /* 移动端全屏封面模式（无外框，封面撑满上部向下自然羽化扩散 + 吸收正式版歌词黄金布局） */
+    .fs-cover-stage { display: none; }
+    #cr-vinyl-overlay.mode-fullscreen-cover .vinyl-stage { display: none !important; }
     #cr-vinyl-overlay.mode-fullscreen-cover .fs-cover-stage {
         display: flex !important;
+        flex-direction: column !important;
+        flex: 1 1 0% !important;
+        min-height: 0 !important;
+        width: 100% !important;
+        position: relative !important;
+        left: auto !important; right: auto !important; top: auto !important; bottom: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        z-index: 5 !important;
     }
+    /* 上半部分：大封面占满并向下羽化扩散消隐，融于背景与歌词 */
     .fs-left-cover-art {
-        position: relative !important; width: 100% !important; height: 38% !important;
-        min-height: 175px !important; flex: none !important;
-        -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%) !important;
-        mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%) !important;
+        position: relative !important;
+        left: auto !important; top: auto !important; right: auto !important; bottom: auto !important;
+        width: 100% !important;
+        flex: 1 1 0% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+        -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 52%, rgba(0, 0, 0, 0.72) 74%, transparent 100%) !important;
+        mask-image: linear-gradient(to bottom, #000 0%, #000 52%, rgba(0, 0, 0, 0.72) 74%, transparent 100%) !important;
     }
     .fs-left-cover-art img {
-        object-position: center 25% !important;
+        width: 100% !important; height: 100% !important;
+        object-fit: cover !important; object-position: center 25% !important;
+        display: block !important;
     }
+    /* 下半部分：歌词区（固定 168px 黄金阅读高度，不抢占封面，隐藏多余头信息） */
     .fs-right-pane {
-        position: relative !important; width: 100% !important; flex: 1 !important;
-        padding: 0 !important; min-height: 0 !important;
-        display: flex !important; flex-direction: column !important; align-items: center !important;
+        position: relative !important;
+        left: auto !important; right: auto !important; top: auto !important; bottom: auto !important;
+        width: 100% !important;
+        flex: 0 0 168px !important;
+        height: 168px !important;
+        min-height: 168px !important;
+        padding: 0 24px !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        margin-top: -16px !important;
+        z-index: 8 !important;
     }
     .fs-right-content {
         align-items: center !important; width: 100% !important; height: 100% !important;
+        display: flex !important; flex-direction: column !important;
     }
-    .fs-track-header { text-align: center !important; margin-bottom: 4px !important; }
-    .fs-track-title { font-size: 16px !important; margin-bottom: 2px !important; }
-    .fs-track-meta { justify-content: center !important; font-size: 11px !important; gap: 8px !important; }
+    .fs-track-header { display: none !important; }
     .fs-pill-tabs { display: none !important; }
+    /* 歌词滚动视口（对标正式版移动端居中与渐变羽化） */
     .fs-lyric-viewport {
-        padding: 6px 0 14px 0 !important;
-        mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 82%, transparent 100%) !important;
-        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 82%, transparent 100%) !important;
-        width: 100% !important; text-align: center !important;
+        flex: 1 !important; width: 100% !important; height: 100% !important;
+        padding: 60px 0 !important;
+        overflow-y: auto !important; scrollbar-width: none !important;
+        -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%) !important;
+        mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%) !important;
+        text-align: center !important;
     }
-    .fs-lyric-inner { align-items: center !important; gap: 10px !important; }
-    .fs-lyric-line { font-size: 13.5px !important; text-align: center !important; }
-    .fs-lyric-line.active { font-size: 16px !important; }
+    .fs-lyric-viewport::-webkit-scrollbar { display: none !important; }
+    .fs-lyric-inner {
+        align-items: center !important;
+        gap: 16px !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .fs-lyric-line {
+        width: 100% !important;
+        text-align: center !important;
+        font-size: 15px !important;
+        line-height: 1.55 !important;
+        color: rgba(255, 255, 255, 0.42) !important;
+        transition: all 0.25s ease !important;
+        transform-origin: center center !important;
+    }
+    .fs-lyric-line.active {
+        font-size: 17.5px !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        transform: scale(1.04) !important;
+        text-shadow: 0 0 16px rgba(255, 255, 255, 0.5), 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+    }
+    .fs-lyric-trans {
+        font-size: 12.5px !important;
+        line-height: 1.5 !important;
+        color: rgba(255, 255, 255, 0.55) !important;
+        margin-top: 4px !important;
+    }
+    .fs-lyric-line.active .fs-lyric-trans {
+        color: #FFF2CE !important;
+        opacity: 0.95 !important;
+    }
+
+    /* 移动端 4 行控制底栏：固定紧贴底部，严禁上移，加柔和暗晕托底 */
+    .vinyl-mobile-panel {
+        display: flex !important;
+        position: relative !important;
+        z-index: 10 !important;
+        width: 100% !important;
+        flex: 0 0 auto !important;
+        margin-top: auto !important;
+        padding: 4px 22px 22px 22px !important;
+    }
+    #cr-vinyl-overlay.mode-fullscreen-cover .vinyl-mobile-panel {
+        background: linear-gradient(180deg, transparent 0%, rgba(12, 14, 20, 0.55) 30%, rgba(12, 14, 20, 0.88) 100%);
+    }
+
+    /* 播放器模式弹窗 */
     .player-mode-modal {
-        top: 54px !important; right: 10px !important; left: 10px !important;
+        top: 54px !important; right: 14px !important; left: 14px !important;
         width: auto !important; max-width: none !important;
+        border-radius: 14px !important; padding: 12px !important;
     }
 }
 
@@ -1331,7 +1409,11 @@ html, body {
     display: flex !important; flex-direction: column !important; justify-content: space-between !important;
     overflow: hidden !important;
 }
-#cr-stage.view-mobile .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; font-size: 14px; }
+#cr-stage.view-mobile .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; font-size: 14px; z-index: 30; }
+#cr-stage.view-mobile .vinyl-top-actions { top: 18px; right: 18px; gap: 8px; z-index: 30; }
+#cr-stage.view-mobile .vinyl-win-icons { display: none !important; }
+#cr-stage.view-mobile .vinyl-mode-btn { padding: 4px 11px; font-size: 11.5px; }
+
 #cr-stage.view-mobile .vinyl-stage {
     flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 36px 12px 0 12px; gap: 0; min-height: 0;
@@ -1339,52 +1421,124 @@ html, body {
 #cr-stage.view-mobile .vinyl-turntable { margin: auto 0; }
 #cr-stage.view-mobile .vinyl-disc { width: min(58vw, 235px); height: min(58vw, 235px); }
 #cr-stage.view-mobile .vinyl-meta { display: none !important; }
-#cr-stage.view-mobile .vinyl-mobile-panel { display: flex; }
 
-/* 手机模拟视图全屏封面上下分屏（无外框，封面撑满上部向下自然羽化扩散） */
-#cr-stage.view-mobile .fs-cover-stage {
-    display: none;
-    flex-direction: column !important; align-items: center !important;
-    padding: 44px 16px 6px 16px !important; gap: 4px !important;
-    overflow: hidden !important; justify-content: flex-start !important;
-    position: absolute !important; inset: 0 !important; bottom: 0 !important;
-}
+/* 手机模拟视图全屏封面上下分屏（无外框，封面撑满上部向下自然羽化扩散 + 吸收正式版歌词黄金布局） */
+#cr-stage.view-mobile .fs-cover-stage { display: none; }
+#cr-stage.view-mobile #cr-vinyl-overlay.mode-fullscreen-cover .vinyl-stage { display: none !important; }
 #cr-stage.view-mobile #cr-vinyl-overlay.mode-fullscreen-cover .fs-cover-stage {
     display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 0% !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    position: relative !important;
+    left: auto !important; right: auto !important; top: auto !important; bottom: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    z-index: 5 !important;
 }
+/* 上半部分：大封面占满并向下羽化扩散消隐，融于背景与歌词 */
 #cr-stage.view-mobile .fs-left-cover-art {
-    position: relative !important; width: 100% !important; height: 38% !important;
-    min-height: 175px !important; flex: none !important;
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%) !important;
-    mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%) !important;
+    position: relative !important;
+    left: auto !important; top: auto !important; right: auto !important; bottom: auto !important;
+    width: 100% !important;
+    flex: 1 1 0% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 52%, rgba(0, 0, 0, 0.72) 74%, transparent 100%) !important;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 52%, rgba(0, 0, 0, 0.72) 74%, transparent 100%) !important;
 }
 #cr-stage.view-mobile .fs-left-cover-art img {
-    object-position: center 25% !important;
+    width: 100% !important; height: 100% !important;
+    object-fit: cover !important; object-position: center 25% !important;
+    display: block !important;
 }
+/* 下半部分：歌词区（固定 168px 黄金阅读高度，不抢占封面，隐藏多余头信息） */
 #cr-stage.view-mobile .fs-right-pane {
-    position: relative !important; width: 100% !important; flex: 1 !important;
-    padding: 0 !important; min-height: 0 !important;
-    display: flex !important; flex-direction: column !important; align-items: center !important;
+    position: relative !important;
+    left: auto !important; right: auto !important; top: auto !important; bottom: auto !important;
+    width: 100% !important;
+    flex: 0 0 168px !important;
+    height: 168px !important;
+    min-height: 168px !important;
+    padding: 0 24px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    margin-top: -16px !important;
+    z-index: 8 !important;
 }
 #cr-stage.view-mobile .fs-right-content {
     align-items: center !important; width: 100% !important; height: 100% !important;
+    display: flex !important; flex-direction: column !important;
 }
-#cr-stage.view-mobile .fs-track-header { text-align: center !important; margin-bottom: 4px !important; }
-#cr-stage.view-mobile .fs-track-title { font-size: 16px !important; margin-bottom: 2px !important; }
-#cr-stage.view-mobile .fs-track-meta { justify-content: center !important; font-size: 11px !important; gap: 8px !important; }
+#cr-stage.view-mobile .fs-track-header { display: none !important; }
 #cr-stage.view-mobile .fs-pill-tabs { display: none !important; }
+/* 歌词滚动视口（对标正式版移动端居中与渐变羽化） */
 #cr-stage.view-mobile .fs-lyric-viewport {
-    padding: 6px 0 14px 0 !important;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 82%, transparent 100%) !important;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 82%, transparent 100%) !important;
-    width: 100% !important; text-align: center !important;
+    flex: 1 !important; width: 100% !important; height: 100% !important;
+    padding: 60px 0 !important;
+    overflow-y: auto !important; scrollbar-width: none !important;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%) !important;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%) !important;
+    text-align: center !important;
 }
-#cr-stage.view-mobile .fs-lyric-inner { align-items: center !important; gap: 10px !important; }
-#cr-stage.view-mobile .fs-lyric-line { font-size: 13.5px !important; text-align: center !important; }
-#cr-stage.view-mobile .fs-lyric-line.active { font-size: 16px !important; }
+#cr-stage.view-mobile .fs-lyric-viewport::-webkit-scrollbar { display: none !important; }
+#cr-stage.view-mobile .fs-lyric-inner {
+    align-items: center !important;
+    gap: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+#cr-stage.view-mobile .fs-lyric-line {
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 15px !important;
+    line-height: 1.55 !important;
+    color: rgba(255, 255, 255, 0.42) !important;
+    transition: all 0.25s ease !important;
+    transform-origin: center center !important;
+}
+#cr-stage.view-mobile .fs-lyric-line.active {
+    font-size: 17.5px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    transform: scale(1.04) !important;
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.5), 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+}
+#cr-stage.view-mobile .fs-lyric-trans {
+    font-size: 12.5px !important;
+    line-height: 1.5 !important;
+    color: rgba(255, 255, 255, 0.55) !important;
+    margin-top: 4px !important;
+}
+#cr-stage.view-mobile .fs-lyric-line.active .fs-lyric-trans {
+    color: #FFF2CE !important;
+    opacity: 0.95 !important;
+}
+
+/* 移动端 4 行控制底栏：固定紧贴底部，严禁上移，加柔和暗晕托底 */
+#cr-stage.view-mobile .vinyl-mobile-panel {
+    display: flex !important;
+    position: relative !important;
+    z-index: 10 !important;
+    width: 100% !important;
+    flex: 0 0 auto !important;
+    margin-top: auto !important;
+    padding: 4px 22px 22px 22px !important;
+}
+#cr-stage.view-mobile #cr-vinyl-overlay.mode-fullscreen-cover .vinyl-mobile-panel {
+    background: linear-gradient(180deg, transparent 0%, rgba(12, 14, 20, 0.55) 30%, rgba(12, 14, 20, 0.88) 100%);
+}
+
+/* 播放器模式弹窗 */
 #cr-stage.view-mobile .player-mode-modal {
-    top: 54px !important; right: 10px !important; left: 10px !important;
+    top: 54px !important; right: 14px !important; left: 14px !important;
     width: auto !important; max-width: none !important;
+    border-radius: 14px !important; padding: 12px !important;
 }
 
 /* 模态框与Toast */

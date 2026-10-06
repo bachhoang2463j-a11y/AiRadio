@@ -3769,10 +3769,13 @@
         if (!el) return;
         const line = el.querySelector('.cr-lyric-line.active');
         if (!line) return;
-        const target = Math.max(0, line.offsetTop - el.clientHeight / 2 + line.offsetHeight / 2);
+        // 用 rect 差值算行相对滚动容器的位置：offsetTop 会混入 offsetParent（.vinyl-stage）的偏移导致落点错位
+        const delta = line.getBoundingClientRect().top - el.getBoundingClientRect().top;
+        const target = Math.max(0, el.scrollTop + delta - el.clientHeight / 2 + line.offsetHeight / 2);
+        if (Math.abs(target - el.scrollTop) < 2) return;
         lyricAutoScrolling = true;
-        $(el).stop().animate({ scrollTop: target }, 320);
-        setTimeout(() => { lyricAutoScrolling = false; }, 500);
+        $(el).stop().animate({ scrollTop: target }, 650);
+        setTimeout(() => { lyricAutoScrolling = false; }, 900);
     }
 
     function updateLyricHighlight(force) {
@@ -3825,12 +3828,16 @@
         if ($el.hasClass('expanded')) {
             if ($(e.target).closest('.cr-lyric-line').length) return;
             $el.removeClass('expanded');
+            currentLyricIdx = -1;
+            setTimeout(() => { currentLyricIdx = -1; updateLyricHighlight(true); }, 350);
         } else {
             $('#cr-lyric-head-title').text($('#v-mob-title').text());
             $('#cr-lyric-head-sub').text($('#v-mob-artist').text());
             $el.addClass('expanded');
             currentLyricIdx = -1;
             updateLyricHighlight(true);
+            // 展开后布局尺寸变化，等过渡稳定再重新居中一次
+            setTimeout(() => { currentLyricIdx = -1; updateLyricHighlight(true); }, 400);
         }
     });
     // 手动滑动歌词后 3 秒内不自动抢回滚动位置
@@ -3841,6 +3848,10 @@
         $('#cr-vinyl-overlay').addClass('open');
         updateCoverUI();
         updateBgmUI();
+        // 歌词区此时才从隐藏转为显示，scrollTop 归零，需重新居中到当前播放位置
+        currentLyricIdx = -1;
+        updateLyricHighlight(true);
+        setTimeout(() => { currentLyricIdx = -1; updateLyricHighlight(true); }, 350);
     }
     $('#pb-cover').on('click', openVinylPage);
     $('.pb-info').on('click', openVinylPage);

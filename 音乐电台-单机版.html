@@ -913,6 +913,7 @@
             box-shadow: 0 0 18px rgba(196, 167, 125, 0.5);
             transform: translateY(2px) scale(1.08);
         }
+        #cr-vinyl-netease-btn { top: 74px; }
         .vinyl-stage {
             position: relative; z-index: 2; height: 100%;
             display: flex; align-items: center; justify-content: center; gap: 8%;
@@ -1101,6 +1102,7 @@
         }
         @keyframes vVolDance { 0% { transform: scaleY(0.7); } 100% { transform: scaleY(1.3); } }
         @keyframes vVolDanceAlt { 0% { transform: scaleY(1.25); } 100% { transform: scaleY(0.65); } }
+        .v-vol-visualizer.playing.real-spectrum .v-vol-bar.active { animation: none; }
         .v-vol-native-slider {
             position: absolute; inset: 0; width: 100%; height: 100%;
             opacity: 0; cursor: pointer; margin: 0;
@@ -1253,6 +1255,7 @@
                 display: flex; flex-direction: column; justify-content: space-between;
             }
             .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; }
+            #cr-vinyl-netease-btn { top: 64px; }
             .vinyl-stage {
                 flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
                 padding: 36px 12px 0 12px; gap: 0; min-height: 0;
@@ -1305,6 +1308,7 @@
             display: flex; flex-direction: column; justify-content: space-between;
         }
         #cr-app.force-mobile .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; }
+        #cr-app.force-mobile #cr-vinyl-netease-btn { top: 64px; }
         #cr-app.force-mobile .vinyl-stage {
             flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 36px 12px 0 12px; gap: 0; min-height: 0;
@@ -1416,6 +1420,9 @@
                 <div class="vinyl-close" id="cr-vinyl-close" title="收起播放页">
                     <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </div>
+                <button type="button" class="vinyl-close cr-vinyl-netease" id="cr-vinyl-netease-btn" title="打开网易云歌曲原页面（登录后可收藏）">
+                    <svg width="15" height="15" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </button>
                 <div class="vinyl-stage">
                     <div class="vinyl-turntable">
                         <div class="vinyl-disc" id="cr-vinyl-disc">
@@ -1745,6 +1752,7 @@
         $volVis.toggleClass('playing', playing);
         $volVis.toggleClass('real-spectrum', real);
         $vMobVolVis.toggleClass('playing', playing);
+        $vMobVolVis.toggleClass('real-spectrum', real);
         if (real) startSpectrumLoop(); else stopSpectrumLoop();
     }
 
@@ -3502,6 +3510,7 @@
     // === 封面解析链：网易云 pic_id → types=pic 换 CDN 直链（带缓存与切歌过期丢弃） ===
     const coverCache = new Map();
     let currentCoverUrl = '';
+    let currentNeteaseSongId = '';
     const COVER_PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" fill="#14161c"/><circle cx="60" cy="60" r="34" fill="none" stroke="#C4A77D" stroke-width="2" opacity="0.5"/><circle cx="60" cy="60" r="5" fill="#C4A77D" opacity="0.7"/><path d="M52 74 L52 46 L74 42 L74 70" stroke="#C4A77D" stroke-width="2.5" fill="none" opacity="0.85" stroke-linejoin="round"/><circle cx="47" cy="74" r="5.5" fill="#C4A77D" opacity="0.85"/><circle cx="69" cy="70" r="5.5" fill="#C4A77D" opacity="0.85"/></svg>');
 
     async function fetchPicIdBySearch(title, artist) {
@@ -3511,7 +3520,7 @@
             const res = await fetch(url);
             const arr = await res.json();
             if (Array.isArray(arr) && arr.length > 0 && arr[0] && arr[0].pic_id) {
-                return { picId: String(arr[0].pic_id), album: Array.isArray(arr[0].album) ? arr[0].album.join(' / ') : (arr[0].album || '') };
+                return { picId: String(arr[0].pic_id), songId: String(arr[0].id || ''), album: Array.isArray(arr[0].album) ? arr[0].album.join(' / ') : (arr[0].album || '') };
             }
         } catch (e) {}
         return null;
@@ -3532,9 +3541,11 @@
 
     async function applyCurrentCover(title, artist, knownPic) {
         currentCoverUrl = '';
+        currentNeteaseSongId = '';
         updateCoverUI();
         const info = knownPic || await fetchPicIdBySearch(title, artist);
         if (info && info.album) $('#cr-vinyl-album').text(info.album).show(); else $('#cr-vinyl-album').hide();
+        if (info && info.songId) currentNeteaseSongId = info.songId;
         const url = info ? await resolveCoverUrl(title, artist, info) : null;
         if (currentPlayingTrackInfo.title !== title) return; // 播放已切歌：丢弃过期结果
         if (url) { currentCoverUrl = url; updateCoverUI(); }
@@ -3556,6 +3567,26 @@
     $('#pb-cover').on('click', openVinylPage);
     $('.pb-info').on('click', openVinylPage);
     $('#cr-vinyl-close').on('click', () => $('#cr-vinyl-overlay').removeClass('open'));
+
+    // === 打开网易云歌曲原页面（便于登录账号收藏红心） ===
+    async function openNeteaseSongPage() {
+        const title = currentPlayingTrackInfo.title;
+        if (!title || !audioObj.src) { showPlayerToast('当前无正在播放的曲目', 1800); return; }
+        if (!currentNeteaseSongId) {
+            showPlayerToast('正在定位网易云源曲目...', 1500);
+            const info = await fetchPicIdBySearch(title, currentPlayingTrackInfo.artist);
+            currentNeteaseSongId = (info && info.songId) || '';
+        }
+        if (currentNeteaseSongId) {
+            window.open(`https://music.163.com/#/song?id=${currentNeteaseSongId}`, '_blank');
+        } else {
+            showPlayerToast('⚠️ 未能定位到网易云源曲目（自定义/直链歌曲无对应页面）', 2200);
+        }
+    }
+    $('#cr-vinyl-netease-btn').on('click', function(e) {
+        e.stopPropagation();
+        openNeteaseSongPage();
+    });
 
 
     function getAllLibrarySongs() {

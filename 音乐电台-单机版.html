@@ -956,19 +956,55 @@
             background: linear-gradient(180deg, #f0e6d3, #998363);
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
         }
-        .vinyl-meta { max-width: 36%; min-width: 240px; }
+        .vinyl-meta {
+            max-width: 42%; min-width: 300px; height: 100%;
+            display: flex; flex-direction: column; padding: 44px 0 30px;
+        }
+        .v-info-block { flex-shrink: 0; }
         .vinyl-title {
             font-size: clamp(20px, 3vw, 34px); font-weight: 700; color: var(--gold-bright);
             line-height: 1.35; letter-spacing: 0.5px;
             text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7), 0 0 20px rgba(196, 167, 125, 0.35);
         }
-        .vinyl-artist {
-            font-size: clamp(13px, 1.5vw, 17px); color: var(--gold-primary);
-            margin-top: 14px; opacity: 0.9;
+        .v-info-row {
+            display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 16px;
+            font-size: 12px; color: var(--text-sub); font-family: var(--font-ui);
         }
-        .vinyl-album {
-            font-size: clamp(10px, 1.1vw, 13px); color: var(--text-muted); margin-top: 8px;
+        .v-info-item { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .v-info-item b { color: var(--gold-light); font-weight: 600; }
+        .v-tab-row { margin-top: 16px; }
+        .v-tab {
+            display: inline-block; padding: 5px 16px; border-radius: 14px;
+            font-size: 12px; letter-spacing: 1px;
+            color: var(--gold-bright); background: rgba(196, 167, 125, 0.18);
+            border: 1px solid var(--gold-border);
         }
+
+        /* ===== 歌词滚动区（PC 右侧 / 移动端唱片下方共用） ===== */
+        .cr-lyric-scroll {
+            flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth;
+            -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+            mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+            scrollbar-width: none;
+        }
+        .cr-lyric-scroll::-webkit-scrollbar { width: 0; height: 0; }
+        .cr-lyric-inner { padding: 42% 0 60%; }
+        .cr-lyric-line { margin: 0 0 18px; transition: opacity 0.3s; }
+        .cr-lyric-main {
+            display: block; font-size: 15px; line-height: 1.55; color: var(--text-sub);
+            transition: color 0.3s, font-size 0.3s, text-shadow 0.3s;
+        }
+        .cr-lyric-trans { display: block; font-size: 12.5px; line-height: 1.5; color: var(--text-muted); margin-top: 4px; }
+        .cr-lyric-line.active .cr-lyric-main {
+            color: var(--gold-bright); font-size: 17px; font-weight: 600;
+            text-shadow: 0 0 14px rgba(196, 167, 125, 0.45);
+        }
+        .cr-lyric-line.active .cr-lyric-trans { color: var(--gold-primary); }
+        .cr-lyric-empty { color: var(--text-muted); font-size: 13px; text-align: center; padding: 40px 0; letter-spacing: 1px; }
+
+        /* 移动端歌词区：默认藏起，窄屏/强制移动布局显示 */
+        .cr-lyric-mobile { display: none; }
+        .cr-lyric-head { display: none; }
 
         /* ===== 手机黑胶底栏（4 行控件） ===== */
         .vinyl-mobile-panel {
@@ -1265,18 +1301,58 @@
             .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; }
             #cr-vinyl-netease-btn { left: auto; right: 18px; }
             .vinyl-stage {
-                flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-                padding: 14px 12px 0 12px; gap: 0; min-height: 0;
+                flex: 1; display: flex; flex-direction: column; align-items: center;
+                justify-content: flex-end; padding: 0 12px 26px 12px; gap: 0; min-height: 0;
             }
-            .vinyl-turntable { margin: auto 0; }
-            .vinyl-disc { width: min(74vw, 290px); height: min(74vw, 290px); }
+            .vinyl-turntable { margin: auto 0 0 0; }
+            .vinyl-disc { width: min(74vw, 290px, 36vh); height: min(74vw, 290px, 36vh); }
             /* 外圈缩小、中心封面保持原尺寸（占比 62%→73% 补偿） */
             #cr-vinyl-cover { width: 73%; height: 73%; }
             /* 唱臂缩短内移，避免旋转后摆出屏幕外，并让唱针贴近唱片边缘 */
             .vinyl-tonearm { top: -3%; right: 8%; height: 46%; }
             .vinyl-meta { display: none !important; }
             .vinyl-mobile-panel { display: flex; }
+
+            /* 唱片下方歌词滚动区（固定高度，不参与剩余空间分配，避免挤压唱片） */
+            .cr-lyric-mobile {
+                display: block; flex: 0 0 168px; height: 168px;
+                padding: 0 26px; cursor: pointer;
+            }
+            .cr-lyric-mobile .cr-lyric-line { text-align: center; }
+            .cr-lyric-mobile .cr-lyric-main { font-size: 15.5px; }
+            .cr-lyric-mobile .cr-lyric-line.active .cr-lyric-main { font-size: 17.5px; }
+            .cr-lyric-mobile .cr-lyric-trans { font-size: 12.5px; }
+            .cr-lyric-inner { padding: 60px 0; }
         }
+
+        /* 全屏歌词（点击移动端歌词区展开，PC 不触发） */
+        .cr-lyric-scroll.expanded {
+            position: fixed; inset: 0; z-index: 40; height: auto; max-height: none;
+            padding: 0 30px 40px; cursor: default;
+            background: linear-gradient(180deg, rgba(9, 12, 20, 0.98) 0%, rgba(6, 8, 13, 0.99) 100%);
+            -webkit-backdrop-filter: blur(30px); backdrop-filter: blur(30px);
+            -webkit-mask-image: none; mask-image: none;
+        }
+        .cr-lyric-scroll.expanded .cr-lyric-head {
+            display: block; position: fixed; top: 0; left: 0; right: 0; z-index: 42;
+            text-align: center; padding: 34px 70px 16px;
+            background: linear-gradient(180deg, rgba(9, 12, 20, 0.98) 0%, rgba(9, 12, 20, 0.92) 70%, rgba(9, 12, 20, 0) 100%);
+        }
+        .cr-lyric-head-close {
+            position: absolute; top: 26px; left: 18px; width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; cursor: pointer; color: var(--gold-light);
+            background: linear-gradient(135deg, rgba(28, 24, 20, 0.85), rgba(12, 14, 18, 0.85));
+            border: 1px solid rgba(196, 167, 125, 0.45);
+        }
+        .cr-lyric-head-close svg { stroke: currentColor; fill: none; }
+        .cr-lyric-head-title {
+            font-size: 19px; font-weight: 700; color: var(--gold-bright);
+            letter-spacing: 0.6px; font-family: var(--font-serif);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8), 0 0 14px rgba(196, 167, 125, 0.3);
+        }
+        .cr-lyric-head-sub { font-size: 12.5px; color: var(--gold-primary); opacity: 0.85; margin-top: 5px; }
+        .cr-lyric-scroll.expanded .cr-lyric-inner { padding: 55% 0 70%; }
 
         /* 桌面端移动布局预览钩子（URL 带 ?mobile 时生效，规则与 @media 块一致） */
         #cr-app.force-mobile #cr-sidebar {
@@ -1322,15 +1398,24 @@
         #cr-app.force-mobile .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; }
         #cr-app.force-mobile #cr-vinyl-netease-btn { left: auto; right: 18px; }
         #cr-app.force-mobile .vinyl-stage {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 14px 12px 0 12px; gap: 0; min-height: 0;
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            justify-content: flex-end; padding: 0 12px 26px 12px; gap: 0; min-height: 0;
         }
-        #cr-app.force-mobile .vinyl-turntable { margin: auto 0; }
-        #cr-app.force-mobile .vinyl-disc { width: min(74vw, 290px); height: min(74vw, 290px); }
+        #cr-app.force-mobile .vinyl-turntable { margin: auto 0 0 0; }
+        #cr-app.force-mobile .vinyl-disc { width: min(74vw, 290px, 36vh); height: min(74vw, 290px, 36vh); }
         #cr-app.force-mobile #cr-vinyl-cover { width: 73%; height: 73%; }
         #cr-app.force-mobile .vinyl-tonearm { top: -3%; right: 8%; height: 46%; }
         #cr-app.force-mobile .vinyl-meta { display: none !important; }
         #cr-app.force-mobile .vinyl-mobile-panel { display: flex; }
+        #cr-app.force-mobile .cr-lyric-mobile {
+            display: block; flex: 0 0 168px; height: 168px;
+            padding: 0 26px; cursor: pointer;
+        }
+        #cr-app.force-mobile .cr-lyric-mobile .cr-lyric-line { text-align: center; }
+        #cr-app.force-mobile .cr-lyric-mobile .cr-lyric-main { font-size: 15.5px; }
+        #cr-app.force-mobile .cr-lyric-mobile .cr-lyric-line.active .cr-lyric-main { font-size: 17.5px; }
+        #cr-app.force-mobile .cr-lyric-mobile .cr-lyric-trans { font-size: 12.5px; }
+        #cr-app.force-mobile .cr-lyric-inner { padding: 60px 0; }
         </style>
     `;
 
@@ -1446,10 +1531,31 @@
                         <div class="vinyl-tonearm" id="cr-vinyl-tonearm"><div class="tonearm-arm"></div><div class="tonearm-head"></div></div>
                     </div>
                     <div class="vinyl-meta">
-                        <div class="vinyl-title" id="cr-vinyl-title"></div>
-                        <div class="vinyl-artist" id="cr-vinyl-artist"></div>
-                        <div class="vinyl-album" id="cr-vinyl-album"></div>
+                        <div class="v-info-block">
+                            <div class="vinyl-title" id="cr-vinyl-title"></div>
+                            <div class="v-info-row">
+                                <span class="v-info-item">专辑：<b id="cr-vinyl-album"></b></span>
+                                <span class="v-info-item">歌手：<b id="cr-vinyl-artist"></b></span>
+                                <span class="v-info-item" id="cr-vinyl-source-wrap" style="display:none;">来源：<b id="cr-vinyl-source"></b></span>
+                            </div>
+                            <div class="v-tab-row"><span class="v-tab active">歌词</span></div>
+                        </div>
+                        <div class="cr-lyric-scroll" id="cr-lyric-scroll-pc">
+                            <div class="cr-lyric-inner" id="cr-lyric-inner-pc"></div>
+                        </div>
                     </div>
+                </div>
+
+                <!-- 手机歌词滚动区（点击展开全屏歌词） -->
+                <div class="cr-lyric-scroll cr-lyric-mobile" id="cr-lyric-scroll-mob" title="点击查看完整歌词">
+                    <div class="cr-lyric-head">
+                        <span class="cr-lyric-head-close" id="cr-lyric-close-mob" title="收起歌词">
+                            <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </span>
+                        <div class="cr-lyric-head-title" id="cr-lyric-head-title"></div>
+                        <div class="cr-lyric-head-sub" id="cr-lyric-head-sub"></div>
+                    </div>
+                    <div class="cr-lyric-inner" id="cr-lyric-inner-mob"></div>
                 </div>
 
                 <!-- 手机播放页底栏（4 行控件） -->
@@ -3055,6 +3161,7 @@
                 $('#v-mob-prog-fill').css('width', pct + '%');
                 $('#pb-cur-time').text(formatTime(audioObj.currentTime));
             }
+            updateLyricHighlight();
         });
 
         // === 硬核时长防护（1分钟以下、20分钟以上彻底拦截屏蔽） ===
@@ -3415,6 +3522,7 @@
                 localStorage.setItem('cr_last_song_artist', song.artist || '');
                 recordPlayHistory(song.title, song.artist);
                 applyCurrentCover(song.title, song.artist);
+                applyCurrentLyric(song.title, song.artist);
             }).catch(e => {
                 isLoading = false;
                 isPlaying = false;
@@ -3479,6 +3587,7 @@
                 recordPlayHistory(finalTitle, finalArtist);
                 const neteasePic = (result.track && result.track.source === 'netease' && result.track.pic_id) ? { picId: String(result.track.pic_id), album: Array.isArray(result.track.album) ? result.track.album.join(' / ') : (result.track.album || '') } : null;
                 applyCurrentCover(finalTitle, finalArtist, neteasePic);
+                applyCurrentLyric(finalTitle, finalArtist);
             } catch (e) {
                 isLoading = false;
                 isPlaying = false;
@@ -3520,6 +3629,10 @@
         $('#cr-vinyl-artist').text(nowArtist);
         $('#v-mob-title').text(nowTitle);
         $('#v-mob-artist').text(nowArtist);
+        if ($('#cr-lyric-scroll-mob').hasClass('expanded')) {
+            $('#cr-lyric-head-title').text(nowTitle);
+            $('#cr-lyric-head-sub').text(nowArtist);
+        }
         updateVolAnimState();
         updatePlayerFavBtn();
     }
@@ -3575,6 +3688,171 @@
         if (currentCoverUrl) $('#cr-vinyl-bg').css('background-image', `url("${currentCoverUrl}")`);
         else $('#cr-vinyl-bg').css('background-image', 'none');
     }
+
+    // === 歌词链：网易云 LRC + 翻译歌词（复用封面链取得的 songId，缺失时按歌名补查） ===
+    const lyricCache = new Map();
+    let lyricLines = [];
+    let currentLyricIdx = -1;
+    const lyricManualUntil = { pc: 0, mob: 0 };
+    let lyricAutoScrolling = false;
+
+    const escLyric = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    function parseLrc(text) {
+        const out = [];
+        if (!text) return out;
+        String(text).split('\n').forEach(raw => {
+            const tags = raw.match(/\[\d{1,2}:\d{1,2}(?:[.:]\d{1,3})?\]/g);
+            if (!tags) return;
+            const content = raw.replace(/^(\[[^\]]*\])+/, '').trim();
+            tags.forEach(tag => {
+                const t = tag.match(/\[(\d{1,2}):(\d{1,2})(?:[.:](\d{1,3}))?\]/);
+                let frac = t[3] || '';
+                if (frac.length === 2) frac += '0';
+                if (frac.length === 1) frac += '00';
+                out.push({ time: parseInt(t[1], 10) * 60 + parseInt(t[2], 10) + (parseInt(frac, 10) || 0) / 1000, text: content, trans: '' });
+            });
+        });
+        return out.sort((a, b) => a.time - b.time);
+    }
+
+    // 翻译歌词时间轴与主歌词为独立时间戳，按时间就近匹配（0.6s 容差）
+    function mergeLyricTrans(main, trans) {
+        if (!trans.length) return main;
+        main.forEach(l => {
+            let best = null, bestDiff = 0.6;
+            trans.forEach(t => {
+                const d = Math.abs(t.time - l.time);
+                if (d < bestDiff) { bestDiff = d; best = t; }
+            });
+            if (best && best.text) l.trans = best.text;
+        });
+        return main;
+    }
+
+    async function fetchLyricById(id) {
+        if (!id) return null;
+        if (lyricCache.has(id)) return lyricCache.get(id);
+        let data = null;
+        try {
+            const res = await fetch(`https://music-api.gdstudio.xyz/api.php?types=lyric&source=netease&id=${encodeURIComponent(id)}`);
+            data = await res.json();
+        } catch (e) {}
+        if (!data || !data.lyric) {
+            try {
+                const res = await fetch(`https://open.motues.top/music?server=netease&type=lyric&id=${encodeURIComponent(id)}`);
+                data = await res.json();
+            } catch (e) {}
+        }
+        const result = (data && data.lyric) ? { lyric: data.lyric, tlyric: data.tlyric || '' } : null;
+        lyricCache.set(id, result);
+        return result;
+    }
+
+    // === 歌曲背景扩展信息（网易云公开 detail 接口，经 cors.isteed.cc 代理；失败静默不显示） ===
+    const detailCache = new Map();
+    async function fetchSongDetail(id) {
+        if (!id) return null;
+        if (detailCache.has(id)) return detailCache.get(id);
+        let result = null;
+        try {
+            const api = `https://music.163.com/api/song/detail/?ids=%5B${encodeURIComponent(id)}%5D`;
+            const res = await fetch(`https://cors.isteed.cc/${api}`);
+            const data = await res.json();
+            const s = data && data.songs && data.songs[0];
+            if (s) {
+                result = {
+                    alias: (Array.isArray(s.alias) && s.alias[0]) || '',
+                    album: (s.album && s.album.name) || '',
+                    artist: (s.artists || []).map(a => a.name).join(' / ')
+                };
+            }
+        } catch (e) {}
+        detailCache.set(id, result);
+        return result;
+    }
+
+    function renderLyrics() {
+        const html = lyricLines.length
+            ? lyricLines.map((l, i) => `<p class="cr-lyric-line" data-idx="${i}"><span class="cr-lyric-main">${escLyric(l.text) || '♪'}</span>${l.trans ? `<span class="cr-lyric-trans">${escLyric(l.trans)}</span>` : ''}</p>`).join('')
+            : `<p class="cr-lyric-empty">暂无歌词</p>`;
+        $('#cr-lyric-inner-pc, #cr-lyric-inner-mob').html(html);
+        currentLyricIdx = -1;
+        updateLyricHighlight(true);
+    }
+
+    function scrollLyricToCenter(sel) {
+        const el = document.querySelector(sel);
+        if (!el) return;
+        const line = el.querySelector('.cr-lyric-line.active');
+        if (!line) return;
+        const target = Math.max(0, line.offsetTop - el.clientHeight / 2 + line.offsetHeight / 2);
+        lyricAutoScrolling = true;
+        $(el).stop().animate({ scrollTop: target }, 320);
+        setTimeout(() => { lyricAutoScrolling = false; }, 500);
+    }
+
+    function updateLyricHighlight(force) {
+        if (!lyricLines.length) return;
+        const t = audioObj.currentTime || 0;
+        let idx = -1;
+        for (let i = 0; i < lyricLines.length; i++) {
+            if (lyricLines[i].time <= t + 0.15) idx = i; else break;
+        }
+        if (idx === currentLyricIdx && !force) return;
+        currentLyricIdx = idx;
+        ['#cr-lyric-inner-pc', '#cr-lyric-inner-mob'].forEach(sel => {
+            const $lines = $(sel).children('.cr-lyric-line');
+            $lines.removeClass('active');
+            if (idx >= 0) $lines.eq(idx).addClass('active');
+        });
+        if (Date.now() > lyricManualUntil.pc) scrollLyricToCenter('#cr-lyric-scroll-pc');
+        if (Date.now() > lyricManualUntil.mob) scrollLyricToCenter('#cr-lyric-scroll-mob');
+    }
+
+    async function applyCurrentLyric(title, artist) {
+        lyricLines = [];
+        currentLyricIdx = -1;
+        renderLyrics();
+        $('#cr-vinyl-source-wrap').hide();
+        if (!title) return;
+        let id = currentNeteaseSongId;
+        if (!id) {
+            const info = await fetchPicIdBySearch(title, artist);
+            if (currentPlayingTrackInfo.title !== title) return;
+            id = (info && info.songId) || '';
+            if (id) currentNeteaseSongId = id;
+        }
+        if (!id) return;
+        const data = await fetchLyricById(id);
+        if (currentPlayingTrackInfo.title !== title) return; // 播放已切歌：丢弃过期结果
+        if (data) lyricLines = mergeLyricTrans(parseLrc(data.lyric), parseLrc(data.tlyric));
+        renderLyrics();
+        const detail = await fetchSongDetail(id);
+        if (currentPlayingTrackInfo.title !== title) return;
+        if (detail) {
+            if (detail.alias) { $('#cr-vinyl-source').text(detail.alias); $('#cr-vinyl-source-wrap').show(); }
+            if (detail.album) $('#cr-vinyl-album').text(detail.album).show();
+        }
+    }
+
+    // 移动端歌词区：点击展开全屏歌词 / 展开态点击歌词正文以外区域收起
+    $('#cr-lyric-scroll-mob').on('click', function(e) {
+        const $el = $(this);
+        if ($el.hasClass('expanded')) {
+            if ($(e.target).closest('.cr-lyric-line').length) return;
+            $el.removeClass('expanded');
+        } else {
+            $('#cr-lyric-head-title').text($('#v-mob-title').text());
+            $('#cr-lyric-head-sub').text($('#v-mob-artist').text());
+            $el.addClass('expanded');
+            currentLyricIdx = -1;
+            updateLyricHighlight(true);
+        }
+    });
+    // 手动滑动歌词后 3 秒内不自动抢回滚动位置
+    $('#cr-lyric-scroll-pc').on('scroll', function() { if (!lyricAutoScrolling) lyricManualUntil.pc = Date.now() + 3000; });
+    $('#cr-lyric-scroll-mob').on('scroll', function() { if (!lyricAutoScrolling) lyricManualUntil.mob = Date.now() + 3000; });
 
     function openVinylPage() {
         $('#cr-vinyl-overlay').addClass('open');
@@ -3703,6 +3981,7 @@
     // === 全页布局：加载即渲染左侧歌单与中央曲目表 ===
     renderPlaylists();
     applyCurrentCover(localStorage.getItem('cr_last_song_title') || '', localStorage.getItem('cr_last_song_artist') || '');
+    applyCurrentLyric(localStorage.getItem('cr_last_song_title') || '', localStorage.getItem('cr_last_song_artist') || '');
     $('#cr-vinyl-album').hide();
 
     // === 启动初始化记忆恢复与播放控制 ===
@@ -3729,6 +4008,7 @@
                 $('#bgm-now-playing').text(lastTitle);
                 $('#bgm-now-artist').text(lastArtist ? `- ${lastArtist}` : '');
                 applyCurrentCover(lastTitle, lastArtist || '');
+                applyCurrentLyric(lastTitle, lastArtist || '');
                 updatePlayerFavBtn();
             } else {
                 $('#bgm-now-playing').text('音乐电台');

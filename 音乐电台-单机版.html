@@ -982,7 +982,7 @@
 
         /* ===== 歌词滚动区（PC 右侧 / 移动端唱片下方共用） ===== */
         .cr-lyric-scroll {
-            flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth;
+            flex: 1; min-height: 0; overflow-y: auto;
             -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
             mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
             scrollbar-width: none;
@@ -3694,7 +3694,6 @@
     let lyricLines = [];
     let currentLyricIdx = -1;
     const lyricManualUntil = { pc: 0, mob: 0 };
-    let lyricAutoScrolling = false;
 
     const escLyric = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -3781,6 +3780,22 @@
         updateLyricHighlight(true);
     }
 
+    // 歌词滚动用 rAF 指数缓动：逐帧赋值若叠加 CSS scroll-behavior:smooth 会被逐帧平滑化，滚动滞后于高亮；
+    // 目标变化时只更新目标值（平滑接续），不会像逐行动画那样被打断重启
+    function animateLyricScroll(el, target) {
+        const st = el.__lyricScroll || (el.__lyricScroll = { raf: 0, target: 0 });
+        st.target = target;
+        if (st.raf) return;
+        const step = () => {
+            const cur = el.scrollTop;
+            const diff = st.target - cur;
+            if (Math.abs(diff) < 0.8) { el.scrollTop = st.target; st.raf = 0; return; }
+            el.scrollTop = cur + diff * 0.14;
+            st.raf = requestAnimationFrame(step);
+        };
+        st.raf = requestAnimationFrame(step);
+    }
+
     function scrollLyricToCenter(sel) {
         const el = document.querySelector(sel);
         if (!el) return;
@@ -3789,10 +3804,7 @@
         // 用 rect 差值算行相对滚动容器的位置：offsetTop 会混入 offsetParent（.vinyl-stage）的偏移导致落点错位
         const delta = line.getBoundingClientRect().top - el.getBoundingClientRect().top;
         const target = Math.max(0, el.scrollTop + delta - el.clientHeight / 2 + line.offsetHeight / 2);
-        if (Math.abs(target - el.scrollTop) < 2) return;
-        lyricAutoScrolling = true;
-        $(el).stop().animate({ scrollTop: target }, 650);
-        setTimeout(() => { lyricAutoScrolling = false; }, 900);
+        animateLyricScroll(el, target);
     }
 
     function updateLyricHighlight(force) {
@@ -3857,9 +3869,17 @@
             setTimeout(() => { currentLyricIdx = -1; updateLyricHighlight(true); }, 400);
         }
     });
-    // 手动滑动歌词后 3 秒内不自动抢回滚动位置
-    $('#cr-lyric-scroll-pc').on('scroll', function() { if (!lyricAutoScrolling) lyricManualUntil.pc = Date.now() + 3000; });
-    $('#cr-lyric-scroll-mob').on('scroll', function() { if (!lyricAutoScrolling) lyricManualUntil.mob = Date.now() + 3000; });
+    // 手动滑动歌词后 3 秒内不自动抢回滚动位置（rAF 缓动进行中的滚动不计为手动）
+    $('#cr-lyric-scroll-pc').on('scroll', function() {
+        const st = this.__lyricScroll;
+        if (st && st.raf) return;
+        lyricManualUntil.pc = Date.now() + 3000;
+    });
+    $('#cr-lyric-scroll-mob').on('scroll', function() {
+        const st = this.__lyricScroll;
+        if (st && st.raf) return;
+        lyricManualUntil.mob = Date.now() + 3000;
+    });
 
     function openVinylPage() {
         $('#cr-vinyl-overlay').addClass('open');

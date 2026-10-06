@@ -681,3 +681,18 @@
 - **决策原因**：用户实测截图反馈全屏歌词页应为鎏金；全屏封面模式的白字体系需与该页隔离。
 - **备注**：真 Chrome（排障模式）下的最终视觉复核待用户触发；IAB 本会话已无法提供可信截图。
 - **提交**：`5e182df`
+
+---
+
+## [HASH: 1a1c2e8] 全屏封面模式下 PC 底栏改为 demo 同款半透明毛玻璃
+- **日期**：2026-10-06
+- **涉及文件**：`tools/standalone_script_v2.js`、`音乐电台-单机版.html`（重新打包）
+- **变更行为**：
+  1. **根因（用户反馈"我需要在全屏模式下，PC 底栏和 demo 一样变为半透明毛玻璃"）**：demo 的底栏是 `rgba(16, 18, 26, 0.52)` + `blur(30px)`（明显比单机版 `--panel-glass` 的 0.88/0.94 透明），且 demo 的 `#cr-vinyl-overlay` 是 `inset: 0`——封面一直出血到屏幕最底，底栏才"有内容可糊"；单机版覆盖层是 `bottom: 78px`（经典黑胶时代的既定行为），底栏背后只有页面深色底，所以看着是实心的；
+  2. **覆盖层铺满全高**：新增 `#cr-vinyl-overlay.mode-fullscreen-cover { bottom: 0; }`，仅全屏封面模式生效，经典黑胶模式仍保留 78px 底栏位；同时把该模式下 `.vinyl-meta` 的底部内边距 56px → 88px，为浮起的底栏让位（对齐 demo 的 88px）；
+  3. **底栏浮到封面之上**：`z-index 120 → 220`（覆盖层为 200），背景改 `rgba(16, 18, 26, 0.52)`，保留原有 `backdrop-filter: blur(28px) saturate(180%)` 与 `transition: all 0.35s`（透明度变化自然过渡）；
+  4. **仅桌面生效**：规则包在 `@media (min-width: 769px)` 内并用 `#cr-app:not(.force-mobile)` 排除手机预览钩子——窄屏走既有 `@media (max-width:768px)` 悬浮胶囊（z-index 保持 120），`?mobile` 桌面预览也不受影响，**不会复现 demo 移动端底栏露出的缺陷**；
+  5. **状态类**：新增 `#cr-app.fs-cover-open`（= 模式为 fullscreen-cover 且覆盖层已打开），由 `openVinylPage` 与 `setPlaybackMode` 同步；关闭时延迟 380ms 复位，避开覆盖层 0.35s 淡出期间底栏被盖住闪一下；`no-glass` 开关开启时回退到 `--panel-glass` 不透明底。
+- **决策原因**：用户要求全屏封面模式下 PC 底栏对齐 demo 的半透明毛玻璃观感。
+- **实测（IAB 1280×800）**：`#cr-app` 带 `fs-cover-open`；覆盖层 `bottom: 0px`、rect 底边 800 = 视口高；`.vinyl-meta` `padding-bottom: 88px`；底栏 computed `z-index: 220`、`background-color: rgba(16, 18, 26, 0.52)`，三点 `elementFromPoint`（x=60/640/1100）全部命中底栏自身子元素（`#pb-cover` 的 IMG、播放键 SVG、`cr-vol-slider`），确认浮于封面之上。`?mobile` 预览下底栏胜出规则仍是 `#cr-app.force-mobile #cr-player-bar`（z-index 120），桌面规则未命中。
+- **提交**：`1a1c2e8`

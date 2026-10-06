@@ -1249,10 +1249,14 @@
             #cr-vinyl-netease-btn { left: auto; right: 18px; }
             .vinyl-stage {
                 flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-                padding: 36px 12px 0 12px; gap: 0; min-height: 0;
+                padding: 14px 12px 0 12px; gap: 0; min-height: 0;
             }
             .vinyl-turntable { margin: auto 0; }
-            .vinyl-disc { width: min(58vw, 235px); height: min(58vw, 235px); }
+            .vinyl-disc { width: min(74vw, 290px); height: min(74vw, 290px); }
+            /* 外圈缩小、中心封面保持原尺寸（占比 62%→73% 补偿） */
+            #cr-vinyl-cover { width: 73%; height: 73%; }
+            /* 唱臂缩短内移，避免旋转后摆出屏幕外，并让唱针贴近唱片边缘 */
+            .vinyl-tonearm { top: -3%; right: 8%; height: 46%; }
             .vinyl-meta { display: none !important; }
             .vinyl-mobile-panel { display: flex; }
         }
@@ -1302,10 +1306,12 @@
         #cr-app.force-mobile #cr-vinyl-netease-btn { left: auto; right: 18px; }
         #cr-app.force-mobile .vinyl-stage {
             flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 36px 12px 0 12px; gap: 0; min-height: 0;
+            padding: 14px 12px 0 12px; gap: 0; min-height: 0;
         }
         #cr-app.force-mobile .vinyl-turntable { margin: auto 0; }
-        #cr-app.force-mobile .vinyl-disc { width: min(58vw, 235px); height: min(58vw, 235px); }
+        #cr-app.force-mobile .vinyl-disc { width: min(74vw, 290px); height: min(74vw, 290px); }
+        #cr-app.force-mobile #cr-vinyl-cover { width: 73%; height: 73%; }
+        #cr-app.force-mobile .vinyl-tonearm { top: -3%; right: 8%; height: 46%; }
         #cr-app.force-mobile .vinyl-meta { display: none !important; }
         #cr-app.force-mobile .vinyl-mobile-panel { display: flex; }
         </style>
@@ -2091,7 +2097,8 @@
     // === 全库搜索状态与歌单渲染 ===
     let globalSearchQuery = '';
 
-    let selectedPlaylistIndex = 0;
+    // 初始默认展示「最近播放」页（该歌单缺失时回退首个歌单）
+    let selectedPlaylistIndex = Math.max(0, bgmPlaylists.findIndex(p => p.category === '🕒 最近播放'));
 
     function renderPlaylists() {
         if (selectedPlaylistIndex >= bgmPlaylists.length) selectedPlaylistIndex = Math.max(0, bgmPlaylists.length - 1);

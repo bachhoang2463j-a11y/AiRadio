@@ -639,12 +639,12 @@ html, body {
 #cr-vinyl-overlay {
     position: absolute; inset: 0; bottom: 78px; z-index: 200;
     opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
-    overflow: hidden; background: #090b11;
+    overflow: hidden; background: #1c1a1e;
 }
 #cr-vinyl-overlay.open { opacity: 1; pointer-events: auto; }
 .vinyl-bg {
-    position: absolute; inset: -55px; background-size: cover; background-position: center;
-    filter: blur(80px) brightness(0.36) saturate(1.45); transform: scale(1.15);
+    position: absolute; inset: -40px; background-size: cover; background-position: center;
+    filter: blur(65px) brightness(0.72) saturate(1.15); transform: scale(1.15);
     transition: background-image 0.5s ease;
 }
 
@@ -730,11 +730,10 @@ html, body {
 #cr-vinyl-overlay.mode-vinyl .vinyl-stage { display: flex; }
 #cr-vinyl-overlay.mode-vinyl .fs-cover-stage { display: none !important; }
 
-/* 背景暗角与色调融合层 */
+/* 背景暗角与色调融合层（色调完全契合，右侧柔和过渡） */
 .vinyl-vignette {
     position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(circle at 45% 45%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.52) 100%),
-                linear-gradient(to right, rgba(0,0,0,0.15) 0%, transparent 40%, rgba(0,0,0,0.3) 100%);
+    background: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.22) 100%);
     z-index: 2;
 }
 
@@ -768,90 +767,47 @@ html, body {
 }
 .vinyl-win-icon:hover { color: #ffffff; transform: scale(1.1); }
 
-/* 网易云原版【播放器模式】毛玻璃切换弹窗卡片 (复刻图4) */
+/* 网易云原版【播放器模式】毛玻璃切换弹窗卡片 (严格仅保留全屏封面与经典黑胶两个按钮) */
 .player-mode-modal {
-    position: absolute; top: 60px; right: 24px; width: 430px; max-width: 90vw;
-    background: rgba(24, 26, 36, 0.9);
+    position: absolute; top: 58px; right: 24px; width: 320px;
+    background: rgba(24, 26, 36, 0.94);
     backdrop-filter: blur(36px) saturate(180%); -webkit-backdrop-filter: blur(36px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 25px rgba(0, 0, 0, 0.5);
-    z-index: 100; padding: 18px 20px 20px; box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 12px;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.8);
+    z-index: 100; padding: 14px; box-sizing: border-box;
     opacity: 0; pointer-events: none; transform: translateY(-8px) scale(0.97);
     transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .player-mode-modal.open {
     opacity: 1; pointer-events: auto; transform: translateY(0) scale(1);
 }
-.pm-top-tabs {
-    display: flex; gap: 10px; margin-bottom: 15px;
-}
-.pm-top-tab {
-    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
-    padding: 10px 4px 8px; background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;
-    cursor: pointer; font-size: 12px; color: rgba(255, 255, 255, 0.65);
-    transition: all 0.2s;
-}
-.pm-top-tab.active {
-    background: rgba(255, 255, 255, 0.12); color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.22);
-}
-.pm-tab-icon {
-    width: 44px; height: 26px; border-radius: 5px;
-    background: rgba(255, 255, 255, 0.08); display: flex;
-    align-items: center; justify-content: center;
-}
-.pm-radio-label {
-    display: flex; align-items: center; gap: 5px; font-size: 12px;
-}
-.pm-radio-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    border: 1.5px solid rgba(255, 255, 255, 0.45);
-}
-.pm-top-tab.active .pm-radio-dot {
-    border-color: #ec4141; background: #ec4141;
-}
-.pm-cat-tags {
-    display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto;
-    scrollbar-width: none; padding-bottom: 2px;
-}
-.pm-cat-tags::-webkit-scrollbar { display: none; }
-.pm-cat-tag {
-    padding: 4px 13px; border-radius: 16px; font-size: 12px;
-    color: rgba(255, 255, 255, 0.7); background: rgba(255, 255, 255, 0.07);
-    cursor: pointer; white-space: nowrap; transition: all 0.2s;
-}
-.pm-cat-tag.active {
-    color: #ec4141; background: rgba(236, 65, 65, 0.14); font-weight: 600;
-}
 .pm-cards-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
 }
 .pm-mode-card {
     position: relative; border-radius: 8px; overflow: hidden;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.09);
-    cursor: pointer; transition: all 0.22s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer; transition: all 0.2s ease;
     display: flex; flex-direction: column; align-items: center;
 }
 .pm-mode-card:hover {
-    border-color: rgba(255, 255, 255, 0.3); transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.35); transform: translateY(-2px);
 }
 .pm-mode-card.selected {
-    border-color: #ec4141; box-shadow: 0 0 16px rgba(236, 65, 65, 0.4);
+    border-color: #ec4141; box-shadow: 0 0 14px rgba(236, 65, 65, 0.45);
 }
 .pm-card-thumb {
-    width: 100%; height: 96px; object-fit: cover; display: block;
-    background: #11141c;
+    width: 100%; height: 86px; object-fit: cover; display: block;
 }
 .pm-card-title {
-    padding: 8px 0; font-size: 13px; color: rgba(255, 255, 255, 0.85); text-align: center;
+    padding: 7px 0; font-size: 13px; color: rgba(255, 255, 255, 0.88); text-align: center;
 }
 .pm-mode-card.selected .pm-card-title {
     color: #ffffff; font-weight: 600;
 }
 .pm-check-badge {
-    position: absolute; right: 7px; bottom: 33px;
+    position: absolute; right: 6px; bottom: 31px;
     width: 18px; height: 18px; border-radius: 50%;
     background: #ec4141; color: #ffffff;
     display: none; align-items: center; justify-content: center;
@@ -860,52 +816,33 @@ html, body {
 }
 .pm-mode-card.selected .pm-check-badge { display: flex; }
 
-/* 全屏封面模式主舞台 (桌面端左右分栏) */
+/* 全屏封面模式主舞台 (桌面端: 封面占满左侧自然向右扩散消隐融入背景) */
 .fs-cover-stage {
-    position: relative; z-index: 10; width: 100%; height: 100%;
-    display: none; align-items: stretch; justify-content: space-between;
-    padding: 60px 5% 40px 5%; gap: 40px; box-sizing: border-box;
+    position: absolute; inset: 0; z-index: 5;
+    display: none; box-sizing: border-box; overflow: hidden;
 }
-.fs-left-pane {
-    flex: 1.05; max-width: 52%; min-width: 320px;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
+/* 封面图无外框，贴满左侧并自然向右渐变扩散消隐 */
+.fs-left-cover-art {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 58%; overflow: hidden; z-index: 4; pointer-events: none;
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 48%, rgba(0,0,0,0.85) 65%, transparent 100%);
+    mask-image: linear-gradient(to right, #000 0%, #000 48%, rgba(0,0,0,0.85) 65%, transparent 100%);
 }
-.fs-cover-card {
-    position: relative; width: min(88%, 520px); aspect-ratio: 1;
-    border-radius: 12px; overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 35px rgba(0, 0, 0, 0.45);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
+.fs-left-cover-art img {
+    width: 100%; height: 100%; object-fit: cover; object-position: left center; display: block;
 }
-.fs-cover-card:hover {
-    transform: scale(1.015);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 45px rgba(0, 0, 0, 0.55);
-}
-.fs-cover-img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-}
-/* 右边缘与下边缘平滑自然羽化渐变过渡融入背景 */
-.fs-cover-card::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(to right, transparent 75%, rgba(0, 0, 0, 0.28) 100%),
-                linear-gradient(to bottom, transparent 80%, rgba(0, 0, 0, 0.32) 100%);
-}
+
+/* 右侧歌曲信息与歌词区 */
 .fs-right-pane {
-    flex: 1.1; max-width: 50%; min-width: 320px;
-    display: flex; flex-direction: column; padding-top: 10px;
-    position: relative;
-}
-/* 歌词区自适应柔和磨砂底衬，色调与封面天然契合 */
-.fs-lyric-blur-backdrop {
-    position: absolute; inset: -15px -25px -25px -25px;
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    background: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.12) 20%, rgba(0, 0, 0, 0.26) 100%);
-    pointer-events: none; border-radius: 20px; z-index: 1;
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: 48%; padding: 75px 8% 30px 2%;
+    box-sizing: border-box; display: flex; flex-direction: column;
+    z-index: 10;
 }
 .fs-right-content {
-    position: relative; z-index: 2; display: flex; flex-direction: column; height: 100%;
+    display: flex; flex-direction: column; height: 100%; width: 100%;
 }
-.fs-track-header { margin-bottom: 10px; }
+.fs-track-header { margin-bottom: 12px; }
 .fs-track-title {
     font-size: clamp(22px, 2.3vw, 29px); font-weight: 700; color: #ffffff;
     letter-spacing: 0.3px; line-height: 1.32; margin: 0 0 8px 0;
@@ -970,24 +907,6 @@ html, body {
 .fs-lyric-credit a {
     color: rgba(255, 255, 255, 0.6); text-decoration: underline;
     text-underline-offset: 3px; cursor: pointer;
-}
-
-/* 右侧小圆浮动按钮组: [译] [词] [···] */
-.fs-floating-tools {
-    position: absolute; right: 0; bottom: 20px;
-    display: flex; flex-direction: column; gap: 10px; z-index: 10;
-}
-.fs-tool-btn {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: rgba(255, 255, 255, 0.85); display: flex;
-    align-items: center; justify-content: center;
-    font-size: 12px; cursor: pointer; backdrop-filter: blur(8px);
-    transition: all 0.2s;
-}
-.fs-tool-btn:hover {
-    background: rgba(255, 255, 255, 0.25); transform: scale(1.08); color: #fff;
 }
 
 /* ==========================================================================
@@ -1323,27 +1242,31 @@ html, body {
     .vinyl-meta { display: none !important; }
     .vinyl-mobile-panel { display: flex; }
 
-    /* 移动端全屏封面模式上下分屏 */
+    /* 移动端全屏封面模式上下分屏（无外框，封面撑满上部向下自然羽化扩散） */
     .fs-cover-stage {
+        display: none;
         flex-direction: column !important; align-items: center !important;
-        padding: 46px 14px 4px 14px !important; gap: 8px !important;
+        padding: 44px 16px 6px 16px !important; gap: 4px !important;
         overflow: hidden !important; justify-content: flex-start !important;
-        flex: 1 !important; min-height: 0 !important;
+        position: absolute !important; inset: 0 !important; bottom: 0 !important;
     }
-    .fs-left-pane {
-        flex: none !important; max-width: 100% !important; min-width: 0 !important;
-        width: 100% !important; display: flex !important; justify-content: center !important;
+    #cr-vinyl-overlay.mode-fullscreen-cover .fs-cover-stage {
+        display: flex !important;
     }
-    .fs-cover-card {
-        width: min(48vw, 195px) !important; border-radius: 12px !important;
-        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75) !important;
+    .fs-left-cover-art {
+        position: relative !important; width: 100% !important; height: 38% !important;
+        min-height: 175px !important; flex: none !important;
+        -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%) !important;
+        mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%) !important;
+    }
+    .fs-left-cover-art img {
+        object-position: center 25% !important;
     }
     .fs-right-pane {
-        flex: 1 !important; max-width: 100% !important; min-width: 0 !important;
-        width: 100% !important; padding-top: 0 !important; min-height: 0 !important;
+        position: relative !important; width: 100% !important; flex: 1 !important;
+        padding: 0 !important; min-height: 0 !important;
         display: flex !important; flex-direction: column !important; align-items: center !important;
     }
-    .fs-lyric-blur-backdrop { display: none !important; }
     .fs-right-content {
         align-items: center !important; width: 100% !important; height: 100% !important;
     }
@@ -1352,7 +1275,7 @@ html, body {
     .fs-track-meta { justify-content: center !important; font-size: 11px !important; gap: 8px !important; }
     .fs-pill-tabs { display: none !important; }
     .fs-lyric-viewport {
-        padding: 6px 0 12px 0 !important;
+        padding: 6px 0 14px 0 !important;
         mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 82%, transparent 100%) !important;
         -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 82%, transparent 100%) !important;
         width: 100% !important; text-align: center !important;
@@ -1360,7 +1283,6 @@ html, body {
     .fs-lyric-inner { align-items: center !important; gap: 10px !important; }
     .fs-lyric-line { font-size: 13.5px !important; text-align: center !important; }
     .fs-lyric-line.active { font-size: 16px !important; }
-    .fs-floating-tools { display: none !important; }
     .player-mode-modal {
         top: 54px !important; right: 10px !important; left: 10px !important;
         width: auto !important; max-width: none !important;
@@ -1419,27 +1341,31 @@ html, body {
 #cr-stage.view-mobile .vinyl-meta { display: none !important; }
 #cr-stage.view-mobile .vinyl-mobile-panel { display: flex; }
 
-/* 手机模拟视图全屏封面上下分屏 */
+/* 手机模拟视图全屏封面上下分屏（无外框，封面撑满上部向下自然羽化扩散） */
 #cr-stage.view-mobile .fs-cover-stage {
+    display: none;
     flex-direction: column !important; align-items: center !important;
-    padding: 46px 14px 4px 14px !important; gap: 8px !important;
+    padding: 44px 16px 6px 16px !important; gap: 4px !important;
     overflow: hidden !important; justify-content: flex-start !important;
-    flex: 1 !important; min-height: 0 !important;
+    position: absolute !important; inset: 0 !important; bottom: 0 !important;
 }
-#cr-stage.view-mobile .fs-left-pane {
-    flex: none !important; max-width: 100% !important; min-width: 0 !important;
-    width: 100% !important; display: flex !important; justify-content: center !important;
+#cr-stage.view-mobile #cr-vinyl-overlay.mode-fullscreen-cover .fs-cover-stage {
+    display: flex !important;
 }
-#cr-stage.view-mobile .fs-cover-card {
-    width: min(48vw, 195px) !important; border-radius: 12px !important;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75) !important;
+#cr-stage.view-mobile .fs-left-cover-art {
+    position: relative !important; width: 100% !important; height: 38% !important;
+    min-height: 175px !important; flex: none !important;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%) !important;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%) !important;
+}
+#cr-stage.view-mobile .fs-left-cover-art img {
+    object-position: center 25% !important;
 }
 #cr-stage.view-mobile .fs-right-pane {
-    flex: 1 !important; max-width: 100% !important; min-width: 0 !important;
-    width: 100% !important; padding-top: 0 !important; min-height: 0 !important;
+    position: relative !important; width: 100% !important; flex: 1 !important;
+    padding: 0 !important; min-height: 0 !important;
     display: flex !important; flex-direction: column !important; align-items: center !important;
 }
-#cr-stage.view-mobile .fs-lyric-blur-backdrop { display: none !important; }
 #cr-stage.view-mobile .fs-right-content {
     align-items: center !important; width: 100% !important; height: 100% !important;
 }
@@ -1448,7 +1374,7 @@ html, body {
 #cr-stage.view-mobile .fs-track-meta { justify-content: center !important; font-size: 11px !important; gap: 8px !important; }
 #cr-stage.view-mobile .fs-pill-tabs { display: none !important; }
 #cr-stage.view-mobile .fs-lyric-viewport {
-    padding: 6px 0 12px 0 !important;
+    padding: 6px 0 14px 0 !important;
     mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 82%, transparent 100%) !important;
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 82%, transparent 100%) !important;
     width: 100% !important; text-align: center !important;
@@ -1456,7 +1382,6 @@ html, body {
 #cr-stage.view-mobile .fs-lyric-inner { align-items: center !important; gap: 10px !important; }
 #cr-stage.view-mobile .fs-lyric-line { font-size: 13.5px !important; text-align: center !important; }
 #cr-stage.view-mobile .fs-lyric-line.active { font-size: 16px !important; }
-#cr-stage.view-mobile .fs-floating-tools { display: none !important; }
 #cr-stage.view-mobile .player-mode-modal {
     top: 54px !important; right: 10px !important; left: 10px !important;
     width: auto !important; max-width: none !important;
@@ -1672,39 +1597,8 @@ html, body {
                 </div>
             </div>
 
-            <!-- 网易云原版【播放器模式】毛玻璃弹窗 (复刻图4，用户明确要求：只需要全屏封面和经典黑胶，不要其余不必要的冗余选项) -->
+            <!-- 网易云原版【播放器模式】毛玻璃弹窗 (严格仅保留全屏封面与经典黑胶两个按钮) -->
             <div class="player-mode-modal" id="cr-player-mode-modal">
-                <div class="pm-top-tabs">
-                    <div class="pm-top-tab active" data-tab="standard">
-                        <div class="pm-tab-icon">
-                            <svg width="22" height="14" viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="1" width="22" height="14" rx="2"></rect><circle cx="6" cy="8" r="3"></circle><line x1="12" y1="5" x2="20" y2="5"></line><line x1="12" y1="8" x2="18" y2="8"></line><line x1="12" y1="11" x2="19" y2="11"></line></svg>
-                        </div>
-                        <div class="pm-radio-label"><span class="pm-radio-dot"></span>标准</div>
-                    </div>
-                    <div class="pm-top-tab" data-tab="vinyl">
-                        <div class="pm-tab-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3"></circle></svg>
-                        </div>
-                        <div class="pm-radio-label"><span class="pm-radio-dot"></span>黑胶</div>
-                    </div>
-                    <div class="pm-top-tab" data-tab="lyrics">
-                        <div class="pm-tab-icon">
-                            <svg width="20" height="14" viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="2" y1="3" x2="22" y2="3"></line><line x1="5" y1="8" x2="19" y2="8"></line><line x1="3" y1="13" x2="21" y2="13"></line></svg>
-                        </div>
-                        <div class="pm-radio-label"><span class="pm-radio-dot"></span>歌词</div>
-                    </div>
-                </div>
-
-                <div class="pm-cat-tags">
-                    <div class="pm-cat-tag active">经典</div>
-                    <div class="pm-cat-tag">创意</div>
-                    <div class="pm-cat-tag">艺术家</div>
-                    <div class="pm-cat-tag">好运系列</div>
-                    <div class="pm-cat-tag">复古</div>
-                    <div class="pm-cat-tag">音波</div>
-                    <div class="pm-cat-tag">星座</div>
-                </div>
-
                 <div class="pm-cards-grid">
                     <!-- 选项一: 全屏封面 (默认选中) -->
                     <div class="pm-mode-card selected" id="pm-card-cover" data-mode="fullscreen-cover">
@@ -1721,25 +1615,22 @@ html, body {
                 </div>
             </div>
 
-            <!-- 舞台 1: 全屏封面舞台 (.fs-cover-stage) -->
+            <!-- 舞台 1: 全屏封面舞台 (.fs-cover-stage，封面占满左侧无外框自然扩散消隐) -->
             <div class="fs-cover-stage" id="cr-fs-cover-stage">
-                <!-- 左侧大封面 -->
-                <div class="fs-left-pane">
-                    <div class="fs-cover-card">
-                        <img class="fs-cover-img" id="fs-cover-img" src="./assets/covers/cover_expedition33.png" alt="Album Cover">
-                    </div>
+                <!-- 左侧大封面 (无外框，贴满左侧并自然向右渐变羽化扩散) -->
+                <div class="fs-left-cover-art">
+                    <img class="fs-cover-img" id="fs-cover-img" src="./assets/covers/cover_blueroom.png" alt="Album Cover">
                 </div>
 
                 <!-- 右侧歌曲信息与歌词区 -->
                 <div class="fs-right-pane">
-                    <div class="fs-lyric-blur-backdrop"></div>
                     <div class="fs-right-content">
                         <div class="fs-track-header">
-                            <h1 class="fs-track-title" id="fs-track-title">For Those Who Come After (Release Date Reveal Trailer)</h1>
+                            <h1 class="fs-track-title" id="fs-track-title">The Blue Room</h1>
                             <div class="fs-track-meta">
-                                <span id="fs-meta-album">专辑: Clair Obscur: Expedition 33</span>
-                                <span id="fs-meta-artist">歌手: Lorien Testard / Alice Duport-Percier</span>
-                                <span id="fs-meta-source">来源: 远征队bgm</span>
+                                <span id="fs-meta-album">专辑: The Dream Machine</span>
+                                <span id="fs-meta-artist">歌手: Luka Zima</span>
+                                <span id="fs-meta-source">来源: vip</span>
                             </div>
                             <div class="fs-pill-tabs">
                                 <span class="fs-pill-tab active">歌词</span>
@@ -1753,13 +1644,6 @@ html, body {
                             <div class="fs-lyric-inner" id="fs-lyric-inner">
                                 <!-- 动态歌词行插入处 -->
                             </div>
-                        </div>
-
-                        <!-- 右侧浮动小圆按钮组: 译 / 词 / ··· -->
-                        <div class="fs-floating-tools">
-                            <button type="button" class="fs-tool-btn" id="fs-tool-trans" title="显示/隐藏双语翻译">译</button>
-                            <button type="button" class="fs-tool-btn" id="fs-tool-font" title="调整歌词字号">词</button>
-                            <button type="button" class="fs-tool-btn" id="fs-tool-more" title="更多选项">···</button>
                         </div>
                     </div>
                 </div>
@@ -2492,14 +2376,20 @@ document.getElementById('cr-mob-menu-btn').onclick = openMobileDrawer;
 document.getElementById('cr-sidebar-close-btn').onclick = closeMobileDrawer;
 backdrop.onclick = closeMobileDrawer;
 
-// 黑胶开合
+// 全屏播放器开合
 const vinylOverlay = document.getElementById('cr-vinyl-overlay');
 function openVinyl() {
     const currentSong = playlists[currentPlaylistIndex]?.songs[currentSongIndex];
     updateMobileFavBtn(currentSong);
     vinylOverlay.classList.add('open');
+    const demoBar = document.getElementById('demo-control-bar');
+    if (demoBar) demoBar.style.display = 'none';
 }
-function closeVinyl() { vinylOverlay.classList.remove('open'); }
+function closeVinyl() {
+    vinylOverlay.classList.remove('open');
+    const demoBar = document.getElementById('demo-control-bar');
+    if (demoBar) demoBar.style.display = 'flex';
+}
 document.getElementById('pb-cover').onclick = openVinyl;
 document.getElementById('pb-info-click').onclick = openVinyl;
 document.getElementById('cr-vinyl-close').onclick = closeVinyl;
@@ -2704,70 +2594,13 @@ function initPlayerModeControls() {
             }
         };
     }
-
-    // 歌词右侧浮动小圆按钮 [译] [词] [···]
-    const toolTrans = document.getElementById('fs-tool-trans');
-    const toolFont = document.getElementById('fs-tool-font');
-    const toolMore = document.getElementById('fs-tool-more');
-
-    if (toolTrans) {
-        toolTrans.onclick = (e) => {
-            e.stopPropagation();
-            showTranslation = !showTranslation;
-            const pl = playlists[currentPlaylistIndex];
-            if (pl && pl.songs[currentSongIndex]) {
-                renderLyricsForSong(pl.songs[currentSongIndex]);
-            }
-            showToast(showTranslation ? '已开启双语歌词' : '已隐藏翻译歌词');
-        };
-    }
-
-    if (toolFont) {
-        toolFont.onclick = (e) => {
-            e.stopPropagation();
-            lyricFontSizeLevel = (lyricFontSizeLevel + 1) % LYRIC_FONT_SIZES.length;
-            const inner = document.getElementById('fs-lyric-inner');
-            if (inner) {
-                inner.querySelectorAll('.fs-lyric-line').forEach(l => {
-                    l.style.fontSize = LYRIC_FONT_SIZES[lyricFontSizeLevel];
-                });
-            }
-            showToast(`字号已调整: ${['标准', '适中', '加大'][lyricFontSizeLevel]}`);
-        };
-    }
-
-    if (toolMore) {
-        toolMore.onclick = (e) => {
-            e.stopPropagation();
-            showToast('已复制歌曲信息');
-        };
-    }
-
-    // 模式弹窗分类标签切换微交互
-    const catTags = document.querySelectorAll('.pm-cat-tag');
-    catTags.forEach(tag => {
-        tag.onclick = (e) => {
-            e.stopPropagation();
-            catTags.forEach(t => t.classList.remove('active'));
-            tag.classList.add('active');
-        };
-    });
-
-    // 模式弹窗顶部分栏切换微交互
-    const topTabs = document.querySelectorAll('.pm-top-tab');
-    topTabs.forEach(tab => {
-        tab.onclick = (e) => {
-            e.stopPropagation();
-            topTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-        };
-    });
 }
 
 // 初始化渲染
 updateVolume(0.93);
 initPlayerModeControls();
-playTrack(0, 0);
+// 默认播放《The Blue Room》，与用户上传截图100%色调对齐验证
+playTrack(0, 1);
 // 默认打开全屏播放页，直接呈现网易云全屏封面震撼质感
 openVinyl();
 setPlaybackMode('fullscreen-cover');

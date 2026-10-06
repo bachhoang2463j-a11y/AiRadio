@@ -573,3 +573,14 @@
   7. **数据与网络层零改动**：五源检索/网易云导入/下载/localStorage 十键/事件委托锚点与功能 id（`cr-import-overwrite-btn` 等）全部原样保留。
 - **决策原因**：用户要求按 demo_preview.html 的样式迁移到单机版并注意补全移动版本；方案经 plan 模式确认（改源脚本再打包、保留单机版功能 id、以真实媒体查询替代 demo 的手机模拟模式、顺带 `?mobile` 钩子作桌面验收入口）。
 - **提交**：`e187f58`
+
+---
+
+## [HASH: eb37055] 黑胶页新增网易云原页面跳转按钮 + 修复移动端音量条真频谱失灵
+- **日期**：2026-10-06
+- **涉及文件**：`tools/standalone_script_v2.js`、`音乐电台-单机版.html`（重新打包）
+- **变更行为**：
+  1. **修复移动端真频谱失灵（用户实测反馈）**：上一轮迁移时 `updateVolAnimState` 漏把 `real-spectrum` 类同步到手机 26 柱容器，导致真频谱模式下 CSS 合成器假动画（`vVolDance`）仍在运行并覆盖 rAF 写入的真实频谱 transform——手机柱永远是"写死的样式"。现双端类状态一致，并补 `.v-vol-visualizer.playing.real-spectrum .v-vol-bar.active { animation: none; }`；
+  2. **网易云原页面按钮**：黑胶页左上收起键下方新增同款精工圆形外链按钮（桌面 top:74px / 移动端 top:64px），点击经 gdstudio 网易云源搜索（`types=search&source=netease`）取歌曲 `id`，打开 `https://music.163.com/#/song?id=xxx` 原页，便于用户登录账号收藏红心；`fetchPicIdBySearch` 顺带返回 `songId` 随封面链缓存（`currentNeteaseSongId` 切歌丢弃），缓存缺失时点击兜底实时补查；自定义直链/本地直连曲目定位失败时 toast 提示。
+- **决策原因**：用户反馈移动端音量条疑似写死样式非真频谱（核实为真 bug 并修复）；并要求播放页加网易云原页面入口便于账号收藏。
+- **提交**：`eb37055`

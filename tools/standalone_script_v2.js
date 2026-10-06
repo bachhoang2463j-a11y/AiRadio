@@ -1004,6 +1004,15 @@
         #cr-vinyl-overlay.mode-fullscreen-cover .cr-lyric-line.active .cr-lyric-trans {
             color: rgba(255, 255, 255, 0.96);
         }
+        /* 全屏歌词页（.expanded）自带不透明深底，维持鎏金体系，不受上述白字覆盖影响 */
+        #cr-vinyl-overlay.mode-fullscreen-cover .cr-lyric-scroll.expanded .cr-lyric-main { color: var(--text-sub); }
+        #cr-vinyl-overlay.mode-fullscreen-cover .cr-lyric-scroll.expanded .cr-lyric-trans { color: var(--text-muted); }
+        #cr-vinyl-overlay.mode-fullscreen-cover .cr-lyric-scroll.expanded .cr-lyric-line.active .cr-lyric-main {
+            color: var(--gold-bright); text-shadow: 0 0 14px rgba(196, 167, 125, 0.45);
+        }
+        #cr-vinyl-overlay.mode-fullscreen-cover .cr-lyric-scroll.expanded .cr-lyric-line.active .cr-lyric-trans {
+            color: var(--gold-primary);
+        }
         /* 右侧暗角：压暗模糊底图，保证白字可读 */
         .vinyl-vignette {
             display: none; position: absolute; inset: 0; pointer-events: none; z-index: 2;

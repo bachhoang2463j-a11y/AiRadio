@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>音乐电台 · Celestial Radio</title>
 <style>
     html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #05070d; overflow: hidden; }
@@ -370,296 +370,491 @@
     // === CSS 样式 ===
     const styles = `
         <style id="celestial-radio-css">
-        * { margin: 0; padding: 0; }
-        #cr-app, #cr-app * { box-sizing: border-box; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* ===== 全页布局骨架 ===== */
+        /* ===== 精工鎏金毛玻璃设计系统 ===== */
+        #cr-app {
+            --gold-primary: #C4A77D;
+            --gold-light: #F5E6C8;
+            --gold-bright: #FFF5DF;
+            --gold-dim: #7D684A;
+            --gold-glow: rgba(196, 167, 125, 0.45);
+            --gold-border: rgba(196, 167, 125, 0.28);
+            --gold-border-subtle: rgba(196, 167, 125, 0.14);
+            --gold-border-bright: rgba(196, 167, 125, 0.65);
+            --bg-dark: #07090E;
+            --bg-card: linear-gradient(90deg, rgba(16, 20, 28, 0.72) 0%, rgba(11, 14, 20, 0.55) 100%);
+            --bg-card-hover: linear-gradient(90deg, rgba(26, 33, 48, 0.8) 0%, rgba(18, 23, 33, 0.7) 100%);
+            --bg-card-active: linear-gradient(90deg, rgba(196, 167, 125, 0.24) 0%, rgba(196, 167, 125, 0.06) 100%);
+            --panel-glass: linear-gradient(180deg, rgba(13, 16, 24, 0.88) 0%, rgba(8, 10, 16, 0.94) 100%);
+            --panel-blur: blur(28px) saturate(180%);
+            --text-main: #E3DDD2;
+            --text-sub: #8C867C;
+            --text-muted: #57524A;
+            --font-ui: 'Jura', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-serif: 'Noto Serif SC', serif;
+        }
+
+        /* ===== 全页布局骨架（氛围光并入 #cr-app 多重背景） ===== */
         #cr-app {
             position: fixed; inset: 0; display: flex; flex-direction: column; overflow: hidden;
-            font-family: 'Jura', 'Noto Serif SC', serif;
-            background: linear-gradient(135deg, #07090f 0%, #0c0e15 55%, #100d12 100%);
-            color: #ccc; user-select: none;
+            font-family: var(--font-serif);
+            background:
+                radial-gradient(circle at 50% 0%, rgba(196, 167, 125, 0.12) 0%, transparent 60%),
+                radial-gradient(circle at 10% 90%, rgba(30, 42, 65, 0.45) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(40, 28, 45, 0.35) 0%, transparent 45%),
+                linear-gradient(165deg, rgba(14, 17, 26, 0.82) 0%, rgba(7, 9, 14, 0.94) 100%);
+            background-color: var(--bg-dark);
+            color: var(--text-main); user-select: none;
+            -webkit-font-smoothing: antialiased;
         }
-        #cr-app.no-glass #cr-sidebar, #cr-app.no-glass #cr-player-bar, #cr-app.no-glass .cr-modal-overlay {
+        #cr-app.no-glass { --panel-blur: none; }
+        #cr-app.no-glass #cr-sidebar, #cr-app.no-glass #cr-player-bar, #cr-app.no-glass #cr-mobile-topbar,
+        #cr-app.no-glass .cr-modal-overlay, #cr-app.no-glass #cr-sidebar-backdrop,
+        #cr-app.no-glass .vinyl-close, #cr-app.no-glass .v-circle-btn, #cr-app.no-glass .track-head-row {
             backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
         }
         #cr-app.no-glass #cr-sidebar { background: #0d0f16; }
         #cr-app.no-glass #cr-player-bar { background: #0b0d13; }
+        #cr-app.no-glass #cr-mobile-topbar { background: #0d0f16; }
         #cr-app.no-glass #cr-vinyl-overlay .vinyl-bg { filter: none !important; }
 
-        #cr-app-body { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+        #cr-app-body { flex: 1; display: flex; overflow: hidden; min-height: 0; position: relative; }
 
         /* ===== 左侧栏 ===== */
         #cr-sidebar {
-            width: 248px; flex-shrink: 0; display: flex; flex-direction: column;
-            background: rgba(10, 12, 19, 0.86);
-            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-            border-right: 1px solid rgba(196, 167, 125, 0.12);
+            width: 256px; flex-shrink: 0; display: flex; flex-direction: column;
+            background: var(--panel-glass);
+            backdrop-filter: var(--panel-blur); -webkit-backdrop-filter: var(--panel-blur);
+            border-right: 1px solid var(--gold-border);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+            z-index: 150;
+            transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
         }
         .cr-brand {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 14px 10px;
+            padding: 18px 16px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
-        .cr-brand-title { font-size: 14px; font-weight: bold; color: #C4A77D; letter-spacing: 2px; }
+        .cr-brand-left { display: flex; align-items: center; gap: 8px; }
+        .cr-brand-dot {
+            width: 8px; height: 8px; background: var(--gold-primary);
+            box-shadow: 0 0 10px var(--gold-primary); border-radius: 1px;
+        }
+        .cr-brand-title {
+            font-size: 14.5px; font-weight: 700; color: var(--gold-light);
+            letter-spacing: 2px; font-family: var(--font-ui);
+            text-shadow: 0 0 12px rgba(196, 167, 125, 0.4);
+        }
+        .cr-sidebar-close-btn {
+            display: none; cursor: pointer; color: var(--text-sub);
+            font-size: 16px; width: 28px; height: 28px;
+            align-items: center; justify-content: center; border-radius: 50%;
+        }
         .cr-header-btn {
-            cursor: pointer; font-size: 13px; color: #888; transition: 0.2s;
-            width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
-            border-radius: 50%;
+            cursor: pointer; color: var(--text-sub); transition: 0.2s;
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            border-radius: 4px; border: 1px solid transparent;
         }
-        .cr-header-btn:hover { color: #C4A77D; background: rgba(196, 167, 125, 0.1); }
-        .cr-side-search { padding: 0 12px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .cr-header-btn:hover {
+            color: var(--gold-light); background: rgba(196, 167, 125, 0.12);
+            border-color: var(--gold-border);
+        }
+        .cr-side-search { padding: 12px 14px 8px; }
+        .cr-search-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
+        .cr-search-icon {
+            position: absolute; left: 10px; width: 13px; height: 13px;
+            stroke: var(--gold-primary); opacity: 0.75; pointer-events: none;
+        }
         .cp-input {
-            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 4px; color: #ccc; font-family: inherit; outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s; width: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 4px; color: var(--text-main);
+            font-family: inherit; outline: none;
+            transition: all 0.25s; width: 100%;
         }
-        .cp-input:focus { border-color: #C4A77D !important; box-shadow: inset 0 0 5px rgba(196, 167, 125, 0.2); }
-        .cp-input::placeholder { color: #555; }
-        .bgm-search-input { font-size: 11px; padding: 6px 9px; }
+        .cp-input:focus {
+            border-color: var(--gold-primary) !important;
+            box-shadow: 0 0 12px rgba(196, 167, 125, 0.35), inset 0 0 6px rgba(196, 167, 125, 0.2);
+        }
+        .cp-input::placeholder { color: var(--text-muted); }
+        .bgm-search-input { font-size: 11px; padding: 7px 10px 7px 30px; }
         .cr-side-section {
-            padding: 12px 14px 6px; font-size: 9px; color: #666; letter-spacing: 2px;
+            padding: 10px 16px 6px; font-size: 9.5px; color: var(--gold-primary);
+            letter-spacing: 2px; font-family: var(--font-ui); opacity: 0.9;
+            text-transform: uppercase; font-weight: 600;
         }
-        #pl-nav { flex: 1; overflow-y: auto; padding: 0 8px 8px; }
-        #pl-nav::-webkit-scrollbar, #track-table::-webkit-scrollbar { width: 5px; }
-        #pl-nav::-webkit-scrollbar-thumb, #track-table::-webkit-scrollbar-thumb { background: rgba(196, 167, 125, 0.2); border-radius: 3px; }
+        #pl-nav { flex: 1; overflow-y: auto; padding: 0 8px 10px; }
+        #pl-nav::-webkit-scrollbar, #track-table::-webkit-scrollbar { width: 4px; }
+        #pl-nav::-webkit-scrollbar-thumb, #track-table::-webkit-scrollbar-thumb { background: rgba(196, 167, 125, 0.25); border-radius: 4px; }
         .playlist-cat {
-            display: flex; align-items: center; padding: 7px 8px; border-radius: 5px;
-            cursor: pointer; transition: 0.15s; margin-bottom: 2px; position: relative;
+            display: flex; align-items: center; padding: 8px 10px;
+            border-radius: 4px; cursor: pointer;
+            transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
+            margin-bottom: 2px; position: relative;
+            border-left: 2px solid transparent;
         }
-        .playlist-cat:hover { background: rgba(255, 255, 255, 0.05); }
-        .playlist-cat.selected { background: rgba(196, 167, 125, 0.12); }
-        .playlist-cat.selected .nav-name { color: #E8D5B5; }
-        .playlist-cat.active-playlist .nav-name { color: #C4A77D; }
+        .playlist-cat:hover { background: rgba(196, 167, 125, 0.06); color: var(--gold-light); }
+        .playlist-cat.selected {
+            background: linear-gradient(90deg, rgba(196, 167, 125, 0.18) 0%, rgba(196, 167, 125, 0.04) 100%);
+            border-left: 2px solid var(--gold-primary);
+            box-shadow: inset 1px 0 10px rgba(196, 167, 125, 0.15);
+        }
+        .playlist-cat.selected .nav-name { color: var(--gold-bright); font-weight: 600; }
+        .playlist-cat.active-playlist .nav-name { color: var(--gold-primary); }
         .playlist-cat.dragging { opacity: 0.4; }
-        .playlist-cat.drag-over-top { box-shadow: 0 -2px 0 #C4A77D; }
-        .playlist-cat.drag-over-bottom { box-shadow: 0 2px 0 #C4A77D; }
+        .playlist-cat.drag-over-top { box-shadow: 0 -2px 0 var(--gold-primary); }
+        .playlist-cat.drag-over-bottom { box-shadow: 0 2px 0 var(--gold-primary); }
         .playlist-cat.song-drag-target { background: rgba(196, 167, 125, 0.18); }
         .nav-play-mark {
-            width: 16px; flex-shrink: 0; font-size: 8px; color: #C4A77D;
+            width: 14px; flex-shrink: 0; font-size: 9px; color: var(--gold-primary);
             visibility: hidden; text-align: center;
         }
         .playlist-cat.active-playlist .nav-play-mark { visibility: visible; }
         .nav-name {
-            flex: 1; font-size: 11.5px; color: #aaa; overflow: hidden;
-            text-overflow: ellipsis; white-space: nowrap; transition: 0.15s;
+            flex: 1; font-size: 12px; color: var(--text-sub);
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            transition: color 0.15s;
         }
-        .nav-count { font-size: 9px; color: #666; margin-left: 6px; flex-shrink: 0; }
+        .nav-count {
+            font-size: 9.5px; color: var(--text-muted); margin-left: 6px;
+            font-family: var(--font-ui); flex-shrink: 0;
+        }
         .nav-ops { display: none; align-items: center; gap: 2px; margin-left: 4px; flex-shrink: 0; }
         .playlist-cat:hover .nav-ops { display: flex; }
         .playlist-cat:hover .nav-count { display: none; }
         .cr-cat-order-btn {
-            cursor: pointer; color: #777; transition: 0.15s; display: flex;
+            cursor: pointer; color: var(--text-sub); transition: 0.15s; display: flex;
             align-items: center; justify-content: center; width: 16px; height: 16px;
         }
-        .cr-cat-order-btn:hover { color: #C4A77D; }
-        .cr-side-footer { padding: 10px 12px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
-        .cr-side-newrow { display: flex; gap: 5px; margin-bottom: 8px; }
-        .cr-side-newrow .cp-input { font-size: 10px; padding: 5px 8px; }
-        .cp-btn {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 4px; color: #999; font-family: inherit; cursor: pointer;
-            transition: 0.2s; white-space: nowrap;
+        .cr-cat-order-btn:hover { color: var(--gold-primary); }
+        .cr-side-footer {
+            padding: 12px 14px;
+            border-top: 1px solid var(--gold-border-subtle);
+            background: rgba(0, 0, 0, 0.35);
         }
-        .cp-btn:hover { color: #E8D5B5; border-color: rgba(196, 167, 125, 0.5); }
-        .cr-io-row { display: flex; gap: 4px; }
-        .cr-io-row .cp-btn { flex: 1; padding: 4px 2px; font-size: 9px; }
+        .cr-side-newrow { display: flex; gap: 6px; margin-bottom: 8px; }
+        .cr-side-newrow .cp-input { font-size: 10.5px; padding: 5px 8px; }
+        .cp-btn {
+            background: linear-gradient(135deg, rgba(196, 167, 125, 0.18) 0%, rgba(196, 167, 125, 0.05) 100%);
+            border: 1px solid rgba(196, 167, 125, 0.35);
+            border-radius: 4px; color: var(--gold-light);
+            font-family: inherit; cursor: pointer;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            white-space: nowrap;
+        }
+        .cp-btn:hover {
+            background: linear-gradient(135deg, rgba(196, 167, 125, 0.35) 0%, rgba(196, 167, 125, 0.14) 100%);
+            border-color: var(--gold-primary);
+            color: var(--gold-bright);
+            box-shadow: 0 0 12px rgba(196, 167, 125, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+        .cp-btn:active { transform: translateY(0); box-shadow: 0 0 6px rgba(196, 167, 125, 0.3); }
+        .cr-io-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+        .cr-io-grid .cp-btn { padding: 4px 0; font-size: 9.5px; text-align: center; color: var(--text-sub); }
+        .cr-io-grid .cp-btn:hover { color: var(--gold-bright); }
+
+        /* 移动抽屉遮罩 */
+        #cr-sidebar-backdrop {
+            display: none; position: fixed; inset: 0; z-index: 140;
+            background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(6px);
+            opacity: 0; transition: opacity 0.3s ease;
+        }
 
         /* ===== 主内容区 ===== */
-        #cr-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+        #cr-main {
+            flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0;
+            background: transparent; position: relative;
+        }
+
+        /* 移动端汉堡顶栏 */
+        #cr-mobile-topbar {
+            display: none; align-items: center; justify-content: space-between;
+            height: 50px; padding: 0 16px;
+            background: var(--panel-glass);
+            border-bottom: 1px solid var(--gold-border-subtle);
+            backdrop-filter: var(--panel-blur); -webkit-backdrop-filter: var(--panel-blur);
+            z-index: 60;
+        }
+        .cr-mob-menu-btn, .cr-mob-gear-btn {
+            width: 36px; height: 36px; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, rgba(196, 167, 125, 0.12), rgba(196, 167, 125, 0.04));
+            border: 1px solid var(--gold-border);
+            color: var(--gold-light); cursor: pointer;
+        }
+        .cr-mob-title {
+            font-size: 14px; font-weight: 700; color: var(--gold-light);
+            font-family: var(--font-ui); letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(196, 167, 125, 0.3);
+        }
+
         #pl-header {
-            padding: 20px 26px 14px; display: flex; align-items: flex-end;
+            padding: 18px 24px 14px; display: flex; align-items: flex-end;
             justify-content: space-between; gap: 16px; flex-shrink: 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid var(--gold-border-subtle);
+            background: linear-gradient(180deg, rgba(196, 167, 125, 0.07) 0%, transparent 100%);
         }
         .pl-head-info { min-width: 0; }
         .pl-head-title {
-            font-size: 22px; font-weight: bold; color: #E8D5B5; letter-spacing: 1px;
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            font-size: 21px; font-weight: 700; color: var(--gold-bright);
+            letter-spacing: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            text-shadow: 0 0 15px rgba(196, 167, 125, 0.35);
         }
-        .pl-head-sub { font-size: 10px; color: #777; margin-top: 5px; }
-        .pl-head-sub b { color: #C4A77D; font-weight: 600; }
+        .pl-head-sub {
+            font-size: 11px; color: var(--text-sub); margin-top: 4px;
+            font-family: var(--font-ui);
+        }
+        .pl-head-sub b { color: var(--gold-primary); font-weight: 600; }
         .pl-head-tools { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
         .cr-cat-action-btn {
-            cursor: pointer; color: #888; transition: 0.15s; display: flex;
-            align-items: center; justify-content: center; width: 26px; height: 26px;
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 4px;
-            background: rgba(255, 255, 255, 0.03);
+            cursor: pointer; color: var(--text-sub); transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            width: 28px; height: 28px; border-radius: 4px;
+            border: 1px solid var(--gold-border-subtle);
+            background: linear-gradient(135deg, rgba(196, 167, 125, 0.1), rgba(196, 167, 125, 0.02));
         }
-        .cr-cat-action-btn:hover { color: #C4A77D; border-color: rgba(196, 167, 125, 0.4); }
-        .cr-cat-action-btn.active { color: #C4A77D; border-color: rgba(196, 167, 125, 0.5); background: rgba(196, 167, 125, 0.1); }
-        .cr-addrow { display: flex; gap: 5px; align-items: center; }
-        .cr-addrow .cp-input { font-size: 10.5px; padding: 5px 9px; width: 200px; }
-        .cr-addrow .cp-btn { padding: 5px 10px; font-size: 10px; color: #C4A77D; border-color: rgba(196, 167, 125, 0.35); }
+        .cr-cat-action-btn:hover {
+            color: var(--gold-light); border-color: var(--gold-border);
+            background: rgba(196, 167, 125, 0.18);
+            box-shadow: 0 0 8px rgba(196, 167, 125, 0.25);
+        }
+        .cr-cat-action-btn.active { color: var(--gold-primary); border-color: var(--gold-border-bright); background: rgba(196, 167, 125, 0.16); }
+        .cr-addrow { display: flex; gap: 6px; align-items: center; }
+        .cr-addrow .cp-input { font-size: 11px; padding: 5px 9px; width: 200px; }
+        .cr-addrow .cp-btn { padding: 5px 12px; font-size: 10.5px; }
 
-        /* ===== 曲目表格 ===== */
-        #track-table { flex: 1; overflow-y: auto; padding: 6px 14px 20px; }
+        /* ===== 曲目表格：右侧按钮常显 + 精工微凸暗金质感 ===== */
+        #track-table { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 4px 16px 90px; }
         .track-head-row {
-            display: flex; align-items: center; padding: 6px 12px;
-            font-size: 9px; color: #666; letter-spacing: 1px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            position: sticky; top: -6px; background: linear-gradient(180deg, rgba(9, 11, 17, 0.97), rgba(9, 11, 17, 0.88));
-            backdrop-filter: blur(6px); z-index: 5;
+            display: flex; align-items: center; padding: 8px 12px;
+            font-size: 9.5px; color: var(--text-muted); letter-spacing: 1.5px;
+            border-bottom: 1px solid var(--gold-border-subtle); position: sticky; top: -4px;
+            background: rgba(10, 12, 18, 0.94);
+            backdrop-filter: var(--panel-blur); -webkit-backdrop-filter: var(--panel-blur);
+            z-index: 5; text-transform: uppercase; font-family: var(--font-ui);
         }
         .song-item {
-            display: flex; align-items: center; padding: 7px 12px; border-radius: 5px;
-            cursor: pointer; transition: 0.12s; margin: 1px 0; border: 1px solid transparent;
+            position: relative;
+            display: flex; align-items: center; padding: 9px 12px;
+            border-radius: 4px; cursor: pointer;
+            background: var(--bg-card);
+            border: 1px solid rgba(196, 167, 125, 0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+            margin: 3px 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
         }
-        .song-item:hover { background: rgba(255, 255, 255, 0.045); }
-        .song-item.playing { background: rgba(196, 167, 125, 0.1); border-color: rgba(196, 167, 125, 0.18); }
-        .song-item.playing .song-name { color: #C4A77D; }
+        .song-item:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(196, 167, 125, 0.3);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+            transform: translateY(-1px);
+        }
+        .song-item.playing {
+            background: var(--bg-card-active);
+            border-color: rgba(196, 167, 125, 0.5);
+            box-shadow: inset 2px 0 0 var(--gold-primary), 0 0 16px rgba(196, 167, 125, 0.15);
+        }
+        .song-item.playing .song-name { color: var(--gold-bright); font-weight: 600; }
         .song-item.loading { opacity: 0.55; }
-        .song-item.batch-selected { background: rgba(196, 167, 125, 0.14); border-color: rgba(196, 167, 125, 0.3); }
+        .song-item.batch-selected {
+            background: var(--bg-card-active);
+            border-color: rgba(196, 167, 125, 0.45);
+            box-shadow: inset 2px 0 0 var(--gold-primary);
+        }
         .song-item.song-dragging { opacity: 0.35; }
         .row-index {
-            width: 34px; flex-shrink: 0; text-align: center; font-size: 10px;
-            color: #666; font-family: 'Jura', monospace;
+            width: 32px; flex-shrink: 0; text-align: center; font-size: 11px;
+            color: var(--text-muted); font-family: var(--font-ui);
         }
-        .song-item.playing .row-index, .song-item:hover .row-index { color: #C4A77D; }
-        .song-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+        .song-item.playing .row-index, .song-item:hover .row-index { color: var(--gold-primary); text-shadow: 0 0 6px var(--gold-glow); }
+        .song-info {
+            flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;
+            padding-right: 12px;
+        }
         .song-name {
-            font-size: 12px; color: #ccc; overflow: hidden; text-overflow: ellipsis;
-            white-space: nowrap; transition: 0.15s;
+            font-size: 13px; color: var(--text-main);
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            transition: color 0.15s;
         }
         .song-artist {
-            font-size: 9.5px; color: #777; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            font-size: 10.5px; color: var(--text-sub);
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
         .row-from {
-            flex-shrink: 0; font-size: 9px; color: #C4A77D; opacity: 0.75; margin-right: 10px;
-            max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            flex-shrink: 0; font-size: 9.5px; color: var(--gold-primary);
+            opacity: 0.9; margin-right: 14px; max-width: 140px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            background: linear-gradient(135deg, rgba(196, 167, 125, 0.12), rgba(196, 167, 125, 0.04));
+            padding: 2px 8px; border-radius: 3px;
+            border: 1px solid rgba(196, 167, 125, 0.22);
         }
-        .song-actions {
-            display: flex; align-items: center; gap: 4px; flex-shrink: 0;
-            opacity: 0; transition: 0.15s;
-        }
-        .song-item:hover .song-actions, .song-item.playing .song-actions { opacity: 1; }
+
+        /* ===== 行尾操作按钮组：常显暗金质感（沿用单机版类名） ===== */
+        .song-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
         .song-action-btn {
-            cursor: pointer; color: #888; transition: 0.15s; display: flex;
-            align-items: center; justify-content: center; width: 22px; height: 22px;
-            border-radius: 4px;
+            cursor: pointer; color: var(--text-sub);
+            display: flex; align-items: center; justify-content: center;
+            width: 26px; height: 26px; border-radius: 4px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(196, 167, 125, 0.16);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
         }
-        .song-action-btn:hover { color: #C4A77D; background: rgba(196, 167, 125, 0.12); }
-        .song-action-btn.is-fav { color: #C4A77D; opacity: 1; }
-        .song-item .song-action-btn.is-fav { opacity: 1; }
-        .cr-song-check { cursor: pointer; accent-color: #C4A77D; margin-right: 8px; flex-shrink: 0; }
-        .track-empty {
-            padding: 46px 12px; text-align: center; color: #777; font-size: 11.5px;
+        .song-action-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; transition: all 0.18s; }
+        .song-action-btn:hover {
+            color: var(--gold-light);
+            background: rgba(196, 167, 125, 0.2);
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 10px rgba(196, 167, 125, 0.4);
+            transform: scale(1.08);
         }
+        .song-action-btn.is-fav {
+            color: var(--gold-primary);
+            border-color: rgba(196, 167, 125, 0.45);
+            background: rgba(196, 167, 125, 0.12);
+        }
+        .song-action-btn.is-fav svg { fill: var(--gold-primary); stroke: var(--gold-primary); }
+        .cr-song-check { cursor: pointer; accent-color: var(--gold-primary); margin-right: 8px; flex-shrink: 0; }
+        .track-empty { padding: 46px 12px; text-align: center; color: var(--text-sub); font-size: 11.5px; }
         .track-empty .big { font-size: 26px; margin-bottom: 10px; opacity: 0.6; }
 
         /* ===== 批量管理条 ===== */
         .cr-batch-bar {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 6px 12px; margin: 6px 0; background: rgba(196, 167, 125, 0.08);
-            border: 1px solid rgba(196, 167, 125, 0.25); border-radius: 5px; font-size: 10.5px;
+            padding: 6px 12px; margin: 6px 0;
+            background: linear-gradient(135deg, rgba(196, 167, 125, 0.12), rgba(196, 167, 125, 0.04));
+            border: 1px solid var(--gold-border); border-radius: 4px; font-size: 10.5px;
         }
-        .cr-batch-bar .cp-btn { padding: 3px 9px; font-size: 9.5px; margin-left: 4px; }
+        .cr-batch-bar .cp-btn { padding: 3px 9px; font-size: 9.5px; margin-left: 4px; color: var(--text-sub); }
+        .cr-batch-bar .cp-btn:hover { color: var(--gold-bright); }
 
         /* ===== 底部播放条 ===== */
         #cr-player-bar {
-            height: 76px; flex-shrink: 0; display: flex; align-items: center;
-            padding: 0 18px; gap: 16px; position: relative; z-index: 120;
-            background: rgba(9, 11, 17, 0.92);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border-top: 1px solid rgba(196, 167, 125, 0.14);
+            height: 78px; flex-shrink: 0; display: flex; align-items: center;
+            padding: 0 24px; gap: 16px; position: relative; z-index: 120;
+            background: var(--panel-glass);
+            backdrop-filter: var(--panel-blur); -webkit-backdrop-filter: var(--panel-blur);
+            border-top: 1px solid var(--gold-border);
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+            transition: all 0.35s cubic-bezier(0.2, 0, 0, 1);
         }
-        .pb-left { display: flex; align-items: center; gap: 11px; width: 26%; min-width: 200px; }
+        .pb-left { display: flex; align-items: center; gap: 12px; width: 28%; min-width: 210px; }
         #pb-cover {
-            width: 52px; height: 52px; border-radius: 6px; flex-shrink: 0; cursor: pointer;
-            background: rgba(196, 167, 125, 0.08); border: 1px solid rgba(196, 167, 125, 0.2);
+            width: 50px; height: 50px; border-radius: 4px; flex-shrink: 0;
+            cursor: pointer; background: rgba(196, 167, 125, 0.08);
+            border: 1px solid var(--gold-primary);
             overflow: hidden; display: flex; align-items: center; justify-content: center;
-            transition: 0.2s; position: relative;
+            transition: all 0.25s; position: relative;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 10px rgba(196, 167, 125, 0.2);
         }
-        #pb-cover:hover { border-color: rgba(196, 167, 125, 0.6); transform: scale(1.04); }
+        #pb-cover:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 16px rgba(196, 167, 125, 0.5);
+        }
         #pb-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .pb-info { min-width: 0; flex: 1; }
         #bgm-now-playing {
-            font-size: 12px; color: #ddd; font-weight: 600;
+            font-size: 13px; color: var(--gold-bright); font-weight: 600;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(196, 167, 125, 0.25);
         }
         #bgm-now-artist {
-            font-size: 9.5px; color: #888; margin-top: 3px;
+            font-size: 10.5px; color: var(--text-sub); margin-top: 3px;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        .pb-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
-        .pb-ctrl-row { display: flex; align-items: center; gap: 14px; }
+        .cr-player-tool-btn {
+            cursor: pointer; color: var(--text-sub); transition: 0.15s;
+            display: flex; align-items: center; justify-content: center;
+            width: 28px; height: 28px; border-radius: 4px;
+        }
+        .cr-player-tool-btn:hover { color: var(--gold-light); background: rgba(196, 167, 125, 0.15); }
+        .cr-player-tool-btn.is-fav { color: var(--gold-primary); }
+
+        .pb-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; }
+        .pb-ctrl-row { display: flex; align-items: center; gap: 16px; }
         .bgm-ctrl-btn {
-            background: none; border: none; cursor: pointer; padding: 4px;
+            background: none; border: none; cursor: pointer; padding: 6px;
             display: flex; align-items: center; justify-content: center; transition: 0.15s;
+            color: var(--text-sub);
         }
-        .bgm-ctrl-btn:hover .ctrl-icon-prev span, .bgm-ctrl-btn:hover .ctrl-icon-next span { background: #E8D5B5; }
+        .bgm-ctrl-btn:hover { color: var(--gold-light); transform: scale(1.08); }
+        .bgm-ctrl-btn svg { fill: currentColor; stroke: currentColor; }
         .bgm-play-btn {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: rgba(196, 167, 125, 0.12); border: 1px solid rgba(196, 167, 125, 0.35);
+            width: 42px; height: 42px; border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #2B251E 0%, #14120F 100%);
+            border: 1.5px solid var(--gold-primary);
+            color: var(--gold-bright);
+            box-shadow: 0 0 16px rgba(196, 167, 125, 0.4), inset 0 0 8px rgba(196, 167, 125, 0.3);
         }
-        .bgm-play-btn:hover { background: rgba(196, 167, 125, 0.22); }
-        .play-icon {
-            width: 0; height: 0; border-style: solid; border-width: 6px 0 6px 10px;
-            border-color: transparent transparent transparent #C4A77D; margin-left: 3px;
+        .bgm-play-btn:hover {
+            box-shadow: 0 0 24px rgba(196, 167, 125, 0.7), inset 0 0 12px rgba(196, 167, 125, 0.5);
+            transform: scale(1.08);
         }
-        .pause-icon { display: flex; gap: 3px; }
-        .pause-icon::before, .pause-icon::after {
-            content: ''; width: 3.5px; height: 13px; background: #C4A77D; border-radius: 1px;
+        .pb-progress-row {
+            display: flex; align-items: center; gap: 10px; width: 100%; max-width: 580px;
         }
-        .ctrl-icon-prev, .ctrl-icon-next { display: flex; gap: 3px; }
-        .ctrl-icon-prev span, .ctrl-icon-next span {
-            width: 3px; height: 12px; background: #999; border-radius: 1px; transition: 0.15s;
+        .pb-time {
+            font-size: 10px; color: var(--text-muted); font-family: var(--font-ui);
+            flex-shrink: 0; width: 34px;
         }
-        .ctrl-icon-prev span:first-child, .ctrl-icon-next span:last-child { border-radius: 1px 6px 6px 1px; }
-        .ctrl-icon-prev span:last-child, .ctrl-icon-next span:first-child { background: transparent; position: relative; }
-        .ctrl-icon-prev span:last-child::before, .ctrl-icon-next span:first-child::before {
-            content: ''; position: absolute; left: -7px; top: -1px;
-            border-style: solid; border-width: 7px 0 7px 9px;
-            border-color: transparent transparent transparent #999;
-        }
-        .ctrl-icon-prev { transform: scaleX(-1); }
-        .pb-progress-row { display: flex; align-items: center; gap: 9px; width: 100%; max-width: 560px; }
-        .pb-time { font-size: 9px; color: #777; font-family: 'Jura', monospace; flex-shrink: 0; width: 30px; }
         .pb-time:last-child { text-align: right; }
         .bgm-progress {
-            flex: 1; height: 3.5px; background: rgba(255, 255, 255, 0.1); border-radius: 2px;
-            cursor: pointer; position: relative;
+            flex: 1; height: 3.5px; background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px; cursor: pointer; position: relative;
         }
         .bgm-progress:hover { height: 5px; }
         .bgm-progress-fill {
-            height: 100%; background: linear-gradient(90deg, #C4A77D, #E8D5B5); border-radius: 2px;
-            width: 0%; box-shadow: 0 0 6px rgba(196, 167, 125, 0.6); pointer-events: none;
-            transition: width 0.1s linear;
+            height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, rgba(196, 167, 125, 0.5), #C4A77D 70%, #FFF5DF 100%);
+            width: 0%; box-shadow: 0 0 10px rgba(196, 167, 125, 0.8);
+            pointer-events: none; transition: width 0.1s linear;
         }
-        .pb-right { display: flex; align-items: center; gap: 11px; width: 26%; min-width: 200px; justify-content: flex-end; }
-        .bgm-mode-btn {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 4px; color: #999; font-family: inherit; cursor: pointer;
-            font-size: 9px; padding: 4px 8px; transition: 0.2s; white-space: nowrap;
-        }
-        .bgm-mode-btn:hover { color: #C4A77D; border-color: rgba(196, 167, 125, 0.4); }
-        .cr-player-tool-btn {
-            cursor: pointer; color: #999; transition: 0.15s; display: flex;
-            align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 4px;
-        }
-        .cr-player-tool-btn:hover { color: #C4A77D; background: rgba(196, 167, 125, 0.12); }
-        .cr-player-tool-btn.is-fav { color: #C4A77D; }
 
-        /* ===== 音量律动条 ===== */
-        .cr-vol-icon { cursor: pointer; display: flex; align-items: center; }
-        .cr-vol-visualizer-container { position: relative; width: 130px; height: 26px; cursor: pointer; }
+        .pb-right {
+            display: flex; align-items: center; gap: 12px; width: 28%; min-width: 210px;
+            justify-content: flex-end;
+        }
+        .bgm-mode-btn {
+            background: rgba(196, 167, 125, 0.08); border: 1px solid var(--gold-border);
+            border-radius: 4px; color: var(--gold-light);
+            font-family: inherit; cursor: pointer; font-size: 10px; padding: 4px 10px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: 0.2s; white-space: nowrap;
+        }
+        .bgm-mode-btn:hover { border-color: var(--gold-border-bright); background: rgba(196, 167, 125, 0.2); }
+        .cr-vol-container { display: flex; align-items: center; gap: 8px; }
+        .cr-vol-icon { cursor: pointer; color: var(--text-sub); display: flex; align-items: center; }
+        .cr-vol-icon:hover { color: var(--gold-light); }
+        .cr-vol-visualizer-container {
+            position: relative; width: 120px; height: 26px; cursor: pointer;
+        }
         .cr-vol-visualizer {
             position: absolute; inset: 0; display: flex; align-items: flex-end;
-            justify-content: space-between; padding: 0 2px;
+            justify-content: space-between; padding: 0 1px;
         }
         .cr-vol-bar {
-            flex: 1; margin: 0 1px; background: #C4A77D; border-radius: 1px;
-            height: calc(var(--cr-vol, 0.8) * 100%); min-height: 3px; opacity: 0.22;
-            transition: opacity 0.2s;
+            flex: 1; margin: 0 1px; background: rgba(255, 255, 255, 0.08);
+            border-radius: 1px; height: calc(var(--cr-vol, 0.8) * 100%);
+            min-height: 3px; opacity: 0.25; transition: opacity 0.2s;
         }
-        .cr-vol-bar.active { opacity: 0.85; }
+        .cr-vol-bar.active {
+            opacity: 0.95;
+            background: linear-gradient(0deg, #C4A77D 0%, #FFF2CE 100%);
+            box-shadow: 0 0 6px rgba(196, 167, 125, 0.6);
+        }
         .cr-vol-visualizer.playing .cr-vol-bar.active {
             animation: crVolDance 0.62s ease-in-out infinite alternate;
         }
         .cr-vol-visualizer.playing .cr-vol-bar.active:nth-child(even) {
             animation-name: crVolDanceAlt;
         }
-        @keyframes crVolDance { from { transform: scaleY(0.55); } to { transform: scaleY(1.25); } }
-        @keyframes crVolDanceAlt { from { transform: scaleY(1.2); } to { transform: scaleY(0.5); } }
+        @keyframes crVolDance { from { transform: scaleY(0.45); } to { transform: scaleY(1.3); } }
+        @keyframes crVolDanceAlt { from { transform: scaleY(1.25); } to { transform: scaleY(0.4); } }
         .cr-vol-visualizer.playing.real-spectrum .cr-vol-bar.active {
             animation: none; transition: height 0.09s linear;
         }
@@ -667,44 +862,60 @@
             position: absolute; inset: 0; width: 100%; height: 100%;
             opacity: 0; cursor: pointer; margin: 0;
         }
-        .cr-vol-text { font-size: 9px; color: #888; width: 30px; text-align: right; flex-shrink: 0; }
+        .cr-vol-text {
+            font-size: 10px; color: var(--gold-primary); width: 32px;
+            text-align: right; font-family: var(--font-ui); font-weight: 600;
+        }
 
         .cr-play-spinner {
             width: 14px; height: 14px; border: 2px solid rgba(196, 167, 125, 0.25);
-            border-top-color: #C4A77D; border-radius: 50%; animation: crSpin 0.8s linear infinite;
+            border-top-color: var(--gold-primary); border-radius: 50%; animation: crSpin 0.8s linear infinite;
         }
         @keyframes crSpin { to { transform: rotate(360deg); } }
 
         .cr-player-toast {
-            position: absolute; bottom: 84px; left: 50%; transform: translateX(-50%);
-            background: rgba(15, 17, 24, 0.95); border: 1px solid rgba(196, 167, 125, 0.35);
-            color: #E8D5B5; padding: 8px 16px; border-radius: 6px; font-size: 11px;
-            pointer-events: none; opacity: 0; transition: opacity 0.25s; z-index: 300;
-            white-space: nowrap; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+            position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%);
+            background: rgba(14, 18, 28, 0.95); border: 1px solid var(--gold-primary);
+            color: var(--gold-bright); padding: 8px 20px; border-radius: 20px;
+            font-size: 11.5px; pointer-events: none; opacity: 0;
+            transition: opacity 0.25s, transform 0.25s; z-index: 800;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(196, 167, 125, 0.3); white-space: nowrap;
         }
+        .cr-player-toast.show { opacity: 1; transform: translateX(-50%) translateY(-5px); }
 
         /* ===== 黑胶播放页 ===== */
         #cr-vinyl-overlay {
-            position: fixed; left: 0; right: 0; top: 0; bottom: 76px; z-index: 100;
+            position: fixed; left: 0; right: 0; top: 0; bottom: 78px; z-index: 200;
             opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
-            overflow: hidden;
+            overflow: hidden; background: #090b11;
         }
         #cr-vinyl-overlay.open { opacity: 1; pointer-events: auto; }
         .vinyl-bg {
-            position: absolute; inset: -60px; background-size: cover; background-position: center;
-            filter: blur(60px) brightness(0.32) saturate(1.1); transform: scale(1.15);
+            position: absolute; inset: -40px; background-size: cover; background-position: center;
+            filter: blur(60px) brightness(0.22) saturate(1.3); transform: scale(1.1);
             transition: background-image 0.4s;
         }
         .vinyl-close {
-            position: absolute; top: 16px; left: 22px; z-index: 3; cursor: pointer;
-            color: rgba(255, 255, 255, 0.65); font-size: 20px; transition: 0.2s;
-            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            position: absolute; top: 22px; left: 24px; z-index: 20; cursor: pointer;
+            color: var(--gold-light); font-size: 16px;
+            width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
             border-radius: 50%;
+            background: linear-gradient(135deg, rgba(28, 24, 20, 0.85) 0%, rgba(12, 14, 18, 0.85) 100%);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(196, 167, 125, 0.45);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), 0 0 12px rgba(196, 167, 125, 0.25);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
         }
-        .vinyl-close:hover { color: #fff; background: rgba(255, 255, 255, 0.08); transform: translateY(2px); }
+        .vinyl-close svg { stroke: currentColor; fill: none; }
+        .vinyl-close:hover {
+            border-color: var(--gold-primary);
+            background: rgba(196, 167, 125, 0.25);
+            box-shadow: 0 0 18px rgba(196, 167, 125, 0.5);
+            transform: translateY(2px) scale(1.08);
+        }
         .vinyl-stage {
             position: relative; z-index: 2; height: 100%;
-            display: flex; align-items: center; justify-content: center; gap: 7%;
+            display: flex; align-items: center; justify-content: center; gap: 8%;
             padding: 0 6%;
         }
         .vinyl-turntable { position: relative; flex-shrink: 0; }
@@ -712,106 +923,259 @@
             width: min(46vh, 380px); height: min(46vh, 380px); border-radius: 50%;
             position: relative; display: flex; align-items: center; justify-content: center;
             background: repeating-radial-gradient(circle at 50% 50%,
-                #16161a 0px, #1d1d22 2px, #101014 4px);
-            box-shadow: 0 14px 44px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.04);
+                #12141a 0px, #1a1c24 2px, #0c0e14 4px);
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 30px rgba(196, 167, 125, 0.2);
             animation: crVinylSpin 22s linear infinite; animation-play-state: paused;
         }
         .vinyl-disc.spinning { animation-play-state: running; }
         @keyframes crVinylSpin { to { transform: rotate(360deg); } }
         #cr-vinyl-cover {
             width: 62%; height: 62%; border-radius: 50%; object-fit: cover;
-            box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.5);
-            background: #14161c;
+            box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.6), 0 4px 20px rgba(0, 0, 0, 0.6);
+            background: #101218;
         }
         .vinyl-center {
-            position: absolute; width: 12px; height: 12px; border-radius: 50%;
-            background: #0a0c10; border: 2px solid rgba(196, 167, 125, 0.5); z-index: 3;
+            position: absolute; width: 14px; height: 14px; border-radius: 50%;
+            background: #08090d; border: 2px solid var(--gold-primary); z-index: 3;
         }
         .vinyl-tonearm {
-            position: absolute; top: -3%; right: -1%; width: 10px; height: 56%;
+            position: absolute; top: -4%; right: -2%; width: 12px; height: 58%;
             transform-origin: 50% 9%; transform: rotate(-24deg);
-            transition: transform 0.45s ease; z-index: 4; pointer-events: none;
+            transition: transform 0.5s ease; z-index: 4; pointer-events: none;
         }
-        .vinyl-tonearm.on { transform: rotate(3deg); }
+        .vinyl-tonearm.on { transform: rotate(4deg); }
         .tonearm-arm {
             position: absolute; left: 50%; top: 0; transform: translateX(-50%);
             width: 4px; height: 100%; border-radius: 3px;
-            background: linear-gradient(180deg, #d8d8dc, #9a9aa2);
+            background: linear-gradient(180deg, #e0e0e5, #888892);
         }
         .tonearm-head {
-            position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%);
-            width: 16px; height: 22px; border-radius: 4px;
-            background: linear-gradient(180deg, #e4e4e8, #a8a8b0);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%);
+            width: 18px; height: 24px; border-radius: 4px;
+            background: linear-gradient(180deg, #f0e6d3, #998363);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
         }
-        .vinyl-meta { max-width: 34%; min-width: 220px; }
+        .vinyl-meta { max-width: 36%; min-width: 240px; }
         .vinyl-title {
-            font-size: clamp(18px, 2.6vw, 30px); font-weight: bold; color: #f0e6d3;
+            font-size: clamp(20px, 3vw, 34px); font-weight: 700; color: var(--gold-bright);
             line-height: 1.35; letter-spacing: 0.5px;
-            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+            text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7), 0 0 20px rgba(196, 167, 125, 0.35);
         }
-        .vinyl-artist { font-size: clamp(12px, 1.4vw, 16px); color: rgba(232, 213, 181, 0.85); margin-top: 12px; }
-        .vinyl-album { font-size: clamp(10px, 1.1vw, 13px); color: rgba(255, 255, 255, 0.4); margin-top: 7px; }
+        .vinyl-artist {
+            font-size: clamp(13px, 1.5vw, 17px); color: var(--gold-primary);
+            margin-top: 14px; opacity: 0.9;
+        }
+        .vinyl-album {
+            font-size: clamp(10px, 1.1vw, 13px); color: var(--text-muted); margin-top: 8px;
+        }
+
+        /* ===== 手机黑胶底栏（4 行控件） ===== */
+        .vinyl-mobile-panel {
+            display: none; position: relative; z-index: 10; width: 100%;
+            padding: 6px 22px 24px 22px; flex-direction: column;
+        }
+        .v-row-meta {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; margin-bottom: 16px;
+        }
+        .v-circle-btn {
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 1px solid rgba(196, 167, 125, 0.35);
+            background: rgba(16, 20, 30, 0.45);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--gold-light);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            flex-shrink: 0; padding: 0;
+        }
+        .v-circle-btn svg {
+            width: 20px; height: 20px;
+            stroke: currentColor; stroke-width: 2.2; fill: none;
+            transition: all 0.2s;
+        }
+        .v-circle-btn:hover {
+            border-color: var(--gold-primary);
+            transform: scale(1.06);
+            box-shadow: 0 0 12px rgba(196, 167, 125, 0.35);
+        }
+        .v-circle-btn.is-fav { border-color: var(--gold-primary); color: var(--gold-bright); }
+        .v-circle-btn.is-fav svg {
+            fill: var(--gold-bright); stroke: var(--gold-bright);
+            filter: drop-shadow(0 0 6px rgba(196, 167, 125, 0.6));
+        }
+        .v-meta-center { flex: 1; min-width: 0; text-align: center; padding: 0 8px; }
+        .v-meta-title {
+            font-size: 19px; font-weight: 700; color: var(--gold-bright);
+            letter-spacing: 0.6px; font-family: var(--font-serif);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8), 0 0 14px rgba(196, 167, 125, 0.3);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3;
+        }
+        .v-meta-artist {
+            font-size: 12.5px; color: var(--gold-primary); opacity: 0.85; margin-top: 4px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;
+        }
+        .v-row-progress {
+            width: 100%; height: 18px; display: flex; align-items: center;
+            cursor: pointer; position: relative; margin-bottom: 16px; padding: 0 2px;
+        }
+        .v-progress-track {
+            width: 100%; height: 3px; border-radius: 2px;
+            background: rgba(255, 255, 255, 0.12); position: relative; overflow: visible;
+        }
+        .v-progress-fill {
+            height: 100%; width: 0%; border-radius: 2px;
+            background: linear-gradient(90deg, #C4A77D 0%, #FFF2CE 100%);
+            position: relative; box-shadow: 0 0 8px rgba(196, 167, 125, 0.5);
+        }
+        .v-progress-bead {
+            position: absolute; right: -3px; top: -2px;
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #FFF2CE;
+            box-shadow: 0 0 8px rgba(255, 242, 206, 0.95);
+        }
+        .v-row-ctrls {
+            display: flex; align-items: center; justify-content: center;
+            gap: 48px; margin-bottom: 22px;
+        }
+        .v-ctrl-btn {
+            background: none; border: none; color: var(--gold-primary);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            padding: 6px; transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+        .v-ctrl-btn svg {
+            width: 22px; height: 22px; fill: currentColor; stroke: currentColor;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+        }
+        .v-ctrl-btn:hover { color: var(--gold-light); transform: scale(1.15); }
+        .v-play-btn {
+            width: 52px; height: 52px; border-radius: 50%;
+            border: 1.5px solid rgba(196, 167, 125, 0.5);
+            background: radial-gradient(circle, rgba(34, 28, 22, 0.9) 0%, rgba(13, 15, 22, 0.9) 100%);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.7), 0 0 16px rgba(196, 167, 125, 0.28);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            color: #FFF2CE; transition: all 0.2s cubic-bezier(0.2, 0, 0, 1); padding: 0;
+        }
+        .v-play-btn svg { width: 20px; height: 20px; fill: currentColor; }
+        .v-play-btn:hover {
+            border-color: var(--gold-primary);
+            transform: scale(1.08);
+            box-shadow: 0 0 22px rgba(196, 167, 125, 0.5);
+        }
+        .v-row-volume { display: flex; align-items: center; gap: 12px; width: 100%; }
+        .v-vol-icon {
+            color: var(--gold-primary); cursor: pointer;
+            display: flex; align-items: center; flex-shrink: 0;
+        }
+        .v-vol-icon svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .v-vol-icon:hover { color: var(--gold-light); }
+        .v-vol-visualizer-container {
+            position: relative; flex: 1; height: 24px;
+            display: flex; align-items: center; cursor: pointer;
+        }
+        .v-vol-visualizer {
+            position: absolute; inset: 0; display: flex; align-items: center;
+            gap: 3px; width: 100%;
+        }
+        .v-vol-bar {
+            flex: 1; border-radius: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px; min-width: 2.5px;
+            transition: background 0.2s, height 0.2s, opacity 0.2s;
+            opacity: 0.3;
+        }
+        .v-vol-bar.active {
+            opacity: 0.95;
+            background: #C4A77D;
+            box-shadow: 0 0 4px rgba(196, 167, 125, 0.4);
+        }
+        .v-vol-bar:nth-child(-n+7) { height: 12px; border-radius: 3px; }
+        .v-vol-bar:nth-child(-n+7).active {
+            background: linear-gradient(180deg, #FFF3D1 0%, #D4B277 100%);
+            box-shadow: 0 0 7px rgba(255, 243, 209, 0.6);
+        }
+        .v-vol-visualizer.playing .v-vol-bar.active {
+            animation: vVolDance 0.6s ease-in-out infinite alternate;
+        }
+        .v-vol-visualizer.playing .v-vol-bar.active:nth-child(even) {
+            animation-name: vVolDanceAlt; animation-duration: 0.75s;
+        }
+        @keyframes vVolDance { 0% { transform: scaleY(0.7); } 100% { transform: scaleY(1.3); } }
+        @keyframes vVolDanceAlt { 0% { transform: scaleY(1.25); } 100% { transform: scaleY(0.65); } }
+        .v-vol-native-slider {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            opacity: 0; cursor: pointer; margin: 0;
+        }
+        .v-vol-text {
+            font-size: 13px; color: var(--gold-primary); width: 36px;
+            text-align: right; font-family: var(--font-ui); font-weight: 600; flex-shrink: 0;
+        }
 
         /* ===== 模态框（迁移/设置） ===== */
         .cr-modal-overlay {
-            position: fixed; inset: 0; z-index: 400; display: none;
+            position: fixed; inset: 0; z-index: 500; display: none;
             align-items: center; justify-content: center;
-            background: rgba(4, 5, 9, 0.72); backdrop-filter: blur(4px);
+            background: rgba(3, 4, 8, 0.78);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         }
         .cr-modal-box {
-            width: 280px; max-height: 70vh; overflow: hidden; display: flex; flex-direction: column;
-            background: rgba(17, 19, 27, 0.98); border: 1px solid rgba(196, 167, 125, 0.3);
-            border-radius: 8px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            width: 320px; max-width: 90vw; max-height: 75vh;
+            background: var(--panel-glass); border: 1px solid var(--gold-border-bright);
+            border-radius: 6px; box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7);
+            display: flex; flex-direction: column; overflow: hidden;
         }
-        .cr-modal-title { padding: 14px 16px; font-size: 12px; font-weight: bold; color: #C4A77D; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
-        .cr-modal-list { flex: 1; overflow-y: auto; padding: 6px; }
+        .cr-modal-title {
+            padding: 14px 18px; font-size: 13px; font-weight: 700;
+            color: var(--gold-bright); border-bottom: 1px solid var(--gold-border-subtle);
+        }
+        .cr-modal-list { flex: 1; overflow-y: auto; padding: 8px; }
         .cr-modal-item {
-            padding: 9px 12px; border-radius: 5px; cursor: pointer; font-size: 11.5px;
-            color: #bbb; transition: 0.15s;
+            padding: 10px 14px; border-radius: 4px; cursor: pointer;
+            font-size: 12px; color: var(--text-main); transition: 0.15s;
         }
-        .cr-modal-item:hover { background: rgba(196, 167, 125, 0.12); color: #E8D5B5; }
+        .cr-modal-item:hover { background: rgba(196, 167, 125, 0.12); color: var(--gold-light); }
         .cr-modal-btn {
-            margin: 8px 12px 12px; padding: 7px; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 5px;
-            color: #999; font-family: inherit; cursor: pointer; transition: 0.2s;
+            margin: 8px 14px 14px; padding: 8px;
+            background: rgba(255, 255, 255, 0.04); border: 1px solid var(--gold-border-subtle);
+            border-radius: 4px; color: var(--text-sub); cursor: pointer;
+            font-family: inherit; transition: 0.2s;
         }
-        .cr-modal-btn:hover { color: #E8D5B5; border-color: rgba(196, 167, 125, 0.4); }
+        .cr-modal-btn:hover { color: var(--gold-light); border-color: var(--gold-border); }
 
         /* ===== 设置面板 ===== */
-        #cr-settings-modal { padding: 0; justify-content: stretch; overflow: hidden; background: rgba(8, 10, 14, 0.97); }
+        #cr-settings-modal { padding: 0; overflow: hidden; background: rgba(8, 10, 14, 0.97); }
         .cr-settings-container {
             display: flex; flex-direction: column; width: 340px; max-width: 92vw;
             max-height: 82vh; overflow: hidden;
-            background: rgba(17, 19, 27, 0.98); border: 1px solid rgba(196, 167, 125, 0.3);
-            border-radius: 10px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            background: var(--panel-glass); border: 1px solid var(--gold-border-bright);
+            border-radius: 10px; box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7);
         }
         .cr-settings-header {
             padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid var(--gold-border-subtle);
             background: linear-gradient(90deg, rgba(196, 167, 125, 0.12) 0%, transparent 100%);
             flex-shrink: 0;
         }
-        .cr-settings-title { font-size: 12px; font-weight: bold; color: #C4A77D; letter-spacing: 1px; }
-        .cr-settings-close { cursor: pointer; font-size: 16px; color: #888; transition: 0.2s; line-height: 1; padding: 2px 4px; }
-        .cr-settings-close:hover { color: #fff; transform: scale(1.15); }
+        .cr-settings-title { font-size: 12px; font-weight: bold; color: var(--gold-primary); letter-spacing: 1px; }
+        .cr-settings-close { cursor: pointer; font-size: 16px; color: var(--text-sub); transition: 0.2s; line-height: 1; padding: 2px 4px; }
+        .cr-settings-close:hover { color: var(--gold-bright); transform: scale(1.15); }
         .cr-settings-body { padding: 14px; overflow-y: auto; flex: 1; }
         .cr-card { margin-bottom: 14px; }
-        .cr-card-title { font-size: 11px; font-weight: bold; color: #C4A77D; margin-bottom: 10px; }
+        .cr-card-title { font-size: 11px; font-weight: bold; color: var(--gold-primary); margin-bottom: 10px; }
         .cr-cfg-row { margin-bottom: 12px; }
-        .cr-cfg-label { display: flex; flex-direction: column; gap: 3px; font-size: 10.5px; color: #aaa; margin-bottom: 6px; }
+        .cr-cfg-label { display: flex; flex-direction: column; gap: 3px; font-size: 10.5px; color: var(--text-main); margin-bottom: 6px; }
         .cr-cfg-input {
-            width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 4px; color: #ccc; font-family: inherit; font-size: 11px;
+            width: 100%; background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px; color: var(--text-main); font-family: inherit; font-size: 11px;
             padding: 6px 9px; outline: none; transition: border-color 0.3s;
         }
-        .cr-cfg-input:focus { border-color: #C4A77D; }
+        .cr-cfg-input:focus { border-color: var(--gold-primary); }
         .cr-switch-row {
             display: flex; align-items: center; justify-content: space-between;
             padding: 8px 0; gap: 12px;
         }
-        .cr-switch-title { font-size: 11px; color: #ccc; font-weight: 600; }
-        .cr-switch-desc { font-size: 9px; color: #777; margin-top: 3px; line-height: 1.4; }
+        .cr-switch-label-box { min-width: 0; }
+        .cr-switch-title { font-size: 11px; color: var(--text-main); font-weight: 600; }
+        .cr-switch-desc { font-size: 9px; color: var(--text-sub); margin-top: 3px; line-height: 1.4; }
         .cr-switch-control { position: relative; flex-shrink: 0; cursor: pointer; }
         .cr-switch-control input { display: none; }
         .cr-switch-track {
@@ -820,48 +1184,182 @@
         }
         .cr-switch-track::before {
             content: ''; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px;
-            border-radius: 50%; background: #888; transition: 0.25s;
+            border-radius: 50%; background: var(--text-sub); transition: 0.25s;
         }
         .cr-switch-control input:checked + .cr-switch-track { background: rgba(196, 167, 125, 0.45); }
         .cr-switch-control input:checked + .cr-switch-track::before {
-            transform: translateX(16px); background: #C4A77D;
+            transform: translateX(16px); background: var(--gold-primary);
         }
         .cr-settings-footer {
             padding: 10px 14px; display: flex; justify-content: flex-end; gap: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06); flex-shrink: 0;
+            border-top: 1px solid var(--gold-border-subtle); flex-shrink: 0;
         }
         .cr-footer-btn {
-            padding: 6px 16px; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 5px;
-            color: #999; font-family: inherit; font-size: 11px; cursor: pointer; transition: 0.2s;
+            padding: 6px 16px; background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--gold-border-subtle); border-radius: 4px;
+            color: var(--text-sub); font-family: inherit; font-size: 11px; cursor: pointer; transition: 0.2s;
         }
-        .cr-footer-btn:hover { color: #E8D5B5; }
-        .cr-footer-btn-primary { background: rgba(196, 167, 125, 0.2); border-color: rgba(196, 167, 125, 0.45); color: #E8D5B5; }
+        .cr-footer-btn:hover { color: var(--gold-light); border-color: var(--gold-border); }
+        .cr-footer-btn-primary { background: rgba(196, 167, 125, 0.2); border-color: rgba(196, 167, 125, 0.45); color: var(--gold-bright); }
         .cr-footer-btn-primary:hover { background: rgba(196, 167, 125, 0.32); }
+
+        /* ==========================================================================
+           移动端响应式 (@media <= 768px)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            #cr-sidebar {
+                position: fixed; left: 0; top: 0; bottom: 0;
+                width: 82%; max-width: 310px;
+                transform: translateX(-100%);
+                box-shadow: 12px 0 45px rgba(0, 0, 0, 0.85);
+                border-right: 1px solid var(--gold-border-bright);
+            }
+            #cr-sidebar.open { transform: translateX(0); }
+            .cr-sidebar-close-btn { display: flex; }
+            #cr-sidebar-backdrop.show { display: block; opacity: 1; }
+            #cr-mobile-topbar { display: flex; }
+
+            #pl-header { padding: 12px 16px 10px; }
+            .pl-head-title { font-size: 18px; }
+            .cr-addrow { display: none; }
+            .track-head-row .col-from, .row-from { display: none; }
+            #track-table { padding: 4px 12px 96px; }
+
+            /* 悬浮 Mini 胶囊播放器 */
+            #cr-player-bar {
+                position: absolute; left: 14px; right: 14px; bottom: 14px;
+                height: 64px; border-radius: 32px;
+                padding: 0 12px 0 8px; gap: 10px;
+                background: linear-gradient(135deg, rgba(16, 19, 28, 0.94) 0%, rgba(9, 11, 17, 0.96) 100%);
+                border: 1px solid var(--gold-border-bright);
+                box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(196, 167, 125, 0.25);
+            }
+            .pb-left { width: auto; min-width: 0; flex: 1; gap: 10px; }
+            #pb-cover { width: 46px; height: 46px; border-radius: 50%; border-color: var(--gold-primary); }
+            #cr-player-fav-btn { display: none; }
+            .pb-center { position: static; flex: none; width: auto; }
+            .pb-progress-row { position: absolute; left: 24px; right: 24px; bottom: 0; max-width: none; gap: 0; }
+            .pb-time { display: none; }
+            .bgm-progress { height: 2.5px; border-radius: 0; background: transparent; }
+            .pb-ctrl-row { gap: 8px; }
+            #cr-prev-btn { display: none; }
+            .bgm-play-btn { width: 38px; height: 38px; }
+            .pb-right { display: none; }
+
+            /* 黑胶页竖排 + 手机底栏 */
+            #cr-vinyl-overlay {
+                position: fixed; inset: 0; bottom: 0;
+                background: #090c14;
+                display: flex; flex-direction: column; justify-content: space-between;
+            }
+            .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; }
+            .vinyl-stage {
+                flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+                padding: 36px 12px 0 12px; gap: 0; min-height: 0;
+            }
+            .vinyl-turntable { margin: auto 0; }
+            .vinyl-disc { width: min(58vw, 235px); height: min(58vw, 235px); }
+            .vinyl-meta { display: none !important; }
+            .vinyl-mobile-panel { display: flex; }
+        }
+
+        /* 桌面端移动布局预览钩子（URL 带 ?mobile 时生效，规则与 @media 块一致） */
+        #cr-app.force-mobile #cr-sidebar {
+            position: fixed; left: 0; top: 0; bottom: 0;
+            width: 82%; max-width: 310px;
+            transform: translateX(-100%);
+            box-shadow: 12px 0 45px rgba(0, 0, 0, 0.85);
+            border-right: 1px solid var(--gold-border-bright);
+        }
+        #cr-app.force-mobile #cr-sidebar.open { transform: translateX(0); }
+        #cr-app.force-mobile .cr-sidebar-close-btn { display: flex; }
+        #cr-app.force-mobile #cr-sidebar-backdrop.show { display: block; opacity: 1; }
+        #cr-app.force-mobile #cr-mobile-topbar { display: flex; }
+        #cr-app.force-mobile #pl-header { padding: 12px 16px 10px; }
+        #cr-app.force-mobile .pl-head-title { font-size: 18px; }
+        #cr-app.force-mobile .cr-addrow { display: none; }
+        #cr-app.force-mobile .track-head-row .col-from, #cr-app.force-mobile .row-from { display: none; }
+        #cr-app.force-mobile #track-table { padding: 4px 12px 96px; }
+        #cr-app.force-mobile #cr-player-bar {
+            position: absolute; left: 14px; right: 14px; bottom: 14px;
+            height: 64px; border-radius: 32px;
+            padding: 0 12px 0 8px; gap: 10px;
+            background: linear-gradient(135deg, rgba(16, 19, 28, 0.94) 0%, rgba(9, 11, 17, 0.96) 100%);
+            border: 1px solid var(--gold-border-bright);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(196, 167, 125, 0.25);
+        }
+        #cr-app.force-mobile .pb-left { width: auto; min-width: 0; flex: 1; gap: 10px; }
+        #cr-app.force-mobile #pb-cover { width: 46px; height: 46px; border-radius: 50%; border-color: var(--gold-primary); }
+        #cr-app.force-mobile #cr-player-fav-btn { display: none; }
+        #cr-app.force-mobile .pb-center { position: static; flex: none; width: auto; }
+        #cr-app.force-mobile .pb-progress-row { position: absolute; left: 24px; right: 24px; bottom: 0; max-width: none; gap: 0; }
+        #cr-app.force-mobile .pb-time { display: none; }
+        #cr-app.force-mobile .bgm-progress { height: 2.5px; border-radius: 0; background: transparent; }
+        #cr-app.force-mobile .pb-ctrl-row { gap: 8px; }
+        #cr-app.force-mobile #cr-prev-btn { display: none; }
+        #cr-app.force-mobile .bgm-play-btn { width: 38px; height: 38px; }
+        #cr-app.force-mobile .pb-right { display: none; }
+        #cr-app.force-mobile #cr-vinyl-overlay {
+            position: fixed; inset: 0; bottom: 0;
+            background: #090c14;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        #cr-app.force-mobile .vinyl-close { top: 18px; left: 18px; width: 36px; height: 36px; }
+        #cr-app.force-mobile .vinyl-stage {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 36px 12px 0 12px; gap: 0; min-height: 0;
+        }
+        #cr-app.force-mobile .vinyl-turntable { margin: auto 0; }
+        #cr-app.force-mobile .vinyl-disc { width: min(58vw, 235px); height: min(58vw, 235px); }
+        #cr-app.force-mobile .vinyl-meta { display: none !important; }
+        #cr-app.force-mobile .vinyl-mobile-panel { display: flex; }
         </style>
     `;
 
     const html = `
         <div id="cr-app">
+            <!-- 移动端汉堡顶栏 -->
+            <header id="cr-mobile-topbar">
+                <button class="cr-mob-menu-btn" id="cr-mob-menu-btn" title="展开频段歌单">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <div class="cr-mob-title">■ 音乐电台</div>
+                <button class="cr-mob-gear-btn" id="cr-mob-settings-btn" title="电台设置">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+            </header>
+
+            <!-- 移动抽屉遮罩 -->
+            <div id="cr-sidebar-backdrop"></div>
+
             <div id="cr-app-body">
             <aside id="cr-sidebar">
                 <div class="cr-brand">
-                    <span class="cr-brand-title">■ 音乐电台</span>
-                    <span class="cr-header-btn" id="cr-open-settings-btn" title="电台设置">⚙</span>
+                    <div class="cr-brand-left">
+                        <div class="cr-brand-dot"></div>
+                        <span class="cr-brand-title">音乐电台</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                        <span class="cr-header-btn" id="cr-open-settings-btn" title="电台设置">⚙</span>
+                        <span class="cr-sidebar-close-btn" id="cr-sidebar-close-btn" title="收起抽屉">✕</span>
+                    </div>
                 </div>
                 <div class="cr-side-search">
-                    <input type="text" class="cp-input bgm-search-input" id="bgm-search-input" placeholder="搜索全库曲目 / 歌手 / 频段..." autocomplete="off">
+                    <div class="cr-search-wrapper">
+                        <svg class="cr-search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" class="cp-input bgm-search-input" id="bgm-search-input" placeholder="搜索全库曲目 / 歌手 / 频段..." autocomplete="off">
+                    </div>
                 </div>
-                <div class="cr-side-section">歌 单</div>
+                <div class="cr-side-section">频 段 歌 单</div>
                 <nav id="pl-nav"></nav>
                 <div class="cr-side-footer">
                     <div class="cr-side-newrow">
                         <input type="text" class="cp-input" id="new-playlist-name" placeholder="新歌单名称..." autocomplete="off">
-                        <button class="cp-btn" id="cr-new-pl-btn" style="color:#C4A77D; border-color:rgba(196,167,125,0.3); padding:5px 9px; font-size:10px;">建立</button>
+                        <button class="cp-btn" id="cr-new-pl-btn" style="padding:5px 12px; font-size:10.5px;">建立</button>
                     </div>
-                    <div class="cr-io-row">
-                        <button class="cp-btn" id="cr-import-overwrite-btn" title="覆盖导入：用文件内容完全替换当前所有歌单">覆盖导入</button>
-                        <button class="cp-btn" id="cr-import-merge-btn" title="合并导入：保留现有数据，合并同名歌单并自动过滤重复歌曲">合并导入</button>
+                    <div class="cr-io-grid">
+                        <button class="cp-btn" id="cr-import-overwrite-btn" title="覆盖导入：用文件内容完全替换当前所有歌单">覆盖</button>
+                        <button class="cp-btn" id="cr-import-merge-btn" title="合并导入：保留现有数据，合并同名歌单并自动过滤重复歌曲">合并</button>
                         <button class="cp-btn" id="cr-export-btn" title="导出歌单备份JSON">导出</button>
                         <button class="cp-btn" id="cr-reset-btn" title="恢复预置默认歌单">重置</button>
                         <input type="file" id="cr-import-file" accept=".json" style="display:none;">
@@ -878,7 +1376,7 @@
             <footer id="cr-player-bar">
                 <div class="pb-left">
                     <div id="pb-cover" title="展开黑胶播放页"></div>
-                    <div class="pb-info">
+                    <div class="pb-info" style="cursor:pointer;" title="展开黑胶播放页">
                         <div id="bgm-now-playing">未接入深空频段</div>
                         <div id="bgm-now-artist">Waiting for signal...</div>
                     </div>
@@ -886,11 +1384,9 @@
                 </div>
                 <div class="pb-center">
                     <div class="pb-ctrl-row">
-                        <button class="bgm-ctrl-btn" id="cr-prev-btn"><div class="ctrl-icon-prev"><span></span><span></span></div></button>
-                        <button class="bgm-ctrl-btn bgm-play-btn" id="bgm-play-pause">
-                            <div class="play-icon"></div>
-                        </button>
-                        <button class="bgm-ctrl-btn" id="cr-next-btn"><div class="ctrl-icon-next"><span></span><span></span></div></button>
+                        <button class="bgm-ctrl-btn" id="cr-prev-btn" title="上一曲"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg></button>
+                        <button class="bgm-ctrl-btn bgm-play-btn" id="bgm-play-pause" title="播放/暂停"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></button>
+                        <button class="bgm-ctrl-btn" id="cr-next-btn" title="下一曲"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg></button>
                     </div>
                     <div class="pb-progress-row">
                         <span class="pb-time" id="pb-cur-time">0:00</span>
@@ -903,19 +1399,23 @@
                 <div class="pb-right">
                     <button class="bgm-mode-btn" id="bgm-mode-btn">${PLAY_MODE_LABELS[playMode] || "顺序播放"}</button>
                     <span class="cr-player-tool-btn" id="cr-player-dl-btn" title="下载当前曲目MP3音频"></span>
-                    <div class="cr-vol-icon" id="cr-vol-icon" title="点击静音/恢复"></div>
-                    <div class="cr-vol-visualizer-container" title="滑动调节音量">
-                        <div class="cr-vol-visualizer" id="cr-vol-visualizer"></div>
-                        <input type="range" class="cr-vol-native-slider" id="cr-vol-slider" min="0" max="100" value="80" title="滑动调节音量">
+                    <div class="cr-vol-container">
+                        <div class="cr-vol-icon" id="cr-vol-icon" title="点击静音/恢复"></div>
+                        <div class="cr-vol-visualizer-container" title="滑动调节音量">
+                            <div class="cr-vol-visualizer" id="cr-vol-visualizer"></div>
+                            <input type="range" class="cr-vol-native-slider" id="cr-vol-slider" min="0" max="100" value="80" title="滑动调节音量">
+                        </div>
+                        <span class="cr-vol-text" id="cr-vol-text">80%</span>
                     </div>
-                    <span class="cr-vol-text" id="cr-vol-text">80%</span>
                 </div>
                 <div class="cr-player-toast" id="cr-player-toast"></div>
             </footer>
 
             <div id="cr-vinyl-overlay">
                 <div class="vinyl-bg" id="cr-vinyl-bg"></div>
-                <div class="vinyl-close" id="cr-vinyl-close" title="收起播放页">⌄</div>
+                <div class="vinyl-close" id="cr-vinyl-close" title="收起播放页">
+                    <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
                 <div class="vinyl-stage">
                     <div class="vinyl-turntable">
                         <div class="vinyl-disc" id="cr-vinyl-disc">
@@ -928,6 +1428,38 @@
                         <div class="vinyl-title" id="cr-vinyl-title"></div>
                         <div class="vinyl-artist" id="cr-vinyl-artist"></div>
                         <div class="vinyl-album" id="cr-vinyl-album"></div>
+                    </div>
+                </div>
+
+                <!-- 手机播放页底栏（4 行控件） -->
+                <div class="vinyl-mobile-panel" id="cr-vinyl-mobile-panel">
+                    <div class="v-row-meta">
+                        <button type="button" class="v-circle-btn" id="v-mob-fav-btn" title="收藏当前曲目"></button>
+                        <div class="v-meta-center">
+                            <div class="v-meta-title" id="v-mob-title">未接入深空频段</div>
+                            <div class="v-meta-artist" id="v-mob-artist">Waiting for signal...</div>
+                        </div>
+                        <button type="button" class="v-circle-btn" id="v-mob-dl-btn" title="下载当前曲目MP3音频"></button>
+                    </div>
+                    <div class="v-row-progress" id="v-mob-prog-row" title="点击调整播放进度">
+                        <div class="v-progress-track">
+                            <div class="v-progress-fill" id="v-mob-prog-fill">
+                                <div class="v-progress-bead"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="v-row-ctrls">
+                        <button type="button" class="v-ctrl-btn" id="v-mob-prev-btn" title="上一曲"><svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg></button>
+                        <button type="button" class="v-play-btn" id="v-mob-play-btn" title="播放/暂停"><svg id="v-mob-play-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></button>
+                        <button type="button" class="v-ctrl-btn" id="v-mob-next-btn" title="下一曲"><svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg></button>
+                    </div>
+                    <div class="v-row-volume">
+                        <span class="v-vol-icon" id="v-mob-vol-icon" title="点击静音/恢复"></span>
+                        <div class="v-vol-visualizer-container" id="v-mob-vol-container" title="滑动调节音量">
+                            <div class="v-vol-visualizer" id="v-mob-vol-visualizer"></div>
+                            <input type="range" class="v-vol-native-slider" id="v-mob-vol-slider" min="0" max="100" value="80" title="滑动调节音量">
+                        </div>
+                        <span class="v-vol-text" id="v-mob-vol-text">80%</span>
                     </div>
                 </div>
             </div>
@@ -1009,9 +1541,12 @@
     $('head').append(styles);
     $('body').append(html);
     // 字体非阻塞加载：主样式表先行生效，字体 CSS 异步到达后按 display=swap 换装
-    $('head').append('<link id="celestial-radio-font" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Noto+Serif+SC:wght@300;400;600;900&display=swap">');
+    $('head').append('<link id="celestial-radio-font" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&family=Noto+Serif+SC:wght@300;400;600;700&display=swap">');
 
     const $ctn = $('#cr-app');
+
+    // 桌面端移动布局预览钩子：URL 带 ?mobile 时强制套用移动样式（与 768px 断点规则一致）
+    if (location.search.includes('mobile')) $ctn.addClass('force-mobile');
 
     applyGlassEffect(localStorage.getItem('cr_glass_effect') !== 'false');
 
@@ -1025,12 +1560,24 @@
         cloudImport: `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 17 4 4 4-4"></path></svg>`,
         download: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>`,
         move: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>`,
-        gear: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`
+        gear: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`,
+        playBig: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
+        pauseBig: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`,
+        songDel: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`
     };
 
     $('#cr-player-dl-btn').html(ICONS.download);
+    $('#v-mob-dl-btn').html(ICONS.download);
     $('#cr-open-settings-btn').html(ICONS.gear);
     $('#bgm-mode-btn').text(PLAY_MODE_LABELS[playMode]);
+
+    // === 移动端汉堡抽屉与顶栏 ===
+    function openMobileDrawer() { $('#cr-sidebar').addClass('open'); $('#cr-sidebar-backdrop').addClass('show'); }
+    function closeMobileDrawer() { $('#cr-sidebar').removeClass('open'); $('#cr-sidebar-backdrop').removeClass('show'); }
+    $('#cr-mob-menu-btn').on('click', function(e) { e.stopPropagation(); openMobileDrawer(); });
+    $('#cr-sidebar-close-btn').on('click', closeMobileDrawer);
+    $('#cr-sidebar-backdrop').on('click', closeMobileDrawer);
+    $('#cr-mob-settings-btn').on('click', function(e) { e.stopPropagation(); openSettingsModal(); });
 
 
     $('#bgm-mode-btn').on('click', function(e) {
@@ -1116,8 +1663,10 @@
     function updatePlayerFavBtn() {
         if (currentPlayingTrackInfo.title && isSongFavorited(currentPlayingTrackInfo.title, currentPlayingTrackInfo.artist)) {
             $('#cr-player-fav-btn').addClass('is-fav').html(ICONS.favSolid).attr('title', '已收藏 (点击取消收藏)');
+            $('#v-mob-fav-btn').addClass('is-fav').html(ICONS.favSolid);
         } else {
             $('#cr-player-fav-btn').removeClass('is-fav').html(ICONS.favOutline).attr('title', '收藏当前曲目至“我的收藏”');
+            $('#v-mob-fav-btn').removeClass('is-fav').html(ICONS.favOutline);
         }
     }
 
@@ -1180,11 +1729,22 @@
     }
     const volBars = $volVis.children('.cr-vol-bar');
 
+    // === 手机黑胶底栏 26 柱律动条（与 PC 24 柱同步驱动） ===
+    const V_MOB_VOL_COUNT = 26;
+    const $vMobVolVis = $('#v-mob-vol-visualizer');
+    $vMobVolVis.empty();
+    for (let i = 0; i < V_MOB_VOL_COUNT; i++) {
+        const dur = VOL_DURATIONS[i % VOL_DURATIONS.length];
+        $vMobVolVis.append(`<div class="v-vol-bar" style="animation-duration: ${dur}s; animation-delay: -${(i * 0.08 % dur).toFixed(2)}s"></div>`);
+    }
+    const vMobVolBars = $vMobVolVis.children('.v-vol-bar');
+
     function updateVolAnimState() {
         const playing = isPlaying && !isLoading && !audioObj.paused && audioObj.volume > 0;
         const real = playing && spectrumRealActive && !document.hidden;
         $volVis.toggleClass('playing', playing);
         $volVis.toggleClass('real-spectrum', real);
+        $vMobVolVis.toggleClass('playing', playing);
         if (real) startSpectrumLoop(); else stopSpectrumLoop();
     }
 
@@ -1229,16 +1789,28 @@
             }
         });
 
+        // 同步手机黑胶底栏音量（26 柱 / 滑块 / 百分比）
+        const vMobActiveCount = Math.round(vol * V_MOB_VOL_COUNT);
+        vMobVolBars.each(function(idx) {
+            if (idx < vMobActiveCount) $(this).addClass('active');
+            else $(this).removeClass('active');
+        });
+        $('#v-mob-vol-slider').val(pct);
+        $('#v-mob-vol-text').text(pct + '%');
+
         const svgSpeakerHigh = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="rgba(196,167,125,0.2)"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg>`;
         const svgSpeakerLow = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4A77D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="rgba(196,167,125,0.2)"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path></svg>`;
         const svgSpeakerMute = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D34B4B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="rgba(211,75,75,0.2)"></polygon><line x1="22" y1="9" x2="16" y2="15"></line><line x1="16" y1="9" x2="22" y2="15"></line></svg>`;
 
         if (vol === 0) {
             $('#cr-vol-icon').html(svgSpeakerMute).attr('title', '已静音 (点击恢复)');
+            $('#v-mob-vol-icon').html(svgSpeakerMute);
         } else if (vol < 0.5) {
             $('#cr-vol-icon').html(svgSpeakerLow).attr('title', '音量较小 (点击静音)');
+            $('#v-mob-vol-icon').html(svgSpeakerLow);
         } else {
             $('#cr-vol-icon').html(svgSpeakerHigh).attr('title', '正常音量 (点击静音)');
+            $('#v-mob-vol-icon').html(svgSpeakerHigh);
         }
     }
     updateVolumeUI(audioObj.volume);
@@ -1257,6 +1829,30 @@
     });
 
     $('#cr-vol-icon').on('click', function() {
+        if (audioObj.volume > 0) {
+            lastNonZeroVolume = audioObj.volume;
+            audioObj.volume = 0;
+            currentVolume = 0;
+        } else {
+            audioObj.volume = lastNonZeroVolume;
+            currentVolume = lastNonZeroVolume;
+        }
+        localStorage.setItem('cr_player_volume', currentVolume.toString());
+        updateVolumeUI(currentVolume);
+    });
+
+    // 手机黑胶底栏音量滑块与静音键
+    $('#v-mob-vol-slider').on('input change', function(e) {
+        let val = parseFloat($(this).val()) / 100;
+        if (isNaN(val) || val < 0) val = 0;
+        if (val > 1) val = 1;
+        audioObj.volume = val;
+        currentVolume = val;
+        if (val > 0) lastNonZeroVolume = val;
+        if (e.type === 'change') localStorage.setItem('cr_player_volume', val.toString());
+        updateVolumeUI(val);
+    });
+    $('#v-mob-vol-icon').on('click', function() {
         if (audioObj.volume > 0) {
             lastNonZeroVolume = audioObj.volume;
             audioObj.volume = 0;
@@ -1368,6 +1964,11 @@
                 spectrumSmooth[i] += (target - spectrumSmooth[i]) * (target > spectrumSmooth[i] ? 0.5 : 0.3);
                 volBars[i].style.transform = 'scaleY(' + Math.max(0.1875, spectrumSmooth[i]).toFixed(3) + ')';
             }
+            // 26 根手机柱按同一平滑频谱取近邻映射（26>24，末柱取末段数据）
+            for (let j = 0; j < V_MOB_VOL_COUNT; j++) {
+                const src = Math.min(VOL_BAR_COUNT - 1, Math.round(j * (VOL_BAR_COUNT - 1) / (V_MOB_VOL_COUNT - 1)));
+                vMobVolBars[j].style.transform = 'scaleY(' + Math.max(0.1875, spectrumSmooth[src]).toFixed(3) + ')';
+            }
             if (frameMax === 0) {
                 // 播放中持续约 2 秒全零：链路被跨域污染，自动回退模拟律动
                 if (++spectrumZeroFrames > 120) { spectrumRealActive = false; updateVolAnimState(); return; }
@@ -1380,6 +1981,7 @@
     function stopSpectrumLoop() {
         if (spectrumRafId) { cancelAnimationFrame(spectrumRafId); spectrumRafId = 0; }
         volBars.each(function() { if (this.style.transform) this.style.transform = ''; });
+        vMobVolBars.each(function() { if (this.style.transform) this.style.transform = ''; });
     }
 
     // === 频段位置调整与排序 ===
@@ -1548,7 +2150,7 @@
                     <span class="song-action-btn cr-song-fav ${isFav ? 'is-fav' : ''}" data-pidx="${cIdx}" data-sidx="${sIdx}" title="${isFav ? '已收藏 (点击取消)' : '收藏至我的收藏'}">${isFav ? ICONS.favSolid : ICONS.favOutline}</span>
                     <span class="song-action-btn cr-song-edit" data-pidx="${cIdx}" data-sidx="${sIdx}" title="编辑歌曲名与歌手">${ICONS.edit}</span>
                     <span class="song-action-btn cr-song-move" data-pidx="${cIdx}" data-sidx="${sIdx}" title="移动到其他歌单">${ICONS.move}</span>
-                    <span class="song-action-btn cr-del-song" data-pidx="${cIdx}" data-sidx="${sIdx}" title="移除曲目" style="color:#C4A77D; font-size:14px; font-weight:bold; opacity:0.8;">×</span>
+                    <span class="song-action-btn cr-del-song" data-pidx="${cIdx}" data-sidx="${sIdx}" title="移除曲目">${ICONS.songDel}</span>
                 </div>
             </div>`;
         };
@@ -1592,8 +2194,10 @@
                     </div>
                 </div>`;
             bodyHtml = `<div class="track-head-row">
-                <span style="width:34px; text-align:center; flex-shrink:0;">#</span>
+                <span style="width:32px; text-align:center; flex-shrink:0;">#</span>
                 <span style="flex:1;">标题 / 歌手</span>
+                <span class="col-from" style="width:140px; margin-right:14px; flex-shrink:0;">频段</span>
+                <span style="width:128px; text-align:right; padding-right:8px; flex-shrink:0;">操作</span>
             </div>`;
             if (batchPlaylistIndex === selectedPlaylistIndex) {
                 let isAllSel = cat.songs.length > 0 && selectedSongsSet.size === cat.songs.length;
@@ -1861,6 +2465,9 @@
         }
         renderSidebarNav();
         renderTrackTable();
+        // 移动端抽屉：选中歌单后自动收起
+        $('#cr-sidebar').removeClass('open');
+        $('#cr-sidebar-backdrop').removeClass('show');
     });
 
 
@@ -2384,10 +2991,28 @@
     $('#cr-prev-btn').click(prevSong);
     $('#cr-next-btn').click(nextSong);
 
+    // 手机黑胶底栏播放控制
+    $('#v-mob-play-btn').on('click', function() { $('#bgm-play-pause').click(); });
+    $('#v-mob-prev-btn').on('click', prevSong);
+    $('#v-mob-next-btn').on('click', nextSong);
+    $('#v-mob-fav-btn').on('click', function() {
+        if (!currentPlayingTrackInfo.title) return;
+        toggleFavorite(currentPlayingTrackInfo.title, currentPlayingTrackInfo.artist);
+    });
+    $('#v-mob-dl-btn').on('click', downloadCurrentAudio);
+
     $('#bgm-progress-bar').click(function(e) {
         if(!audioObj.src || !audioObj.duration) return;
         const rect = this.getBoundingClientRect();
         const percent = (e.clientX - rect.left) / rect.width;
+        audioObj.currentTime = percent * audioObj.duration;
+    });
+
+    // 手机黑胶底栏进度条点击 seek
+    $('#v-mob-prog-row').on('click', function(e) {
+        if(!audioObj.src || !audioObj.duration) return;
+        const rect = this.getBoundingClientRect();
+        const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
         audioObj.currentTime = percent * audioObj.duration;
     });
 
@@ -2402,6 +3027,7 @@
             if(audioObj.duration) {
                 const pct = (audioObj.currentTime / audioObj.duration) * 100;
                 $('#bgm-progress-fill').css('width', pct + '%');
+                $('#v-mob-prog-fill').css('width', pct + '%');
                 $('#pb-cur-time').text(formatTime(audioObj.currentTime));
             }
         });
@@ -2851,14 +3477,24 @@
     function updateBgmUI() {
         if (isLoading) {
             $('#bgm-play-pause').html('<div class="cr-play-spinner"></div>');
+            $('#v-mob-play-btn').html('<div class="cr-play-spinner"></div>');
         } else if (isPlaying) {
-            $('#bgm-play-pause').html('<div class="pause-icon"></div>');
+            $('#bgm-play-pause').html(ICONS.pauseBig);
+            $('#v-mob-play-btn').html('<svg id="v-mob-play-icon" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>');
         } else {
-            $('#bgm-play-pause').html('<div class="play-icon"></div>');
+            $('#bgm-play-pause').html(ICONS.playBig);
+            $('#v-mob-play-btn').html('<svg id="v-mob-play-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>');
             if(currentPlaylistIndex === -1 && !audioObj.src) { $('#bgm-now-playing').text('频段静默'); $('#bgm-now-artist').text('---'); }
         }
         $('#cr-vinyl-disc').toggleClass('spinning', isPlaying && !isLoading && !audioObj.paused);
         $('#cr-vinyl-tonearm').toggleClass('on', isPlaying && !isLoading);
+        // 黑胶页与手机底栏标题实时跟随切歌（切歌路径必经本函数）
+        const nowTitle = currentPlayingTrackInfo.title || $('#bgm-now-playing').text();
+        const nowArtist = currentPlayingTrackInfo.artist || $('#bgm-now-artist').text();
+        $('#cr-vinyl-title').text(nowTitle);
+        $('#cr-vinyl-artist').text(nowArtist);
+        $('#v-mob-title').text(nowTitle);
+        $('#v-mob-artist').text(nowArtist);
         updateVolAnimState();
         updatePlayerFavBtn();
     }
@@ -2913,13 +3549,12 @@
     }
 
     function openVinylPage() {
-        $('#cr-vinyl-title').text(currentPlayingTrackInfo.title || $('#bgm-now-playing').text());
-        $('#cr-vinyl-artist').text(currentPlayingTrackInfo.artist || $('#bgm-now-artist').text());
         $('#cr-vinyl-overlay').addClass('open');
         updateCoverUI();
         updateBgmUI();
     }
     $('#pb-cover').on('click', openVinylPage);
+    $('.pb-info').on('click', openVinylPage);
     $('#cr-vinyl-close').on('click', () => $('#cr-vinyl-overlay').removeClass('open'));
 
 

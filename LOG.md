@@ -667,3 +667,17 @@
 - **决策原因**：用户要求把 `demo_preview.html` 的「全屏封面模式」移植进单机版；经 plan 确认走「完整复刻 demo（按钮+弹窗双卡片，缩略图 base64 内联）／默认全屏封面／纯白配色」三项选型。
 - **顺带核实**：用户指出 demo 移动端「进入全屏播放页后列表底栏依然显示」的缺陷——根因为 demo `#cr-player-bar` 的 `z-index: 220` 高于 overlay 的 `200`；单机版底栏为 `120`、overlay 为 `200`，实测移动端底栏中心点 `elementFromPoint` 命中覆盖层内的 `v-mob-vol-slider`，**该缺陷在单机版不存在**，未额外加隐藏规则。
 - **提交**：`25e5ed0`
+
+---
+
+## [HASH: 5e182df] 全屏歌词页恢复鎏金配色（隔离全屏封面模式的白字体系）
+- **日期**：2026-10-06
+- **涉及文件**：`tools/standalone_script_v2.js`、`音乐电台-单机版.html`（重新打包）
+- **变更行为**：
+  1. **根因（用户反馈"歌词的完整页面需要保持鎏金色，不要变为白色"）**：上一版为全屏封面模式加的白字体系用 `#cr-vinyl-overlay.mode-fullscreen-cover .cr-lyric-main`（及 `.cr-lyric-line.active` 变体）选择器，而移动端点击展开的全屏歌词页 `#cr-lyric-scroll-mob.expanded` 同样是 overlay 的后代，被一并染白——但该页自带不透明深底 `linear-gradient(180deg, rgba(9,12,20,0.98), rgba(6,8,13,0.99))`，本就该用鎏金体系；
+  2. **方案**：新增 4 条 `.cr-lyric-scroll.expanded` 作用域规则覆盖回原色——`.cr-lyric-main → var(--text-sub)`、`.cr-lyric-trans → var(--text-muted)`、`.cr-lyric-line.active .cr-lyric-main → var(--gold-bright)`（含 `0 0 14px rgba(196,167,125,.45)` 金色光晕）、`.cr-lyric-line.active .cr-lyric-trans → var(--gold-primary)`。特异性 10600 / 10400，稳定高于白字规则（10400 / 10200）；
+  3. **收起态不受影响**：内嵌歌词（PC 右侧 + 移动端 168px 区）仍是白字，与上一版选型一致；
+  4. **验证**：IAB 会话后期绘制与样式重算全面降级（`.open` 已加上但 computed opacity 恒读 0、内联样式与 `!important` 注入均改不动 computed 值、截图停留在旧帧），改用不依赖绘制的**静态级联计算**（遍历 `document.styleSheets` 对目标元素做 `matches()` + 特异性排序）：收起态胜出 `rgb(255,255,255)` / `rgba(255,255,255,.46)`，展开态胜出 `var(--gold-bright)` / `var(--text-sub)`；另在新标签页取得一次实时读数 `active=rgb(255,245,223)`、`activeShadow=rgba(196,167,125,.45) 0 0 14px`、`normal=rgb(140,134,124)`、`scrollBg=linear-gradient(rgba(9,12,20,.98)…)`，与静态结论一致。
+- **决策原因**：用户实测截图反馈全屏歌词页应为鎏金；全屏封面模式的白字体系需与该页隔离。
+- **备注**：真 Chrome（排障模式）下的最终视觉复核待用户触发；IAB 本会话已无法提供可信截图。
+- **提交**：`5e182df`

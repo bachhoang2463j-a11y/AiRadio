@@ -696,3 +696,14 @@
 - **决策原因**：用户要求全屏封面模式下 PC 底栏对齐 demo 的半透明毛玻璃观感。
 - **实测（IAB 1280×800）**：`#cr-app` 带 `fs-cover-open`；覆盖层 `bottom: 0px`、rect 底边 800 = 视口高；`.vinyl-meta` `padding-bottom: 88px`；底栏 computed `z-index: 220`、`background-color: rgba(16, 18, 26, 0.52)`，三点 `elementFromPoint`（x=60/640/1100）全部命中底栏自身子元素（`#pb-cover` 的 IMG、播放键 SVG、`cr-vol-slider`），确认浮于封面之上。`?mobile` 预览下底栏胜出规则仍是 `#cr-app.force-mobile #cr-player-bar`（z-index 120），桌面规则未命中。
 - **提交**：`1a1c2e8`
+
+---
+
+## [HASH: 7244987] 添加 .gitignore 忽略编辑器临时目录
+- **日期**：2026-10-06
+- **涉及文件**：`.gitignore`
+- **变更行为**：
+  1. 新增根目录 `.gitignore`，添加 `.zcode/` 规则；
+  2. 忽略 IDE 与工具链生成的 plans/ 等本地临时目录，防止污染版本库。
+- **决策原因**：用户授权规范化工作区临时文件管理。
+- **提交**：`7244987`
